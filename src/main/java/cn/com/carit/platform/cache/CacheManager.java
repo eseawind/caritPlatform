@@ -10,16 +10,24 @@ import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 
 import cn.com.carit.platform.bean.Account;
+import cn.com.carit.platform.bean.AppSecret;
 import cn.com.carit.platform.dao.AccountDao;
+import cn.com.carit.platform.dao.AppSecretDao;
 
 public class CacheManager {
 	private final Logger logger=LoggerFactory.getLogger(getClass());
 	
 	/*Dao */
 	private AccountDao<Account> accountDao;
+	private AppSecretDao<AppSecret> appSecretDao;
 	
 	/**账号缓存，以邮箱地址为key*/
 	private Map<String, Account> accountCache;
+	
+	/**昵称缓存*/
+	private Map<String, String> nickNameCache;
+	
+	private Map<String, String> appKeySecretCache;
 	
 	private static class CacheHolder {
 		private static final CacheManager INSTANCE = new CacheManager();
@@ -31,9 +39,14 @@ public class CacheManager {
 		// init bean
 		WebApplicationContext ctx=ContextLoader.getCurrentWebApplicationContext();
 		accountDao =  (AccountDao<Account>) ctx.getBean("accountDaoImpl");
+		appSecretDao = (AppSecretDao<AppSecret>) ctx.getBean("appSecretDaoImpl");
 		
 		accountCache = new ConcurrentHashMap<String, Account>();
+		nickNameCache = new ConcurrentHashMap<String, String>();
+		
+		appKeySecretCache = new ConcurrentHashMap<String, String>();
 		refreshAccounts();
+		refreshAppKeySecretCache();
 		logger.info(" init cache end ...");
 	}
 	
@@ -54,9 +67,11 @@ public class CacheManager {
 	 */
 	public void refreshAccounts(){
 		accountCache.clear();
+		nickNameCache.clear();
 		List<Account> allAccountList=accountDao.queryAll();
 		for (Account t : allAccountList) {
 			accountCache.put(t.getEmail(), t);
+			nickNameCache.put(t.getNickName(), t.getEmail());
 		}
 	}
 	
@@ -68,9 +83,35 @@ public class CacheManager {
 	public void refreshAccount(String email, Account t){
 		accountCache.put(email, t);
 	}
+	
+	/**
+	 * 修改昵称时更新昵称缓存
+	 * @param oldNickName
+	 * @param newNickName
+	 */
+	public void refreshNickName(String oldNickName, String newNickName){
+		nickNameCache.put(newNickName, nickNameCache.get(oldNickName));
+		nickNameCache.remove(oldNickName);
+	}
 
 	public Map<String, Account> getAccountCache() {
 		return accountCache;
+	}
+	
+	public Map<String, String> getNickNameCache() {
+		return nickNameCache;
+	}
+
+	public void refreshAppKeySecretCache(){
+		appKeySecretCache.clear();
+		List<AppSecret> list=appSecretDao.queryAll();
+		for (AppSecret appSecret : list) {
+			appKeySecretCache.put(String.valueOf(appSecret.getId()), appSecret.getAppSecret());
+		}
+	}
+
+	public Map<String, String> getAppKeySecretCache() {
+		return appKeySecretCache;
 	}
 	
 }

@@ -19,7 +19,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
-import cn.com.carit.common.utils.DataUtils;
+import cn.com.carit.common.utils.CaritUtils;
 
 @Repository
 public class BaseDaoImpl {
@@ -28,15 +28,15 @@ public class BaseDaoImpl {
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 	
 	public <T> T query(String sql, List<Object> args, List<Integer> argTypes, ResultSetExtractor<T> rse) {
-		return jdbcTemplate.query(sql, args.toArray(), DataUtils.listToIntArray(argTypes), rse);
+		return jdbcTemplate.query(sql, args.toArray(), CaritUtils.listToIntArray(argTypes), rse);
 	}
 	
 	public void query(String sql, List<Object> args, List<Integer> argTypes, RowCallbackHandler rch) {
-		jdbcTemplate.query(sql, args.toArray(), DataUtils.listToIntArray(argTypes), rch);
+		jdbcTemplate.query(sql, args.toArray(), CaritUtils.listToIntArray(argTypes), rch);
 	}
 	
 	public <T> List<T> query(String sql, List<Object> args, List<Integer> argTypes, RowMapper<T> rowMapper) {
-		return jdbcTemplate.query(sql, args.toArray(), DataUtils.listToIntArray(argTypes), rowMapper);
+		return jdbcTemplate.query(sql, args.toArray(), CaritUtils.listToIntArray(argTypes), rowMapper);
 	}
 	
 	/**
@@ -63,39 +63,39 @@ public class BaseDaoImpl {
 	}
 	
 	public <T> T queryForObject(String sql, List<Object> args, List<Integer> argTypes, RowMapper<T> rowMapper) {
-		return jdbcTemplate.queryForObject(sql, args.toArray(), DataUtils.listToIntArray(argTypes), rowMapper);
+		return jdbcTemplate.queryForObject(sql, args.toArray(), CaritUtils.listToIntArray(argTypes), rowMapper);
 	}
 	
 	public <T> T queryForObject(String sql, List<Object> args, List<Integer> argTypes, Class<T> requiredType) {
-		return jdbcTemplate.queryForObject(sql, args.toArray(), DataUtils.listToIntArray(argTypes), requiredType);
+		return jdbcTemplate.queryForObject(sql, args.toArray(), CaritUtils.listToIntArray(argTypes), requiredType);
 	}
 	
 	public Map<String, Object> queryForMap(String sql, List<Object> args, List<Integer> argTypes) {
-		return jdbcTemplate.queryForMap(sql, args.toArray(), DataUtils.listToIntArray(argTypes));
+		return jdbcTemplate.queryForMap(sql, args.toArray(), CaritUtils.listToIntArray(argTypes));
 	}
 	
 	public long queryForLong(String sql, List<Object> args, List<Integer> argTypes) {
-		return jdbcTemplate.queryForLong(sql, args.toArray(), DataUtils.listToIntArray(argTypes));
+		return jdbcTemplate.queryForLong(sql, args.toArray(), CaritUtils.listToIntArray(argTypes));
 	}
 	
 	public int queryForInt(String sql, List<Object> args, List<Integer> argTypes) {
-		return jdbcTemplate.queryForInt(sql, args.toArray(), DataUtils.listToIntArray(argTypes));
+		return jdbcTemplate.queryForInt(sql, args.toArray(), CaritUtils.listToIntArray(argTypes));
 	}
 	
 	public <T> List<T> queryForList(String sql, List<Object> args, List<Integer> argTypes, Class<T> elementType) {
-		return jdbcTemplate.queryForList(sql, args.toArray(), DataUtils.listToIntArray(argTypes), elementType);
+		return jdbcTemplate.queryForList(sql, args.toArray(), CaritUtils.listToIntArray(argTypes), elementType);
 	}
 	
 	public List<Map<String, Object>> queryForList(String sql, List<Object> args, List<Integer> argTypes) {
-		return jdbcTemplate.queryForList(sql, args.toArray(), DataUtils.listToIntArray(argTypes));
+		return jdbcTemplate.queryForList(sql, args.toArray(), CaritUtils.listToIntArray(argTypes));
 	}
 	
 	public SqlRowSet queryForRowSet(String sql, List<Object> args, List<Integer> argTypes) {
-		return jdbcTemplate.queryForRowSet(sql, args.toArray(), DataUtils.listToIntArray(argTypes));
+		return jdbcTemplate.queryForRowSet(sql, args.toArray(), CaritUtils.listToIntArray(argTypes));
 	}
 	
 	public int update(String sql, List<Object> args, List<Integer> argTypes) {
-		return jdbcTemplate.update(sql, args.toArray(), DataUtils.listToIntArray(argTypes));
+		return jdbcTemplate.update(sql, args.toArray(), CaritUtils.listToIntArray(argTypes));
 	}
 	/**
 	 * 批量删除

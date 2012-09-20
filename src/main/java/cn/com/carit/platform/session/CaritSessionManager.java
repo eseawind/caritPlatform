@@ -2,7 +2,7 @@
  * 版权声明：中图一购网络科技有限公司 版权所有 违者必究 2012 
  * 日    期：12-7-17
  */
-package cn.com.carit.platform.security;
+package cn.com.carit.platform.session;
 
 import com.rop.session.Session;
 import com.rop.session.SessionManager;

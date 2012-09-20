@@ -15,7 +15,8 @@
 		http://www.springframework.org/schema/aop 
 		http://www.springframework.org/schema/aop/spring-aop-3.0.xsd ">
 
-	
+	<!--① 扫描Spring Bean-->
+    <context:component-scan base-package="cn.com.carit.platform"/>
 	
 	<!-- For DataSource settings and future properties files -->
 
@@ -66,20 +67,13 @@
 			<ref bean="dataSource" />
 		</property>
 	</bean>
-	<context:annotation-config />
-<!-- 
-	<context:component-scan base-package="cn.com.carit.platform.dao.*" />
- -->
- 	<bean id="accoundDao" class="cn.com.carit.platform.dao.impl.AccountDaoImpl"/>
- 
+	
 	<!-- 定义事务处理类，不同的数据访问方式，事务处理类不同 比如：Hibernate操作的HibernateTransactionManager，JDBC操作的使用DataSourceTransactionManager -->
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
-	<!-- 
-	<context:component-scan base-package="cn.com.carit.platform.action.*" />
-	 -->
+
 	<!-- 声明使用注解式事务 -->
 	<tx:annotation-driven transaction-manager="transactionManager" />
 
@@ -106,9 +100,6 @@
 	</bean>
 
 	<!-- ROP框架配置 -->
-	<!--① 扫描Spring Bean-->
-    <context:component-scan base-package="cn.com.carit.platform.service"/>
-    
     <!-- 启动Rop框架 -->
     <rop:annotation-driven
             session-manager="sessionManager"
@@ -127,7 +118,7 @@
             keep-alive-seconds="300"
             sign-enable="true"/>
 
-    <bean id="sessionManager" class="cn.com.carit.platform.security.CaritSessionManager" />
+    <bean id="sessionManager" class="cn.com.carit.platform.session.CaritSessionManager" />
     <bean id="invokeTimesController" class="cn.com.carit.platform.security.CaritInvokeTimesController"/>
 
     <bean id="appSecretManager"  class="cn.com.carit.platform.security.CaritAppSecretManager"/>
@@ -138,13 +129,17 @@
     <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
         <property name="converters">
             <set>
+             	<!--将yyyy-MM-dd格式的日期转换为java.util.Date对象-->
+                <bean class="cn.com.carit.platform.converter.DateConverter"/>
+                <!--将yyyy-MM-dd HH:mm:ss格式的日期转换为java.util.Date对象-->
+                <bean class="cn.com.carit.platform.converter.DateTimeConverter"/>
             </set>
         </property>
     </bean>
 
     <!--注册拦截器，可配置多个-->
     <rop:interceptors>
-        <bean class="cn.com.carit.platform.interceptor.AddAccountInterceptor"/>
+        <bean class="cn.com.carit.platform.interceptor.EditAccountInterceptor"/>
     </rop:interceptors>
 
     <!--注册监听器，可配置多具-->

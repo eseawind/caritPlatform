@@ -7,10 +7,18 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-
-
-public class StringUtil {
-
+public class CaritUtils {
+	
+	public static int [] listToIntArray(List<Integer> list) {
+		int [] intArray = new int [list.size()];
+		int i = 0;
+		for (int j : list) {
+			intArray[i]=j;
+			i++;
+		}
+		return intArray;
+	}
+	
 	/**
 	 * 将字段单词拆分，以"_"区分单词。如 updateTime，拆分后为update_time
 	 * @param field
@@ -44,6 +52,7 @@ public class StringUtil {
 		SimpleDateFormat sdf = new SimpleDateFormat(formatter);
 		return sdf.parse(dateStr);
 	}
+	
 	public static void main(String[] args) {
 		System.out.println(splitFieldWords("updateTime"));
 		Calendar calendar=Calendar.getInstance();// 当前时间
@@ -64,5 +73,4 @@ public class StringUtil {
 			iterator.remove();
 		}
 	}
-	
 }

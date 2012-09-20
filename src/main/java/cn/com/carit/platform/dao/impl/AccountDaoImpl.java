@@ -1,25 +1,19 @@
 package cn.com.carit.platform.dao.impl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import cn.com.carit.common.Constants;
+import cn.com.carit.common.utils.CaritUtils;
 import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonPage;
-import cn.com.carit.common.utils.StringUtil;
 import cn.com.carit.platform.bean.Account;
 import cn.com.carit.platform.dao.AccountDao;
 
@@ -55,28 +49,14 @@ public class AccountDaoImpl extends BaseDaoImpl implements AccountDao<Account> {
 	};
 	
 	@Override
-	public void register(final Account t) {
-		final String sql = "insert into t_account (email, password, nick_name"
+	public void register(String email, String password, String nickName) {
+		String sql = "insert into t_account (email, password, nick_name"
 				+ ", update_time, create_time) " 
 				+ "values (?, ?, ?, now(), now())";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
-		KeyHolder gkHolder = new GeneratedKeyHolder();
-		jdbcTemplate.update(new PreparedStatementCreator() {
-			@Override
-			public PreparedStatement createPreparedStatement(Connection con)
-					throws SQLException {
-				PreparedStatement ps = con.prepareStatement(sql,
-						Statement.RETURN_GENERATED_KEYS);
-				int index=1;
-				ps.setString(index++, t.getEmail());
-				ps.setString(index++, t.getPassword());
-				ps.setString(index++, t.getNickName());
-				return ps;
-			}
-		}, gkHolder);
-		t.setId(gkHolder.getKey().intValue());
+		jdbcTemplate.update(sql, email, password, nickName);
 	}
 
 	@Override
@@ -236,7 +216,7 @@ public class AccountDaoImpl extends BaseDaoImpl implements AccountDao<Account> {
 		if (StringUtils.hasText(dgm.getOrder())
 				&& StringUtils.hasText(dgm.getSort())) {
 			sql.append(" order by ")
-					.append(StringUtil.splitFieldWords(dgm.getSort()))
+					.append(CaritUtils.splitFieldWords(dgm.getSort()))
 					.append(" ").append(dgm.getOrder());
 
 		} else {

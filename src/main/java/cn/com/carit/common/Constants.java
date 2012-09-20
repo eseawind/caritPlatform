@@ -27,4 +27,10 @@ public class Constants {
 	public static final String BASE_PATH_FLASH="/attachment/flash/";
 	
 	public static final String DEAFULD_LANGUAGE="en";
+	
+	//ERROR
+	public static final String PASSWORD_ERROR = "PASSWORD_ERROR";
+	public static final String ACCOUNT_LOCKED = "ACCOUNT_LOCKED";
+	public static final String EMAIL_REGISTERED = "EMAIL_REGISTERED";
+	public static final String NICKNAME_REGISTERED = "NICKNAME_REGISTERED";
 }

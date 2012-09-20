@@ -7,7 +7,7 @@ public interface AccountDao<Account> extends BaseDao<Account> {
 	 * @param t
 	 * @return
 	 */
-	void register(final Account t);
+	void register(String email, String password, String nickName);
 	
 	/**
 	 * 按邮箱or昵称检测是否存在
