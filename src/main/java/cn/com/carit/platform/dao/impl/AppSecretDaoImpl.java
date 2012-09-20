@@ -16,6 +16,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
+import cn.com.carit.DaoImpl;
 import cn.com.carit.common.utils.CaritUtils;
 import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonPage;
@@ -23,7 +24,7 @@ import cn.com.carit.platform.bean.AppSecret;
 import cn.com.carit.platform.dao.AppSecretDao;
 
 @Repository
-public class AppSecretDaoImpl extends BaseDaoImpl implements AppSecretDao<AppSecret> {
+public class AppSecretDaoImpl extends DaoImpl implements AppSecretDao<AppSecret> {
 
 	private final RowMapper<AppSecret> rowMapper = new RowMapper<AppSecret>() {
 
@@ -93,15 +94,6 @@ public class AppSecretDaoImpl extends BaseDaoImpl implements AppSecretDao<AppSec
 			log.debug(String.format("\n%1$s\n", sql));
 		}
 		return jdbcTemplate.update(sql, id);
-	}
-
-	@Override
-	public int batchDelete(String ids) {
-		String sql="delete from t_app_secret where id in("+ids+")";
-		if (log.isDebugEnabled()) {
-			log.debug(String.format("\n%1$s\n", sql));
-		}
-		return jdbcTemplate.update(sql);
 	}
 
 	@Override

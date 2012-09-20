@@ -24,13 +24,84 @@ public class LogonResponse{
 
     @XmlAttribute
     private String sessionId;
+    
+    @XmlAttribute
+    private int id;
+    
+    @XmlAttribute
+    private String email;
+    
+    @XmlAttribute
+    private String nickName;
+    
+    @XmlAttribute
+	private String photo;
+    
+    @XmlAttribute
+	private String thumbPhoto;
 
-    public String getSessionId() {
-        return sessionId;
-    }
+	public LogonResponse() {
 
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
-    }
+	}
+
+	public LogonResponse(String sessionId, int id, String email,
+			String nickName, String photo, String thumbPhoto) {
+		super();
+		this.sessionId = sessionId;
+		this.id = id;
+		this.email = email;
+		this.nickName = nickName;
+		this.photo = photo;
+		this.thumbPhoto = thumbPhoto;
+	}
+
+	public String getSessionId() {
+		return sessionId;
+	}
+
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
+	public String getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(String photo) {
+		this.photo = photo;
+	}
+
+	public String getThumbPhoto() {
+		return thumbPhoto;
+	}
+
+	public void setThumbPhoto(String thumbPhoto) {
+		this.thumbPhoto = thumbPhoto;
+	}
+    
 }
 

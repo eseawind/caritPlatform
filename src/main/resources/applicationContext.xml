@@ -108,7 +108,7 @@
             formatting-conversion-service="conversionService"
             ext-error-base-name="i18n/rop/sampleRopError"
             service-timeout-seconds="10"
-            thread-ferry-class="cn.com.carit.platform.CaritThreadFerry"
+            thread-ferry-class="cn.com.carit.CaritThreadFerry"
             invoke-times-controller="invokeTimesController"
             upload-file-max-size="10"
             upload-file-types="jpg,png,gif"
@@ -118,7 +118,7 @@
             keep-alive-seconds="300"
             sign-enable="true"/>
 
-    <bean id="sessionManager" class="cn.com.carit.platform.session.CaritSessionManager" />
+    <bean id="sessionManager" class="cn.com.carit.session.CaritSessionManager" />
     <bean id="invokeTimesController" class="cn.com.carit.platform.security.CaritInvokeTimesController"/>
 
     <bean id="appSecretManager"  class="cn.com.carit.platform.security.CaritAppSecretManager"/>
@@ -130,9 +130,9 @@
         <property name="converters">
             <set>
              	<!--将yyyy-MM-dd格式的日期转换为java.util.Date对象-->
-                <bean class="cn.com.carit.platform.converter.DateConverter"/>
+                <bean class="cn.com.carit.converter.DateConverter"/>
                 <!--将yyyy-MM-dd HH:mm:ss格式的日期转换为java.util.Date对象-->
-                <bean class="cn.com.carit.platform.converter.DateTimeConverter"/>
+                <bean class="cn.com.carit.converter.DateTimeConverter"/>
             </set>
         </property>
     </bean>
@@ -144,9 +144,9 @@
 
     <!--注册监听器，可配置多具-->
     <rop:listeners>
-        <bean class="cn.com.carit.platform.listener.PostInitializeEventListener"/>
-        <bean class="cn.com.carit.platform.listener.PreDoServiceEventListener"/>
-        <bean class="cn.com.carit.platform.listener.AfterDoServiceEventListener"/>
+        <bean class="cn.com.carit.listener.PostInitializeEventListener"/>
+        <bean class="cn.com.carit.listener.PreDoServiceEventListener"/>
+        <bean class="cn.com.carit.listener.AfterDoServiceEventListener"/>
     </rop:listeners>
 
     <!--自定义method,appKey等这些系统级参数的参数名-->

@@ -2,6 +2,7 @@ package cn.com.carit.platform;
 
 import cn.com.carit.platform.request.LogonRequest;
 import cn.com.carit.platform.request.RegisterAccountRequest;
+import cn.com.carit.platform.request.UpdatePasswordRequest;
 import cn.com.carit.platform.response.LogonResponse;
 
 import com.rop.MessageFormat;
@@ -63,9 +64,17 @@ public class RopTestCaseClient {
     
     public void register(String email, String password, String nickName) {
     	RegisterAccountRequest request = new RegisterAccountRequest();
-    	 request.setEmail(email);
-         request.setPassword(password);
-         request.setNickName(nickName);
-         buildClientRequest().post(request, CommonRopResponse.class, "account.register", "1.0");
+    	request.setEmail(email);
+    	request.setPassword(password);
+    	request.setNickName(nickName);
+    	buildClientRequest().post(request, CommonRopResponse.class, "account.register", "1.0");
+    }
+    
+    public void updatePwd(String email, String oldPassword, String newPassword){
+    	UpdatePasswordRequest request = new UpdatePasswordRequest();
+    	request.setEmail(email);
+    	request.setOldPassword(oldPassword);
+    	request.setNewPassword(newPassword);
+    	buildClientRequest().post(request, CommonRopResponse.class, "account.update.password", "1.0");
     }
 }

@@ -1,9 +1,8 @@
-package cn.com.carit.platform.dao;
+package cn.com.carit.platform.action;
 
-import cn.com.carit.Dao;
+import cn.com.carit.Action;
 
-public interface AccountDao<Account> extends Dao<Account> {
-
+public interface AccountAction<Account> extends Action<Account> {
 	/**
 	 * 注册账号
 	 * @param t

@@ -1,16 +1,15 @@
 package cn.com.carit.platform.service;
 
-import java.util.Calendar;
-
 import javax.annotation.Resource;
 
 import cn.com.carit.common.Constants;
 import cn.com.carit.common.utils.MD5Util;
+import cn.com.carit.platform.action.AccountAction;
 import cn.com.carit.platform.bean.Account;
 import cn.com.carit.platform.cache.CacheManager;
-import cn.com.carit.platform.dao.AccountDao;
 import cn.com.carit.platform.request.LogonRequest;
 import cn.com.carit.platform.request.RegisterAccountRequest;
+import cn.com.carit.platform.request.UpdatePasswordRequest;
 import cn.com.carit.platform.response.LogonResponse;
 
 import com.rop.RopRequest;
@@ -27,7 +26,7 @@ import com.rop.session.SimpleSession;
 public class AccountService {
 	
 	@Resource
-	private AccountDao<Account> dao;
+	private AccountAction<Account> action;
 	
 	/**
 	 * 登录系统
@@ -39,13 +38,7 @@ public class AccountService {
     public Object logon(LogonRequest request) throws Exception {
 		String email=request.getEmail();
 		// 查询缓存
-		Account t = CacheManager.getInstance().getAccountCache().get(email);
-		if (t==null) { // 缓存中没找到，查询DB
-			t=dao.queryByEmail(email);
-			if (t!=null) {
-				CacheManager.getInstance().getAccountCache().put(email, t);
-			}
-		}
+		Account t = action.queryByEmail(email);
 		if (t==null) {// 账号不存在
 			 return new NotExistErrorResponse("account","email",email,request.getRopRequestContext().getLocale());
 		}
@@ -66,13 +59,8 @@ public class AccountService {
                     request.getRopRequestContext().getMethod(), Constants.ACCOUNT_LOCKED,
                     request.getRopRequestContext().getLocale(), email);
 		}
-		
-		// 更新登录时间/IP
-		Account updateAccount=new Account();
-		updateAccount.setId(t.getId());
-		updateAccount.setLastLoginIp(request.getRopRequestContext().getIp());
-		updateAccount.setLastLoginTime(Calendar.getInstance().getTime());
-		dao.update(updateAccount);
+		// 记录本次登录信息
+		action.logon(t.getId(), request.getRopRequestContext().getIp());
 		
         //创建一个会话
 		SimpleSession session = new SimpleSession();
@@ -81,9 +69,7 @@ public class AccountService {
         request.getRopRequestContext().addSession(sessionId, session);
 
         //返回响应
-        LogonResponse logonResponse = new LogonResponse();
-        logonResponse.setSessionId(sessionId);
-        return logonResponse;
+        return  new LogonResponse(sessionId, t.getId(), email, t.getNickName(), t.getPhoto(), t.getThumbPhoto());
     }
 	/**
 	 * 退出
@@ -104,8 +90,40 @@ public class AccountService {
 		password=MD5Util.md5Hex(password);
 		// 二次加密
 		password=MD5Util.md5Hex(email+password+MD5Util.DISTURBSTR);
-		dao.register(email, password, request.getNickName());
+		action.register(email, password, request.getNickName());
 		CacheManager.getInstance().refreshAccounts();
 		return CommonRopResponse.SUCCESSFUL_RESPONSE;
 	}
+	
+	@ServiceMethod(method = "account.update.password",version = "1.0",needInSession = NeedInSessionType.YES)
+	public Object updatePwd(UpdatePasswordRequest request) throws Exception{
+		String email=request.getEmail();
+		// 查询缓存
+		Account t = action.queryByEmail(email);
+		if (t==null) {// 账号不存在
+			 return new NotExistErrorResponse("account","email",email,request.getRopRequestContext().getLocale());
+		}
+		String oldPassword=request.getOldPassword();
+		// 密码加密
+		oldPassword=MD5Util.md5Hex(oldPassword);
+		// 二次加密
+		oldPassword=MD5Util.md5Hex(email+oldPassword+MD5Util.DISTURBSTR);
+		if (!oldPassword.equalsIgnoreCase(t.getPassword())) {
+			//密码错误
+			return new BusinessServiceErrorResponse(
+	                    request.getRopRequestContext().getMethod(), Constants.PASSWORD_ERROR,
+	                    request.getRopRequestContext().getLocale(), email);
+		}
+		String newPassword=request.getNewPassword();
+		// 密码加密
+		newPassword=MD5Util.md5Hex(newPassword);
+		// 二次加密
+		newPassword=MD5Util.md5Hex(email+newPassword+MD5Util.DISTURBSTR);
+		
+		// 更新密码
+		action.updatePwd(email, newPassword);
+		
+		return CommonRopResponse.SUCCESSFUL_RESPONSE;
+	}
+	
 }

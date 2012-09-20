@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
-import cn.com.carit.common.Constants;
+import cn.com.carit.DaoImpl;
 import cn.com.carit.common.utils.CaritUtils;
 import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonPage;
@@ -18,7 +18,7 @@ import cn.com.carit.platform.bean.Account;
 import cn.com.carit.platform.dao.AccountDao;
 
 @Repository
-public class AccountDaoImpl extends BaseDaoImpl implements AccountDao<Account> {
+public class AccountDaoImpl extends DaoImpl implements AccountDao<Account> {
 
 	private final RowMapper<Account> rowMapper = new RowMapper<Account>() {
 
@@ -175,15 +175,6 @@ public class AccountDaoImpl extends BaseDaoImpl implements AccountDao<Account> {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
 		return jdbcTemplate.update(sql, id);
-	}
-
-	@Override
-	public int batchDelete(String ids) {
-		String sql="delete from t_account where id in("+ids+")";
-		if (log.isDebugEnabled()) {
-			log.debug(String.format("\n%1$s\n", sql));
-		}
-		return jdbcTemplate.update(sql);
 	}
 
 	@Override
@@ -376,42 +367,6 @@ public class AccountDaoImpl extends BaseDaoImpl implements AccountDao<Account> {
 	}
 
 	@Override
-	public int lockAccount(int id) {
-		String sql="update t_account set update_time=now(), status=? where id=?";
-		if (log.isDebugEnabled()) {
-			log.debug(String.format("\n%1$s\n", sql));
-		}
-		return jdbcTemplate.update(sql, Constants.STATUS_LOCKED, id);
-	}
-
-	@Override
-	public int unLockAccount(int id) {
-		String sql="update t_account set update_time=now(), status=? where id=?";
-		if (log.isDebugEnabled()) {
-			log.debug(String.format("\n%1$s\n", sql));
-		}
-		return jdbcTemplate.update(sql, Constants.STATUS_VALID, id);
-	}
-
-	@Override
-	public int batchLockAccount(String ids) {
-		String sql="update t_account set update_time=now(), status=? where id in ("+ids+")";
-		if (log.isDebugEnabled()) {
-			log.debug(String.format("\n%1$s\n", sql));
-		}
-		return jdbcTemplate.update(sql, Constants.STATUS_INVALID);
-	}
-
-	@Override
-	public int batchUnLockAccount(String ids) {
-		String sql="update t_account set update_time=now(), status=? where id in("+ids+")";
-		if (log.isDebugEnabled()) {
-			log.debug(String.format("\n%1$s\n", sql));
-		}
-		return jdbcTemplate.update(sql, Constants.STATUS_VALID);
-	}
-
-	@Override
 	public Account queryByEmail(String email) {
 		String sql = "select * from t_account where email=?";
 		if (log.isDebugEnabled()) {
@@ -429,4 +384,14 @@ public class AccountDaoImpl extends BaseDaoImpl implements AccountDao<Account> {
 		return jdbcTemplate.update(sql, password, email);
 	}
 
+	@Override
+	public void logon(int id, String ip) {
+		String sql = "update t_account set update_time=now(), last_login_time=now(), last_login_ip=? where id=?";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		jdbcTemplate.update(sql, ip, id);
+	}
+
+	
 }

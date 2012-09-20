@@ -1,5 +1,7 @@
 package cn.com.carit.platform.dao;
 
-public interface AppSecretDao<AppSecret> extends BaseDao<AppSecret> {
+import cn.com.carit.Dao;
+
+public interface AppSecretDao<AppSecret> extends Dao<AppSecret> {
 
 }

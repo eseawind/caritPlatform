@@ -1,10 +1,11 @@
 package cn.com.carit.platform.request;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
+
+import cn.com.carit.common.Constants;
 
 import com.rop.AbstractRopRequest;
 import com.rop.annotation.IgnoreSign;
@@ -18,13 +19,13 @@ import com.rop.annotation.IgnoreSign;
  */
 public class RegisterAccountRequest extends AbstractRopRequest {
 	
-	@NotNull
-	@Pattern(regexp = "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}")
+	@NotEmpty
+	@Pattern(regexp = Constants.REGEXP_EMAIL)
     private String email;
 
-	@NotNull
+	@NotEmpty
     @IgnoreSign
-    @Pattern(regexp = "\\w{6,30}")
+    @Pattern(regexp = Constants.REGEXP_PASSWORD)
     private String password;
     
     @NotEmpty

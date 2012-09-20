@@ -23,4 +23,9 @@ public class AccountServiceTestCase {
 	public void testRegister(){
 		RopTestCaseClient.getInstance().register("xiegc@carit.com", "123456", "風一樣的男子");
 	}
+	
+	@Test
+	public void testUpdatePwd(){
+		RopTestCaseClient.getInstance().updatePwd("xiegc@carit.com.cn", "123456", "654321");
+	}
 }

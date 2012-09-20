@@ -9,17 +9,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 
+import cn.com.carit.platform.action.AccountAction;
+import cn.com.carit.platform.action.AppSecretAction;
 import cn.com.carit.platform.bean.Account;
 import cn.com.carit.platform.bean.AppSecret;
-import cn.com.carit.platform.dao.AccountDao;
-import cn.com.carit.platform.dao.AppSecretDao;
 
 public class CacheManager {
 	private final Logger logger=LoggerFactory.getLogger(getClass());
 	
-	/*Dao */
-	private AccountDao<Account> accountDao;
-	private AppSecretDao<AppSecret> appSecretDao;
+	/* Action */
+	private AccountAction<Account> accountAction;
+	private AppSecretAction<AppSecret> appSecretAction;
 	
 	/**账号缓存，以邮箱地址为key*/
 	private Map<String, Account> accountCache;
@@ -38,8 +38,8 @@ public class CacheManager {
 		logger.info(" init cache start...");
 		// init bean
 		WebApplicationContext ctx=ContextLoader.getCurrentWebApplicationContext();
-		accountDao =  (AccountDao<Account>) ctx.getBean("accountDaoImpl");
-		appSecretDao = (AppSecretDao<AppSecret>) ctx.getBean("appSecretDaoImpl");
+		accountAction =  (AccountAction<Account>) ctx.getBean("accountActionImpl");
+		appSecretAction = (AppSecretAction<AppSecret>) ctx.getBean("appSecretActionImpl");
 		
 		accountCache = new ConcurrentHashMap<String, Account>();
 		nickNameCache = new ConcurrentHashMap<String, String>();
@@ -68,7 +68,7 @@ public class CacheManager {
 	public void refreshAccounts(){
 		accountCache.clear();
 		nickNameCache.clear();
-		List<Account> allAccountList=accountDao.queryAll();
+		List<Account> allAccountList=accountAction.queryAll();
 		for (Account t : allAccountList) {
 			accountCache.put(t.getEmail(), t);
 			nickNameCache.put(t.getNickName(), t.getEmail());
@@ -104,7 +104,7 @@ public class CacheManager {
 
 	public void refreshAppKeySecretCache(){
 		appKeySecretCache.clear();
-		List<AppSecret> list=appSecretDao.queryAll();
+		List<AppSecret> list=appSecretAction.queryAll();
 		for (AppSecret appSecret : list) {
 			appKeySecretCache.put(String.valueOf(appSecret.getId()), appSecret.getAppSecret());
 		}

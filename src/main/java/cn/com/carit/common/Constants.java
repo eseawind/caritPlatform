@@ -1,5 +1,6 @@
 package cn.com.carit.common;
 
+
 public class Constants {
 	public static final String CHARACTER_ENCODING_UTF8="utf-8";
 	public static final int PAGE_SIZE=10;
@@ -33,4 +34,7 @@ public class Constants {
 	public static final String ACCOUNT_LOCKED = "ACCOUNT_LOCKED";
 	public static final String EMAIL_REGISTERED = "EMAIL_REGISTERED";
 	public static final String NICKNAME_REGISTERED = "NICKNAME_REGISTERED";
+	
+	public static final String REGEXP_EMAIL="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
+	public static final String REGEXP_PASSWORD="\\w{6,30}";
 }
