@@ -35,6 +35,8 @@ public class Constants {
 	public static final String EMAIL_REGISTERED = "EMAIL_REGISTERED";
 	public static final String NICKNAME_REGISTERED = "NICKNAME_REGISTERED";
 	
+	// 正则模式
 	public static final String REGEXP_EMAIL="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
 	public static final String REGEXP_PASSWORD="\\w{6,30}";
+	public static final String REGEXT_MOBILE="[1][3,5,8][0-9]{9}";
 }

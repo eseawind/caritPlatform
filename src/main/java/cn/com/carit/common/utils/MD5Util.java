@@ -48,18 +48,23 @@ public class MD5Util {
 	 *            原始字符串
 	 * @return 返回字符串的MD5码
 	 */
-	public static String md5Hex(String code) throws Exception {
-		MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-		byte[] bytes = code.getBytes();
-		byte[] results = messageDigest.digest(bytes);
-		StringBuilder stringBuilder = new StringBuilder();
-
-		for (byte result : results) {
-			// 将byte数组转化为16进制字符存入stringbuilder中
-			stringBuilder.append(String.format("%02x", result));
+	public static String md5Hex(String code) {
+		try {
+			MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+			byte[] bytes = code.getBytes();
+			byte[] results = messageDigest.digest(bytes);
+			StringBuilder stringBuilder = new StringBuilder();
+			
+			for (byte result : results) {
+				// 将byte数组转化为16进制字符存入stringbuilder中
+				stringBuilder.append(String.format("%02x", result));
+			}
+			return stringBuilder.toString();
+		} catch (Exception e) {
+			logger.error("MD5 error...", e);
+			return "";
 		}
 
-		return stringBuilder.toString();
 	}
 
 	/**

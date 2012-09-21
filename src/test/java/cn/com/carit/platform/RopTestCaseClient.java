@@ -3,6 +3,7 @@ package cn.com.carit.platform;
 import cn.com.carit.platform.request.LogonRequest;
 import cn.com.carit.platform.request.RegisterAccountRequest;
 import cn.com.carit.platform.request.UpdatePasswordRequest;
+import cn.com.carit.platform.response.AccountResponse;
 import cn.com.carit.platform.response.LogonResponse;
 
 import com.rop.MessageFormat;
@@ -39,19 +40,28 @@ public class RopTestCaseClient {
 		return ClientHolder.INSTANCE;
 	}
 	
-	/**
-     * 登录系统
-     *
-     * @return
-     */
-    public String logon(String email, String password) {
+	public void getSession(){
+		CompositeResponse response=buildClientRequest().get(LogonResponse.class, "platform.getSession", "1.0");
+		if (response.isSuccessful()) {
+			LogonResponse logonResponse=(LogonResponse) response.getSuccessResponse();
+			ropClient.setSessionId(logonResponse.getSessionId());
+		}
+	}
+
+	public Object heartbeat(){
+		return buildClientRequest().get(CommonRopResponse.class, "platform.heartbeat", "1.0").getSuccessResponse();
+	}
+	
+    public Object logon(String email, String password) {
         LogonRequest request = new LogonRequest();
         request.setEmail(email);
         request.setPassword(password);
-        CompositeResponse response = buildClientRequest().post(request, LogonResponse.class, "account.logon", "1.0");
-        String sessionId = ((LogonResponse) response.getSuccessResponse()).getSessionId();
-        ropClient.setSessionId(sessionId);
-        return sessionId;
+        CompositeResponse response=buildClientRequest().post(request, AccountResponse.class, "account.logon", "1.0");
+        if (response.isSuccessful()) {
+        	return response.getSuccessResponse();
+		}
+        // 处理错误响应
+        return response.getErrorResponse();
     }
 
     public void logout() {
@@ -73,8 +83,9 @@ public class RopTestCaseClient {
     public void updatePwd(String email, String oldPassword, String newPassword){
     	UpdatePasswordRequest request = new UpdatePasswordRequest();
     	request.setEmail(email);
-    	request.setOldPassword(oldPassword);
+    	request.setPassword(oldPassword);
     	request.setNewPassword(newPassword);
     	buildClientRequest().post(request, CommonRopResponse.class, "account.update.password", "1.0");
     }
+    
 }

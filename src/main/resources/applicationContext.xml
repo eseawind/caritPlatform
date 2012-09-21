@@ -98,6 +98,10 @@
 			</list>
 		</property>
 	</bean>
+	
+	<bean id="attachmentUtil" class="cn.com.carit.common.utils.AttachmentUtil">
+		<property name="configPath" value="http://www.android-in-car.com/attachment.properties"/>
+	</bean>
 
 	<!-- ROP框架配置 -->
     <!-- 启动Rop框架 -->
@@ -139,7 +143,9 @@
 
     <!--注册拦截器，可配置多个-->
     <rop:interceptors>
-        <bean class="cn.com.carit.platform.interceptor.EditAccountInterceptor"/>
+        <bean class="cn.com.carit.platform.interceptor.EffectiveAccountInterceptor"/>
+        <bean class="cn.com.carit.platform.interceptor.RegisterAccountInterceptor"/>
+        <bean class="cn.com.carit.platform.interceptor.ChangeNicknameInterceptor"/>
     </rop:interceptors>
 
     <!--注册监听器，可配置多具-->

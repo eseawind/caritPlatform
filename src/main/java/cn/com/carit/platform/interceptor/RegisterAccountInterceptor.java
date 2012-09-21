@@ -22,7 +22,7 @@ import com.rop.response.BusinessServiceErrorResponse;
  * 2012-9-19
  */
 @Component
-public class EditAccountInterceptor extends AbstractInterceptor {
+public class RegisterAccountInterceptor extends AbstractInterceptor {
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -33,16 +33,18 @@ public class EditAccountInterceptor extends AbstractInterceptor {
      */
 	@Override
 	public void beforeService(RopRequestContext ropRequestContext) {
-		String email = ropRequestContext.getParamValue("email");
-		if (StringUtils.hasText(email) && CacheManager.getInstance().getAccountCache().containsKey(email)) {
-            //设置了RopResponse后，后续的服务将不执行，直接返回这个RopResponse响应
-            ropRequestContext.setRopResponse(new BusinessServiceErrorResponse(ropRequestContext.getMethod(), Constants.EMAIL_REGISTERED, ropRequestContext.getLocale(), email));
-        }
-		String nickName = ropRequestContext.getParamValue("nickName");
-		if (StringUtils.hasText(nickName) && CacheManager.getInstance().getNickNameCache().containsKey(nickName)) {
-            //设置了RopResponse后，后续的服务将不执行，直接返回这个RopResponse响应
-            ropRequestContext.setRopResponse(new BusinessServiceErrorResponse(ropRequestContext.getMethod(), Constants.NICKNAME_REGISTERED, ropRequestContext.getLocale(), nickName));
-        }
+		if (isMatch(ropRequestContext)) {
+			String email = ropRequestContext.getParamValue("email");
+			if (StringUtils.hasText(email) && CacheManager.getInstance().getAccountCache().containsKey(email)) {
+				//设置了RopResponse后，后续的服务将不执行，直接返回这个RopResponse响应
+				ropRequestContext.setRopResponse(new BusinessServiceErrorResponse(ropRequestContext.getMethod(), Constants.EMAIL_REGISTERED, ropRequestContext.getLocale(), email));
+			}
+			String nickName = ropRequestContext.getParamValue("nickName");
+			if (StringUtils.hasText(nickName) && CacheManager.getInstance().getNickNameCache().containsKey(nickName)) {
+				//设置了RopResponse后，后续的服务将不执行，直接返回这个RopResponse响应
+				ropRequestContext.setRopResponse(new BusinessServiceErrorResponse(ropRequestContext.getMethod(), Constants.NICKNAME_REGISTERED, ropRequestContext.getLocale(), nickName));
+			}
+		}
 	}
 
 	 /**
@@ -56,14 +58,17 @@ public class EditAccountInterceptor extends AbstractInterceptor {
 	}
 
 	 /**
-     * 对method为user.add的方法进行拦截，你可以通过methodContext中的信息制定拦截方案
+     * 对method为account.add的方法进行拦截，你可以通过methodContext中的信息制定拦截方案
      *
      * @param ropRequestContext
      * @return
      */
 	@Override
 	public boolean isMatch(RopRequestContext ropRequestContext) {
-		return "account.register".equals(ropRequestContext.getMethod()) || "account.update".equals(ropRequestContext.getMethod());
+		if (logger.isDebugEnabled()) {
+			logger.error(ropRequestContext.getMethod());
+		}
+		return "account.register".equals(ropRequestContext.getMethod());
 	}
 
 }

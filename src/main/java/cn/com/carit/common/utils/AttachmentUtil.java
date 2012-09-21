@@ -12,131 +12,77 @@ import org.springframework.util.StringUtils;
 
 public class AttachmentUtil {
 	private static final Logger logger = LoggerFactory.getLogger(AttachmentUtil.class);
-	private static volatile AttachmentUtil INSTANCE=null;
-	private static Properties p = new Properties();
+	private Properties p;
 	
-	private AttachmentUtil(){}
+	private String configPath;
 	
-	private AttachmentUtil(String path){
+	public AttachmentUtil(){
 		try {
+			p = new Properties();
 			logger.info("init AttachmentUtil INSTANCE start...");
-			logger.debug(path+"/portal_attachment.properties");
-			URL url=new URL(path+"/portal_attachment.properties");
+			URL url=new URL(configPath);
 			p.load(url.openStream());
 			logger.info("init AttachmentUtil INSTANCE end...");
 		} catch (MalformedURLException e) {
-			logger.error("read file["+path+"/portal_attachment.properties"+"] error...", e);
+			logger.error("read file["+configPath+"] error...", e);
 		} catch (IOException e) {
 			logger.error("init attachment.properties error...", e);
 		}
 	}
-	/**
-	 * 初始化
-	 * @param path
-	 */
-	public static void init(String path){
-		if (INSTANCE==null) {
-			synchronized (AttachmentUtil.class) {
-				if (INSTANCE==null) {
-					INSTANCE=new AttachmentUtil(path);
-				}
-			}
-		}
-	}
 	
-	public static void mkDir(String path){
+	public String getConfigPath() {
+		return configPath;
+	}
+
+	public void setConfigPath(String configPath) {
+		this.configPath = configPath;
+	}
+
+	public void mkDir(String path){
 		File file=new File(path);
 		if (!file.exists()) {
 			file.mkdir();
 		}
 	}
 	
-	public static File newFile(String parentPath, String fileName){
+	public File newFile(String parentPath, String fileName){
 		mkDir(parentPath);
 		return new File(parentPath+File.separator+fileName);
 	}
 	
-	public static Object getValue(String key) {
+	public Object getValue(String key) {
 		return p.get(key);
 	}
 	
-	public static File getImageFile(String fileName){
+	public File getImageFile(String fileName){
 		return newFile((String)getValue("attachment.images"), fileName);
 	}
 	
-	public static File getVideoFile(String fileName){
-		return newFile((String)getValue("attachment.video"), fileName);
+	public File getPhotoFile(String fileName){
+		return newFile((String)getValue("attachment.photos"), fileName);
 	}
 	
-	public static File getFlashFile(String fileName){
-		return newFile((String)getValue("attachment.flash"), fileName);
-	}
-	
-	public static String getImagePath(String fileName){
-		int index=fileName.lastIndexOf(File.separator);
-		if (index!=-1) {
-			fileName=fileName.substring(index);
+	public String getPhotoPath(String fileName) {
+		int index = fileName.lastIndexOf(File.separator);
+		if (index != -1) {
+			fileName = fileName.substring(index);
 		}
-		return (String)getValue("attachment.images")+(File.separator+fileName);
+		return (String) getValue("attachment.photos")
+				+ (File.separator + fileName);
 	}
-	
-	public static String getVideoPath(String fileName){
-		int index=fileName.lastIndexOf(File.separator);
-		if (index!=-1) {
-			fileName=fileName.substring(index);
-		}
-		return (String)getValue("attachment.video")+(File.separator+fileName);
-	}
-	public static String getFlashPath(String fileName){
-		int index=fileName.lastIndexOf(File.separator);
-		if (index!=-1) {
-			fileName=fileName.substring(index);
-		}
-		return (String)getValue("attachment.flash")+(File.separator+fileName);
-	}
-	public static boolean deleteFile(String fileName){
+	public boolean deleteFile(String fileName){
 		logger.info("delete file["+fileName+"]...");
 		File file = new File(fileName);
 		return file.delete();
 	}
 	
-	public static void deleteImage(String fileName){
+	public boolean deletePhoto(String fileName){
 		if (!StringUtils.hasText(fileName)) {
 			logger.warn("empty fileName...");
-			return;
+			return false;
 		}
-		deleteFile(getImagePath(fileName));
+		return deleteFile(getPhotoPath(fileName));
 	}
 	
-	public static void deleteVideo(String fileName){
-		if (!StringUtils.hasText(fileName)) {
-			logger.warn("empty fileName...");
-			return;
-		}
-		deleteFile(getVideoPath(fileName));
-	}
 	
-	public static void deleteFlash(String fileName){
-		if (!StringUtils.hasText(fileName)) {
-			logger.warn("empty fileName...");
-			return;
-		}
-		deleteFile(getFlashPath(fileName));
-	}
-	
-	public static void deleteImages(String [] nameList){
-		if (nameList!=null && nameList.length>0) {
-			for (String fileName : nameList) {
-				deleteImage(fileName);
-			}
-		}
-	}
-	
-	public static void main(String[] args) throws IOException {
-		init("http://localhost:8080/market");
-		System.out.println(getValue("attachment.icons"));
-		System.out.println(getImageFile("test"));
-		
-		System.out.println((int)Math.rint(5.4970));
-	}
 }

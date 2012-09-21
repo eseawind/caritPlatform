@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -50,6 +51,10 @@ public class CacheManager {
 		logger.info(" init cache end ...");
 	}
 	
+	/**
+	 * 获取实例
+	 * @return
+	 */
 	public static CacheManager getInstance(){
 		return CacheHolder.INSTANCE;
 	}
@@ -90,8 +95,10 @@ public class CacheManager {
 	 * @param newNickName
 	 */
 	public void refreshNickName(String oldNickName, String newNickName){
-		nickNameCache.put(newNickName, nickNameCache.get(oldNickName));
-		nickNameCache.remove(oldNickName);
+		if (nickNameCache.get(oldNickName)!=null) {
+			nickNameCache.put(newNickName, nickNameCache.get(oldNickName));
+			nickNameCache.remove(oldNickName);
+		}
 	}
 
 	public Map<String, Account> getAccountCache() {
@@ -102,6 +109,41 @@ public class CacheManager {
 		return nickNameCache;
 	}
 
+	/**
+	 * 按源更新
+	 * @param source
+	 * @param target
+	 */
+	public static void refreshAccount(Account source, Account target){
+		if (source.getAddress()!=null) {
+			target.setAddress(source.getAddress());
+		}
+		if (source.getGender()!=null) {
+			target.setGender(source.getGender());
+		}
+		if (source.getBirthday()!=null) {
+			target.setBirthday(source.getBirthday());
+		}
+		if (StringUtils.hasText(source.getMobile())) {
+			target.setMobile(source.getMobile());
+		}
+		if (StringUtils.hasText(source.getIdCard())) {
+			target.setIdCard(source.getIdCard());
+		}
+		if (StringUtils.hasText(source.getNickName()) 
+				&& source.getNickName().equals(target.getNickName())) {
+			// 更新昵称缓存
+			getInstance().refreshNickName(target.getNickName(), source.getNickName());
+			target.setNickName(source.getNickName());
+		}
+		if (StringUtils.hasText(source.getOfficePhone())) {
+			target.setOfficePhone(source.getOfficePhone());
+		}
+		if (StringUtils.hasText(source.getRealName())) {
+			target.setRealName(source.getRealName());
+		}
+	}
+	
 	public void refreshAppKeySecretCache(){
 		appKeySecretCache.clear();
 		List<AppSecret> list=appSecretAction.queryAll();
@@ -114,4 +156,7 @@ public class CacheManager {
 		return appKeySecretCache;
 	}
 	
+	public Account getAccount(String email){
+		return getAccountCache().get(email);
+	}
 }

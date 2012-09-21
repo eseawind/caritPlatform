@@ -256,11 +256,6 @@ public class AccountDaoImpl extends DaoImpl implements AccountDao<Account> {
 			args.add(t.getEmail());
 			argTypes.add(12);// java.sql.Types type
 		}
-		if (StringUtils.hasText(t.getPassword())) {
-			sql.append(" and password like CONCAT('%',?,'%')");
-			args.add(t.getPassword());
-			argTypes.add(12);// java.sql.Types type
-		}
 		if (StringUtils.hasText(t.getNickName())) {
 			sql.append(" and nick_name like CONCAT('%',?,'%')");
 			args.add(t.getNickName());
@@ -275,11 +270,6 @@ public class AccountDaoImpl extends DaoImpl implements AccountDao<Account> {
 			sql.append(" and birthday=?");
 			args.add(t.getBirthday());
 			argTypes.add(91);// java.sql.Types type
-		}
-		if (StringUtils.hasText(t.getPhoto())) {
-			sql.append(" and photo like CONCAT('%',?,'%')");
-			args.add(t.getPhoto());
-			argTypes.add(12);// java.sql.Types type
 		}
 		if (t.getBalance() != null) {
 			sql.append(" and balance=?");

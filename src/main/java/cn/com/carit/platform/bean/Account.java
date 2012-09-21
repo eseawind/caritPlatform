@@ -36,7 +36,7 @@ public class Account extends BaseBean implements Serializable{
 	 * photo
 	 */
 	private String photo;
-	/**缩略头像路径*/
+	/**缩略头像*/
 	private String thumbPhoto;
 	/**
 	 * balance
@@ -70,96 +70,95 @@ public class Account extends BaseBean implements Serializable{
 	 * lastLoginTime
 	 */
 	private Date lastLoginTime;
-
-	public void setEmail(String value) {
-		this.email = value;
-	}
 	public String getEmail() {
-		return this.email;
+		return email;
 	}
-	public void setPassword(String value) {
-		this.password = value;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	public String getPassword() {
-		return this.password;
+		return password;
 	}
-	public void setNickName(String value) {
-		this.nickName = value;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 	public String getNickName() {
-		return this.nickName;
+		return nickName;
+	}
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+	public Byte getGender() {
+		return gender;
 	}
 	public void setGender(Byte gender) {
 		this.gender = gender;
 	}
-	public Byte getGender() {
-		return this.gender;
-	}
-	public void setBirthday(Date value) {
-		this.birthday = value;
-	}
 	public Date getBirthday() {
-		return this.birthday;
+		return birthday;
 	}
-	public void setPhoto(String value) {
-		this.photo = value;
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
 	}
 	public String getPhoto() {
-		return this.photo;
+		return photo;
 	}
-	
+	public void setPhoto(String photo) {
+		this.photo = photo;
+	}
 	public String getThumbPhoto() {
 		return thumbPhoto;
 	}
 	public void setThumbPhoto(String thumbPhoto) {
 		this.thumbPhoto = thumbPhoto;
 	}
-	public void setBalance(Double value) {
-		this.balance = value;
-	}
 	public Double getBalance() {
-		return this.balance;
+		return balance;
 	}
-	public void setRealName(String value) {
-		this.realName = value;
+	public void setBalance(Double balance) {
+		this.balance = balance;
 	}
 	public String getRealName() {
-		return this.realName;
+		return realName;
 	}
-	public void setIdCard(String value) {
-		this.idCard = value;
+	public void setRealName(String realName) {
+		this.realName = realName;
 	}
 	public String getIdCard() {
-		return this.idCard;
+		return idCard;
 	}
-	public void setOfficePhone(String value) {
-		this.officePhone = value;
+	public void setIdCard(String idCard) {
+		this.idCard = idCard;
 	}
 	public String getOfficePhone() {
-		return this.officePhone;
+		return officePhone;
 	}
-	public void setMobile(String value) {
-		this.mobile = value;
+	public void setOfficePhone(String officePhone) {
+		this.officePhone = officePhone;
 	}
 	public String getMobile() {
-		return this.mobile;
+		return mobile;
 	}
-	public void setAddress(String value) {
-		this.address = value;
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
 	}
 	public String getAddress() {
-		return this.address;
+		return address;
 	}
-	public void setLastLoginIp(String value) {
-		this.lastLoginIp = value;
+	public void setAddress(String address) {
+		this.address = address;
 	}
 	public String getLastLoginIp() {
-		return this.lastLoginIp;
+		return lastLoginIp;
 	}
-	public void setLastLoginTime(Date value) {
-		this.lastLoginTime = value;
+	public void setLastLoginIp(String lastLoginIp) {
+		this.lastLoginIp = lastLoginIp;
 	}
 	public Date getLastLoginTime() {
-		return this.lastLoginTime;
+		return lastLoginTime;
 	}
+	public void setLastLoginTime(Date lastLoginTime) {
+		this.lastLoginTime = lastLoginTime;
+	}
+	
 }
