@@ -49,16 +49,16 @@ public class AttachmentUtil {
 		return new File(parentPath+File.separator+fileName);
 	}
 	
-	public Object getValue(String key) {
-		return p.get(key);
+	public String getValue(String key) {
+		return p.getProperty(key);
 	}
 	
 	public File getImageFile(String fileName){
-		return newFile((String)getValue("attachment.images"), fileName);
+		return newFile(getValue("attachment.images"), fileName);
 	}
 	
 	public File getPhotoFile(String fileName){
-		return newFile((String)getValue("attachment.photos"), fileName);
+		return newFile(getValue("attachment.photos"), fileName);
 	}
 	
 	public String getPhotoPath(String fileName) {
@@ -66,7 +66,7 @@ public class AttachmentUtil {
 		if (index != -1) {
 			fileName = fileName.substring(index);
 		}
-		return (String) getValue("attachment.photos")
+		return  getValue("attachment.photos")
 				+ (File.separator + fileName);
 	}
 	public boolean deleteFile(String fileName){
@@ -84,6 +84,6 @@ public class AttachmentUtil {
 	}
 	
 	public String getHost(){
-		return getValue("attachment.host").toString();
+		return getValue("attachment.host");
 	}
 }

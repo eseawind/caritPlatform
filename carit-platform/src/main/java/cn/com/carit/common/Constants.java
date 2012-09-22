@@ -27,6 +27,7 @@ public class Constants {
 //	public static final String BASE_PATH_IMAGE="/images/";
 //	public static final String BASE_PATH_FLASH="/flash/";
 	public static final String BASE_PATH_PHOTOS="/photos/";
+	public static final String BASE_PATH_APKS="/apks/";
 	
 	public static final String DEAFULD_LANGUAGE="en";
 	
@@ -35,6 +36,7 @@ public class Constants {
 	public static final String ACCOUNT_LOCKED = "ACCOUNT_LOCKED";
 	public static final String EMAIL_REGISTERED = "EMAIL_REGISTERED";
 	public static final String NICKNAME_REGISTERED = "NICKNAME_REGISTERED";
+	public static final String HAVENT_DOWNLOAD_APPLICTION = "HAVENT_DOWNLOAD_APPLICTION";
 	
 	// 正则模式
 	public static final String REGEXP_EMAIL="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";

@@ -1,161 +1,178 @@
-package cn.com.carit.platform.bean;
+package cn.com.carit.platform.response;
 
 import java.util.Date;
 
-/**
- * AccountInfo
- * Auto generated Code
- */
-public class Account extends BaseBean {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 4504537661413613532L;
-	/**
-	 * email
-	 */
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "response")
+public class AccountResponse {
+	
+	@XmlAttribute
+	private int id;
+
+	@XmlAttribute
 	private String email;
-	/**
-	 * password 密码不会返回给前端
-	 */
-	private String password;
-	/**
-	 * nickName
-	 */
+
+	@XmlAttribute
 	private String nickName;
-	/**
-	 * gender
-	 */
+
+	/** 性别：0 女；1 男；2 保密 */
+	@XmlAttribute
 	private Byte gender;
-	/**
-	 * birthday
-	 */
+	
+	@XmlAttribute
 	private Date birthday;
-	/**
-	 * photo
-	 */
+	
+	@XmlAttribute
 	private String photo;
-	/**缩略头像*/
+
+	@XmlAttribute
 	private String thumbPhoto;
-	/**
-	 * balance
-	 */
+	
+	@XmlAttribute
 	private Double balance;
-	/**
-	 * realName
-	 */
+
+	@XmlAttribute
 	private String realName;
-	/**
-	 * idCard
-	 */
+	
+	@XmlAttribute
 	private String idCard;
-	/**
-	 * officePhone
-	 */
+	
+	@XmlAttribute
 	private String officePhone;
-	/**
-	 * mobile
-	 */
+	
+	@XmlAttribute
 	private String mobile;
-	/**
-	 * address
-	 */
+
+	@XmlAttribute
 	private String address;
-	/**
-	 * lastLoginIp
-	 */
+
+	@XmlAttribute
 	private String lastLoginIp;
-	/**
-	 * lastLoginTime
-	 */
+	
+	@XmlAttribute
 	private Date lastLoginTime;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public String getEmail() {
 		return email;
 	}
+
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
+
 	public String getNickName() {
 		return nickName;
 	}
+
 	public void setNickName(String nickName) {
 		this.nickName = nickName;
 	}
+
 	public Byte getGender() {
 		return gender;
 	}
+
 	public void setGender(Byte gender) {
 		this.gender = gender;
 	}
+
 	public Date getBirthday() {
 		return birthday;
 	}
+
 	public void setBirthday(Date birthday) {
 		this.birthday = birthday;
 	}
+
 	public String getPhoto() {
 		return photo;
 	}
+
 	public void setPhoto(String photo) {
 		this.photo = photo;
 	}
+
 	public String getThumbPhoto() {
 		return thumbPhoto;
 	}
+
 	public void setThumbPhoto(String thumbPhoto) {
 		this.thumbPhoto = thumbPhoto;
 	}
+
 	public Double getBalance() {
 		return balance;
 	}
+
 	public void setBalance(Double balance) {
 		this.balance = balance;
 	}
+
 	public String getRealName() {
 		return realName;
 	}
+
 	public void setRealName(String realName) {
 		this.realName = realName;
 	}
+
 	public String getIdCard() {
 		return idCard;
 	}
+
 	public void setIdCard(String idCard) {
 		this.idCard = idCard;
 	}
+
 	public String getOfficePhone() {
 		return officePhone;
 	}
+
 	public void setOfficePhone(String officePhone) {
 		this.officePhone = officePhone;
 	}
+
 	public String getMobile() {
 		return mobile;
 	}
+
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
+
 	public String getAddress() {
 		return address;
 	}
+
 	public void setAddress(String address) {
 		this.address = address;
 	}
+
 	public String getLastLoginIp() {
 		return lastLoginIp;
 	}
+
 	public void setLastLoginIp(String lastLoginIp) {
 		this.lastLoginIp = lastLoginIp;
 	}
+
 	public Date getLastLoginTime() {
 		return lastLoginTime;
 	}
+
 	public void setLastLoginTime(Date lastLoginTime) {
 		this.lastLoginTime = lastLoginTime;
 	}

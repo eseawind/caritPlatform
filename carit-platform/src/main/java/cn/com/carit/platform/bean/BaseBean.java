@@ -1,9 +1,14 @@
 package cn.com.carit.platform.bean;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class BaseBean {
+public class BaseBean implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1039561684887025234L;
 	protected int id;
 	protected Integer status;
 	protected Date createTime;

@@ -50,7 +50,7 @@ public class AccountDaoImpl extends DaoImpl implements AccountDao<Account> {
 	
 	@Override
 	public void register(String email, String password, String nickName) {
-		String sql = "insert into t_account (email, password, nick_name"
+		String sql = "insert into t_account_info (email, password, nick_name"
 				+ ", update_time, create_time) " 
 				+ "values (?, ?, ?, now(), now())";
 		if (log.isDebugEnabled()) {
@@ -61,7 +61,7 @@ public class AccountDaoImpl extends DaoImpl implements AccountDao<Account> {
 
 	@Override
 	public int add(Account t) {
-		String sql = "insert into t_account (email, password, nick_name, gender"
+		String sql = "insert into t_account_info (email, password, nick_name, gender"
 				+ ", birthday, photo, balance, real_name, id_card"
 				+ ", office_phone, mobile, address, update_time, create_time) " 
 				+ "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), now())";
@@ -86,7 +86,7 @@ public class AccountDaoImpl extends DaoImpl implements AccountDao<Account> {
 
 	@Override
 	public int update(Account t) {
-		StringBuilder sql=new StringBuilder("update t_account set update_time=now()");
+		StringBuilder sql=new StringBuilder("update t_account_info set update_time=now()");
 		List<Object> val = new ArrayList<Object>();
 		if (StringUtils.hasText(t.getEmail())) {
 			sql.append(", email=?");
@@ -170,7 +170,7 @@ public class AccountDaoImpl extends DaoImpl implements AccountDao<Account> {
 
 	@Override
 	public int delete(int id) {
-		String sql = "delete from t_account where id=?";
+		String sql = "delete from t_account_info where id=?";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
@@ -179,7 +179,7 @@ public class AccountDaoImpl extends DaoImpl implements AccountDao<Account> {
 
 	@Override
 	public Account queryById(int id) {
-		String sql = "select * from t_account where id=?";
+		String sql = "select * from t_account_info where id=?";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
@@ -190,12 +190,12 @@ public class AccountDaoImpl extends DaoImpl implements AccountDao<Account> {
 	public JsonPage<Account> queryByExemple(Account t, DataGridModel dgm) {
 		JsonPage<Account> jsonPage = new JsonPage<Account>(dgm.getPage(), dgm.getRows());
 		StringBuilder sql = new StringBuilder(
-				"select * from t_account where 1=1");
+				"select * from t_account_info where 1=1");
 		List<Object> args = new ArrayList<Object>();
 		List<Integer> argTypes = new ArrayList<Integer>();
 		String whereSql = buildWhere(args, argTypes, t);
 		sql.append(whereSql);
-		String countSql = "select count(1) from t_account where 1=1"
+		String countSql = "select count(1) from t_account_info where 1=1"
 				+ whereSql;
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", countSql));
@@ -228,7 +228,7 @@ public class AccountDaoImpl extends DaoImpl implements AccountDao<Account> {
 	@Override
 	public List<Account> queryByExemple(Account t) {
 		StringBuilder sql = new StringBuilder(
-				"select * from t_account where 1=1");
+				"select * from t_account_info where 1=1");
 		List<Object> args = new ArrayList<Object>();
 		List<Integer> argTypes = new ArrayList<Integer>();
 		sql.append(buildWhere(args, argTypes, t));
@@ -240,7 +240,7 @@ public class AccountDaoImpl extends DaoImpl implements AccountDao<Account> {
 
 	@Override
 	public List<Account> queryAll() {
-		String sql="select * from t_account";
+		String sql="select * from t_account_info";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
@@ -331,7 +331,7 @@ public class AccountDaoImpl extends DaoImpl implements AccountDao<Account> {
 
 	@Override
 	public int checkAccount(String email, String nickName) {
-		StringBuilder sql=new StringBuilder("select 1 from t_account where 1=1");
+		StringBuilder sql=new StringBuilder("select 1 from t_account_info where 1=1");
 		List<Object> args = new ArrayList<Object>();
 		List<Integer> argTypes = new ArrayList<Integer>();
 		if(StringUtils.hasText(email)) {
@@ -358,7 +358,7 @@ public class AccountDaoImpl extends DaoImpl implements AccountDao<Account> {
 
 	@Override
 	public Account queryByEmail(String email) {
-		String sql = "select * from t_account where email=?";
+		String sql = "select * from t_account_info where email=?";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
@@ -367,7 +367,7 @@ public class AccountDaoImpl extends DaoImpl implements AccountDao<Account> {
 
 	@Override
 	public int updatePwd(String email, String password) {
-		String sql = "update t_account set update_time=now(), password=? where email=?";
+		String sql = "update t_account_info set update_time=now(), password=? where email=?";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
@@ -376,7 +376,7 @@ public class AccountDaoImpl extends DaoImpl implements AccountDao<Account> {
 
 	@Override
 	public void logon(int id, String ip) {
-		String sql = "update t_account set update_time=now(), last_login_time=now(), last_login_ip=? where id=?";
+		String sql = "update t_account_info set update_time=now(), last_login_time=now(), last_login_ip=? where id=?";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
@@ -385,7 +385,7 @@ public class AccountDaoImpl extends DaoImpl implements AccountDao<Account> {
 
 	@Override
 	public int uploadPhoto(int id, String photoPath, String thumbPhotoPath) {
-		String sql = "update t_account set update_time=now(), photo=?, thumb_photo=? where id=?";
+		String sql = "update t_account_info set update_time=now(), photo=?, thumb_photo=? where id=?";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}

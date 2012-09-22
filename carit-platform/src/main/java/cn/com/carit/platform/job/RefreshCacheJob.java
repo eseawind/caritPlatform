@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+import cn.com.carit.platform.cache.CacheManager;
+
 /**
  * 缓存更新Job
  * @author <a href="mailto:xiegengcai@gmail.com">Gengcai Xie</a>
@@ -18,7 +20,7 @@ public class RefreshCacheJob extends QuartzJobBean  {
 	protected void executeInternal(JobExecutionContext arg0)
 			throws JobExecutionException {
 		logger.info("refresh cache start...");
-//		CacheManager.getInstance().refreshCache();
+		CacheManager.getInstance().refreshCache();
 		logger.info("refresh cache end...");
 	}
 

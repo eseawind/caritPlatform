@@ -43,7 +43,8 @@ public class EffectiveAccountInterceptor extends AbstractInterceptor {
 
 	@Override
 	public boolean isMatch(RopRequestContext ropRequestContext) {
-		return ropRequestContext.getMethod().startsWith("account.")&&!"account.logout".equals(ropRequestContext.getMethod());
+		String method=ropRequestContext.getMethod();
+		return method.startsWith("account.")&&!"account.logout".equals(method)&&!"account.register".equals(method);
 	}
 
 }

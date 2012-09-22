@@ -13,9 +13,9 @@
     <groupId>cn.com.carit</groupId>
     <artifactId>caritPlatform</artifactId>
     <name>caritPlatform</name>
-    <version>1.0</version>
+    <version>0.1.0</version>
     <packaging>war</packaging>
-    <description>rest open platform</description>
+    <description>carit platform</description>
 
     <url>http://www.github.com</url>
 
@@ -26,6 +26,20 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <scm>
+        <connection>scm:git:git://github.com/xiegengcai/caritPlatform.git</connection>
+        <developerConnection>scm:git:git://github.com/xiegengcai/caritPlatform.git</developerConnection>
+        <url>git://github.com/xiegengcai/caritPlatform.git</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>Gengcai Xie</id>
+            <name>Gengcai Xie</name>
+            <email>xiegengcai@gmail.com</email>
+        </developer>
+    </developers>
 
     <properties>
         <file.encoding>UTF-8</file.encoding>

@@ -37,11 +37,13 @@ public class UpdateAccountRequest extends AccountRequest {
 	@Length(min=15, max=18)
 	private String idCard;
 
+	@Length(max=18)
 	private String officePhone;
 
 	@Pattern(regexp=Constants.REGEXT_MOBILE)
 	private String mobile;
 	
+	@Length(max=200)
 	private String address;
 
 	

@@ -1,8 +1,8 @@
 package cn.com.carit.platform.cache;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,8 +12,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import cn.com.carit.platform.action.AccountAction;
 import cn.com.carit.platform.action.AppSecretAction;
+import cn.com.carit.platform.action.ApplicationAction;
 import cn.com.carit.platform.bean.Account;
 import cn.com.carit.platform.bean.AppSecret;
+import cn.com.carit.platform.bean.Application;
 
 public class CacheManager {
 	private final Logger logger=LoggerFactory.getLogger(getClass());
@@ -21,6 +23,7 @@ public class CacheManager {
 	/* Action */
 	private AccountAction<Account> accountAction;
 	private AppSecretAction<AppSecret> appSecretAction;
+	private ApplicationAction<Application> applicationAction;
 	
 	/**账号缓存，以邮箱地址为key*/
 	private Map<String, Account> accountCache;
@@ -29,6 +32,8 @@ public class CacheManager {
 	private Map<String, String> nickNameCache;
 	
 	private Map<String, String> appKeySecretCache;
+	
+	private Map<Integer, Application> applicationCache;
 	
 	private static class CacheHolder {
 		private static final CacheManager INSTANCE = new CacheManager();
@@ -41,13 +46,17 @@ public class CacheManager {
 		WebApplicationContext ctx=ContextLoader.getCurrentWebApplicationContext();
 		accountAction =  (AccountAction<Account>) ctx.getBean("accountActionImpl");
 		appSecretAction = (AppSecretAction<AppSecret>) ctx.getBean("appSecretActionImpl");
+		applicationAction = (ApplicationAction<Application>) ctx.getBean("applicationActionImpl");
 		
-		accountCache = new ConcurrentHashMap<String, Account>();
-		nickNameCache = new ConcurrentHashMap<String, String>();
+		accountCache = new HashMap<String, Account>();
+		nickNameCache = new HashMap<String, String>();
 		
-		appKeySecretCache = new ConcurrentHashMap<String, String>();
+		appKeySecretCache = new HashMap<String, String>();
+		applicationCache = new HashMap<Integer, Application>();
+		
 		refreshAccounts();
 		refreshAppKeySecretCache();
+		refreshApplicationCache();
 		logger.info(" init cache end ...");
 	}
 	
@@ -64,6 +73,8 @@ public class CacheManager {
 	 */
 	public void refreshCache(){
 		refreshAccounts();
+		refreshAppKeySecretCache();
+		refreshApplicationCache();
 	}
 	
 	
@@ -159,4 +170,17 @@ public class CacheManager {
 	public Account getAccount(String email){
 		return getAccountCache().get(email);
 	}
+	
+	public void refreshApplicationCache(){
+		applicationCache.clear();
+		List<Application> list=applicationAction.queryAll();
+		for (Application t : list) {
+			applicationCache.put(t.getId(), t);
+		}
+	}
+
+	public Map<Integer, Application> getApplicationCache() {
+		return applicationCache;
+	}
+	
 }

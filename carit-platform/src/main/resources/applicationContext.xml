@@ -142,6 +142,7 @@
         <bean class="cn.com.carit.platform.interceptor.EffectiveAccountInterceptor"/>
         <bean class="cn.com.carit.platform.interceptor.RegisterAccountInterceptor"/>
         <bean class="cn.com.carit.platform.interceptor.ChangeNicknameInterceptor"/>
+        <bean class="cn.com.carit.platform.interceptor.ApplicationInterceptor"/>
     </rop:interceptors>
 
     <!--注册监听器，可配置多具-->
