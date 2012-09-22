@@ -7,7 +7,10 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import cn.com.carit.common.Constants;
+import cn.com.carit.common.utils.AttachmentUtil;
 import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonPage;
 import cn.com.carit.platform.action.AccountAction;
@@ -94,6 +97,20 @@ public class AccountActionImpl implements AccountAction<Account> {
 	@Override
 	public void logon(int id, String ip) {
 		dao.logon(id, ip);
+	}
+	
+	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Override
+	public int uploadPhoto(Account t, String photoPath, String thumbPhotoPath) {
+		if (StringUtils.hasText(photoPath)&&StringUtils.hasText(thumbPhotoPath)) {
+			// 删除原来的图片
+			AttachmentUtil.getInstance().deletePhoto(t.getPhoto().replaceFirst(
+					AttachmentUtil.getInstance().getHost() + Constants.BASE_PATH_PHOTOS, ""));
+			AttachmentUtil.getInstance().deletePhoto(t.getThumbPhoto().replaceFirst(
+					AttachmentUtil.getInstance().getHost() + Constants.BASE_PATH_PHOTOS, ""));
+			return dao.uploadPhoto(t.getId(), photoPath, thumbPhotoPath);
+		}
+		return 0;
 	}
 	
 }

@@ -4,6 +4,9 @@
  */
 package cn.com.carit.listener;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.rop.RopRequest;
 import com.rop.RopRequestContext;
 import com.rop.event.AfterDoServiceEvent;
@@ -20,13 +23,15 @@ import com.rop.marshaller.MessageMarshallerUtils;
  */
 public class AfterDoServiceEventListener implements RopEventListener<AfterDoServiceEvent> {
 
+	private static final Logger logger = LoggerFactory.getLogger(AfterDoServiceEventListener.class);
+	
     @Override
     public void onRopEvent(AfterDoServiceEvent ropEvent) {
         RopRequestContext ropRequestContext = ropEvent.getRopRequestContext();
         if(ropRequestContext != null && ropRequestContext.getRopRequest() != null){
             RopRequest ropRequest = ropRequestContext.getRopRequest();
             String message = MessageMarshallerUtils.asUrlString(ropRequest);
-            System.out.println("message("+ropEvent.getServiceEndTime()+")"+message);
+            logger.info("message("+ropEvent.getServiceEndTime()+")"+message);
         }
     }
 

@@ -23,9 +23,10 @@ public class Constants {
 	
 	public static final int MAX_BANNER_AD_COUNT=5;
 	
-	public static final String BASE_PATH_VIDEO="/attachment/video/";
-	public static final String BASE_PATH_IMAGE="/attachment/images/";
-	public static final String BASE_PATH_FLASH="/attachment/flash/";
+//	public static final String BASE_PATH_VIDEO="/video/";
+//	public static final String BASE_PATH_IMAGE="/images/";
+//	public static final String BASE_PATH_FLASH="/flash/";
+	public static final String BASE_PATH_PHOTOS="/photos/";
 	
 	public static final String DEAFULD_LANGUAGE="en";
 	

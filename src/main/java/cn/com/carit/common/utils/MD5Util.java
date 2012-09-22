@@ -139,5 +139,6 @@ public class MD5Util {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		System.out.println("http://www.android-in-car.com/photos/17949488096358.png".replaceFirst("http://www.android-in-car.com/photos/", ""));
 	}
 }

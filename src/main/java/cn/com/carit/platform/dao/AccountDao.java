@@ -35,4 +35,12 @@ public interface AccountDao<Account> extends Dao<Account> {
 	 * @param ip
 	 */
 	void logon(int id, String ip);
+	
+	/**
+	 * 上传头像
+	 * @param id
+	 * @param photoPath
+	 * @param thumbPhotoPath
+	 */
+	int uploadPhoto(int id, String photoPath, String thumbPhotoPath);
 }

@@ -34,4 +34,12 @@ public interface AccountAction<Account> extends Action<Account> {
 	 * @param ip
 	 */
 	void logon(int id, String ip);
+	
+	/**
+	 * 上传头像
+	 * @param t
+	 * @param photoPath
+	 * @param thumbPhotoPath
+	 */
+	int uploadPhoto(Account t, String photoPath, String thumbPhotoPath);
 }

@@ -3,29 +3,31 @@ package cn.com.carit.platform.service;
 import javax.annotation.Resource;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 
 import cn.com.carit.common.Constants;
+import cn.com.carit.common.utils.AttachmentUtil;
 import cn.com.carit.common.utils.CaritUtils;
+import cn.com.carit.common.utils.ImageUtils;
 import cn.com.carit.common.utils.MD5Util;
 import cn.com.carit.platform.action.AccountAction;
 import cn.com.carit.platform.bean.Account;
 import cn.com.carit.platform.cache.CacheManager;
-import cn.com.carit.platform.request.LogonRequest;
-import cn.com.carit.platform.request.RegisterAccountRequest;
-import cn.com.carit.platform.request.UpdateAccountRequest;
-import cn.com.carit.platform.request.UpdatePasswordRequest;
-import cn.com.carit.platform.request.UploadUserPhotoRequest;
+import cn.com.carit.platform.request.account.AccountRequest;
+import cn.com.carit.platform.request.account.RegisterAccountRequest;
+import cn.com.carit.platform.request.account.UpdateAccountRequest;
+import cn.com.carit.platform.request.account.UpdatePasswordRequest;
+import cn.com.carit.platform.request.account.UploadUserPhotoRequest;
 import cn.com.carit.platform.response.AccountResponse;
+import cn.com.carit.platform.response.UploadUserPhotoResponse;
 
 import com.rop.RopRequest;
 import com.rop.annotation.HttpAction;
 import com.rop.annotation.NeedInSessionType;
 import com.rop.annotation.ServiceMethod;
 import com.rop.annotation.ServiceMethodBean;
-import com.rop.response.BusinessServiceErrorResponse;
 import com.rop.response.CommonRopResponse;
-import com.rop.response.NotExistErrorResponse;
 
 /**
  * <pre>
@@ -47,7 +49,7 @@ public class AccountService {
 	 * @throws Exception
 	 */
 	@ServiceMethod(method = "account.logon",version = "1.0")
-    public Object logon(LogonRequest request) throws Exception {
+    public Object logon(AccountRequest request) throws Exception {
 		// 查询缓存
 		Account t = CacheManager.getInstance().getAccount(request.getEmail());
 		// 记录本次登录信息
@@ -156,12 +158,32 @@ public class AccountService {
 		return CommonRopResponse.SUCCESSFUL_RESPONSE;
 	}
 	
-	/*public Object updatePhoto(UploadUserPhotoRequest request){
+	@ServiceMethod(method = "account.upload.photo",version = "1.0",needInSession = NeedInSessionType.YES)
+	public Object updatePhoto(UploadUserPhotoRequest request) throws Throwable {
 		// 查询缓存
 		Account t = CacheManager.getInstance().getAccount(request.getEmail());
+		String fileType = request.getPhoto().getFileType();
+        long nanoTime=System.nanoTime();
+        // 头像文件名
+        String photo=nanoTime+"."+fileType;
+        
+        FileCopyUtils.copy(request.getPhoto().getContent()
+        		, AttachmentUtil.getInstance().getPhotoFile(photo));
+        
+        // 缩略图文件名
+        String thumbPhoto=nanoTime+"_thumb."+fileType;
+        // 生成缩略图
+        ImageUtils.scale(AttachmentUtil.getInstance().getPhotoPath(photo)
+        		, AttachmentUtil.getInstance().getPhotoPath(thumbPhoto)
+        		, 24, 24, false);
+        String hostPhotoPath = AttachmentUtil.getInstance().getHost() 
+				+ Constants.BASE_PATH_PHOTOS +photo;
+        String hostThumbPhoto = AttachmentUtil.getInstance().getHost() 
+				+ Constants.BASE_PATH_PHOTOS +thumbPhoto;
+        // 保存图片
+		action.uploadPhoto(t, hostPhotoPath, hostThumbPhoto);
 		
-		
-		action.up
-	}*/
+		return new UploadUserPhotoResponse(hostPhotoPath, hostThumbPhoto);
+	}
 	
 }

@@ -383,5 +383,13 @@ public class AccountDaoImpl extends DaoImpl implements AccountDao<Account> {
 		jdbcTemplate.update(sql, ip, id);
 	}
 
+	@Override
+	public int uploadPhoto(int id, String photoPath, String thumbPhotoPath) {
+		String sql = "update t_account set update_time=now(), photo=?, thumb_photo=? where id=?";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		return jdbcTemplate.update(sql, photoPath, thumbPhotoPath, id);
+	}
 	
 }

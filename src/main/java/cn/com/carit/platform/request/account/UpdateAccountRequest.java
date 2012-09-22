@@ -1,4 +1,4 @@
-package cn.com.carit.platform.request;
+package cn.com.carit.platform.request.account;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
@@ -6,14 +6,10 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 import cn.com.carit.common.Constants;
-
-import com.rop.AbstractRopRequest;
-import com.rop.annotation.IgnoreSign;
 
 /**
  * <pre>
@@ -22,20 +18,11 @@ import com.rop.annotation.IgnoreSign;
  * @author <a href="mailto:xiegengcai@gmail.com">Gengcai Xie</a>
  * 2012-9-21
  */
-public class UpdateAccountRequest extends AbstractRopRequest {
+public class UpdateAccountRequest extends AccountRequest {
 
-	@NotEmpty
-	@Pattern(regexp = Constants.REGEXP_EMAIL)
-    private String email;
-
-	@NotEmpty
-    @IgnoreSign
-    @Pattern(regexp = Constants.REGEXP_PASSWORD)
-    private String password;
-	
 	@Length(min=3, max=50)
 	private String nickName;
-
+	 
 	@Max(value=2)
 	@Min(value=0)
 	private Byte gender;
@@ -62,28 +49,11 @@ public class UpdateAccountRequest extends AbstractRopRequest {
 		
 	}
 
-	public UpdateAccountRequest(String email, String password) {
-		super();
-		this.email = email;
-		this.password = password;
+	public UpdateAccountRequest(String email, String password){
+		super(email, password);
 	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
+	
+	
 	public String getNickName() {
 		return nickName;
 	}

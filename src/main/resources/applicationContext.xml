@@ -99,12 +99,8 @@
 		</property>
 	</bean>
 	
-	<bean id="attachmentUtil" class="cn.com.carit.common.utils.AttachmentUtil">
-		<property name="configPath" value="http://www.android-in-car.com/attachment.properties"/>
-	</bean>
-
 	<!-- ROP框架配置 -->
-    <!-- 启动Rop框架 -->
+    <!-- 启动Rop框架 upload-file-max-size 单位为K 1M=1024K-->
     <rop:annotation-driven
             session-manager="sessionManager"
             app-secret-manager="appSecretManager"
@@ -114,7 +110,7 @@
             service-timeout-seconds="10"
             thread-ferry-class="cn.com.carit.CaritThreadFerry"
             invoke-times-controller="invokeTimesController"
-            upload-file-max-size="10"
+            upload-file-max-size="10240"
             upload-file-types="jpg,png,gif"
             core-pool-size="200"
             max-pool-size="500"

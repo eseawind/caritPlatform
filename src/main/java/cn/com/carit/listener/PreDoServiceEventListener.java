@@ -4,6 +4,9 @@
  */
 package cn.com.carit.listener;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.rop.RopRequest;
 import com.rop.RopRequestContext;
 import com.rop.event.PreDoServiceEvent;
@@ -20,13 +23,15 @@ import com.rop.marshaller.MessageMarshallerUtils;
  */
 public class PreDoServiceEventListener implements RopEventListener<PreDoServiceEvent> {
 
+	private static final Logger logger = LoggerFactory.getLogger(PreDoServiceEventListener.class);
+	
     @Override
     public void onRopEvent(PreDoServiceEvent ropEvent) {
         RopRequestContext ropRequestContext = ropEvent.getRopRequestContext();
         if(ropRequestContext != null && ropRequestContext.getRopRequest() != null){
             RopRequest ropRequest = ropRequestContext.getRopRequest();
             String message = MessageMarshallerUtils.getMessage(ropRequest, ropRequestContext.getMessageFormat());
-            System.out.println("message("+ropEvent.getServiceBeginTime()+")"+message);
+            logger.info("message("+ropEvent.getServiceBeginTime()+")"+message);
         }
     }
 

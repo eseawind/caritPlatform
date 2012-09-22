@@ -4,6 +4,9 @@
  */
 package cn.com.carit.listener;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.rop.event.AfterStartedRopEvent;
 import com.rop.event.RopEventListener;
 
@@ -17,9 +20,12 @@ import com.rop.event.RopEventListener;
  */
 public class PostInitializeEventListener implements RopEventListener<AfterStartedRopEvent> {
 
+	private static final Logger logger = LoggerFactory.getLogger(PostInitializeEventListener.class);
+	
     @Override
     public void onRopEvent(AfterStartedRopEvent ropRopEvent) {
         System.out.println("execute SamplePostInitializeEventListener!");
+        logger.info("execute PostInitializeEventListener");
     }
 
     @Override

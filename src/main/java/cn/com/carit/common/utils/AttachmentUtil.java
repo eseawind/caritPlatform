@@ -2,41 +2,40 @@ package cn.com.carit.common.utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.ContextLoader;
 
 public class AttachmentUtil {
 	private static final Logger logger = LoggerFactory.getLogger(AttachmentUtil.class);
 	private Properties p;
 	
-	private String configPath;
+	private static class Holder{
+		private static final AttachmentUtil INSTANCE = new AttachmentUtil();
+	}
 	
-	public AttachmentUtil(){
+	private AttachmentUtil(){
 		try {
 			p = new Properties();
 			logger.info("init AttachmentUtil INSTANCE start...");
-			URL url=new URL(configPath);
-			p.load(url.openStream());
+			p.load(ContextLoader.getCurrentWebApplicationContext().getClassLoader().getResourceAsStream("attachment.properties"));
+			if (logger.isDebugEnabled()) {
+				logger.debug("attachment.photos="+p.getProperty("attachment.photos"));
+				logger.debug("attachment.host="+p.getProperty("attachment.host"));
+			}
 			logger.info("init AttachmentUtil INSTANCE end...");
-		} catch (MalformedURLException e) {
-			logger.error("read file["+configPath+"] error...", e);
 		} catch (IOException e) {
-			logger.error("init attachment.properties error...", e);
+			logger.error("There is no attachment.properties in classpath root...", e);
 		}
 	}
 	
-	public String getConfigPath() {
-		return configPath;
+	public static AttachmentUtil getInstance(){
+		return Holder.INSTANCE;
 	}
-
-	public void setConfigPath(String configPath) {
-		this.configPath = configPath;
-	}
+	
 
 	public void mkDir(String path){
 		File file=new File(path);
@@ -84,5 +83,7 @@ public class AttachmentUtil {
 		return deleteFile(getPhotoPath(fileName));
 	}
 	
-	
+	public String getHost(){
+		return getValue("attachment.host").toString();
+	}
 }

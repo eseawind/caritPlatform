@@ -1,8 +1,8 @@
 package cn.com.carit.platform;
 
-import cn.com.carit.platform.request.LogonRequest;
-import cn.com.carit.platform.request.RegisterAccountRequest;
-import cn.com.carit.platform.request.UpdatePasswordRequest;
+import cn.com.carit.platform.request.account.AccountRequest;
+import cn.com.carit.platform.request.account.RegisterAccountRequest;
+import cn.com.carit.platform.request.account.UpdatePasswordRequest;
 import cn.com.carit.platform.response.AccountResponse;
 import cn.com.carit.platform.response.LogonResponse;
 
@@ -53,7 +53,7 @@ public class RopTestCaseClient {
 	}
 	
     public Object logon(String email, String password) {
-        LogonRequest request = new LogonRequest();
+    	AccountRequest request = new AccountRequest();
         request.setEmail(email);
         request.setPassword(password);
         CompositeResponse response=buildClientRequest().post(request, AccountResponse.class, "account.logon", "1.0");

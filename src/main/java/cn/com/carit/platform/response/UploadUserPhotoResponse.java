@@ -8,37 +8,35 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "response")
 public class UploadUserPhotoResponse {
-	@XmlAttribute
-	private boolean successful = false;
 
 	@XmlAttribute
-	private byte [] photo;
+	private String photo;
 	
 	@XmlAttribute
-	private byte [] thumbPhoto;
-
-	public boolean isSuccessful() {
-		return successful;
+	private String thumbPhoto;
+	
+	public UploadUserPhotoResponse() {
 	}
-
-	public void setSuccessful(boolean successful) {
-		this.successful = successful;
-	}
-
-	public byte[] getPhoto() {
-		return photo;
-	}
-
-	public void setPhoto(byte[] photo) {
+	
+	public UploadUserPhotoResponse(String photo, String thumbPhoto) {
 		this.photo = photo;
-	}
-
-	public byte[] getThumbPhoto() {
-		return thumbPhoto;
-	}
-
-	public void setThumbPhoto(byte[] thumbPhoto) {
 		this.thumbPhoto = thumbPhoto;
 	}
 	
+	public String getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(String photo) {
+		this.photo = photo;
+	}
+
+	public String getThumbPhoto() {
+		return thumbPhoto;
+	}
+
+	public void setThumbPhoto(String thumbPhoto) {
+		this.thumbPhoto = thumbPhoto;
+	}
+
 }
