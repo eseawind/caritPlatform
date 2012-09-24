@@ -75,7 +75,7 @@ public class AccountService {
 	 * @return
 	 * @throws Exception
 	 */
-	@ServiceMethod(method = "account.logon",version = "1.0")
+	@ServiceMethod(method = "account.logon",version = "1.0", httpAction=HttpAction.POST)
     public Object logon(AccountRequest request) throws Exception {
 		// 查询缓存
 		Account t = CacheManager.getInstance().getAccount(request.getEmail());
@@ -132,7 +132,7 @@ public class AccountService {
 	 * @return
 	 * @throws Exception
 	 */
-	@ServiceMethod(method = "account.register",version = "1.0")
+	@ServiceMethod(method = "account.register",version = "1.0", httpAction=HttpAction.POST)
 	public Object register(RegisterAccountRequest request) throws Exception{
 		String email=request.getEmail();
 		String password=request.getPassword();
@@ -174,7 +174,7 @@ public class AccountService {
 	 * @return
 	 * @throws Exception
 	 */
-	@ServiceMethod(method = "account.update",version = "1.0",needInSession = NeedInSessionType.YES)
+	@ServiceMethod(method = "account.update",version = "1.0",needInSession = NeedInSessionType.YES, httpAction=HttpAction.POST)
 	public Object update(UpdateAccountRequest request) throws Exception{
 		// 查询缓存
 		Account t = CacheManager.getInstance().getAccount(request.getEmail());
@@ -249,7 +249,7 @@ public class AccountService {
 	 * @return
 	 * @throws Exception
 	 */
-	@ServiceMethod(method = "account.update.password",version = "1.0",needInSession = NeedInSessionType.YES)
+	@ServiceMethod(method = "account.update.password",version = "1.0",needInSession = NeedInSessionType.YES, httpAction=HttpAction.POST)
 	public Object updatePwd(UpdatePasswordRequest request) throws Exception{
 		String email=request.getEmail();
 		// 查询缓存
@@ -291,7 +291,7 @@ public class AccountService {
 	 * @return
 	 * @throws Throwable
 	 */
-	@ServiceMethod(method = "account.upload.photo",version = "1.0",needInSession = NeedInSessionType.YES)
+	@ServiceMethod(method = "account.upload.photo",version = "1.0",needInSession = NeedInSessionType.YES, httpAction=HttpAction.POST)
 	public Object updatePhoto(UploadUserPhotoRequest request) throws Throwable {
 		// 查询缓存
 		Account t = CacheManager.getInstance().getAccount(request.getEmail());
@@ -341,7 +341,7 @@ public class AccountService {
 	 * @return
 	 * @throws Throwable
 	 */
-	@ServiceMethod(method = "account.download.application",version = "1.0",needInSession = NeedInSessionType.YES)
+	@ServiceMethod(method = "account.download.application",version = "1.0",needInSession = NeedInSessionType.YES, httpAction=HttpAction.POST)
 	public Object downloadApplicaton(DownloadApplicationRequest request){
 		// 查询缓存
 		Account t = CacheManager.getInstance().getAccount(request.getEmail());
@@ -381,7 +381,7 @@ public class AccountService {
 	 * @return
 	 * @throws Throwable
 	 */
-	@ServiceMethod(method = "account.application.addComment",version = "1.0",needInSession = NeedInSessionType.YES)
+	@ServiceMethod(method = "account.application.addComment",version = "1.0",needInSession = NeedInSessionType.YES, httpAction=HttpAction.POST)
 	public Object addComment(AddApplicationCommentRequest request){
 		// 查询缓存
 		Account t = CacheManager.getInstance().getAccount(request.getEmail());

@@ -14,6 +14,27 @@ public class AddApplicationCommentRequest extends DownloadApplicationRequest {
 	@Max(value=10)
 	private Integer grade;
 
+	
+	public AddApplicationCommentRequest() {
+		super();
+	}
+
+	public AddApplicationCommentRequest(String email, String password) {
+		super(email, password);
+	}
+	
+	public AddApplicationCommentRequest(String email, String password,
+			Integer appId) {
+		super(email, password, appId);
+	}
+
+	public AddApplicationCommentRequest(String email, String password,
+			Integer appId, String comment, Integer grade) {
+		super(email, password, appId);
+		this.comment = comment;
+		this.grade = grade;
+	}
+
 	public String getComment() {
 		return comment;
 	}

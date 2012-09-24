@@ -19,6 +19,20 @@ public class DownloadApplicationRequest extends AccountRequest {
 	@Max(value=Integer.MAX_VALUE)
 	private Integer appId;
 
+	
+	public DownloadApplicationRequest() {
+		super();
+	}
+
+	public DownloadApplicationRequest(String email, String password) {
+		super(email, password);
+	}
+
+	public DownloadApplicationRequest(String email, String password, Integer appId) {
+		super(email, password);
+		this.appId = appId;
+	}
+
 	public Integer getAppId() {
 		return appId;
 	}
