@@ -39,5 +39,10 @@ public class CaritSessionManager implements SessionManager{
     public void removeSession(String sessionId) {
         sessionCache.remove(sessionId);
     }
+
+	public Map<String, Session> getSessionCache() {
+		return sessionCache;
+	}
+    
 }
 
