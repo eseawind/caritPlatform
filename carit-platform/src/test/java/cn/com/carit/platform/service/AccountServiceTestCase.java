@@ -21,7 +21,7 @@ public class AccountServiceTestCase {
 	@Test
 	public void testLogon(){
 		RopTestCaseClient.getInstance().getSession();
-		RopTestCaseClient.getInstance().logon("xiegc@carit.com.cn", "123456");
+		RopTestCaseClient.getInstance().logon("xiegc@carit.info", "123456");
 	}
 	
 	@Test

@@ -39,9 +39,9 @@ import com.rop.response.BusinessServiceErrorResponse;
 import com.rop.response.CommonRopResponse;
 
 /**
- * <pre>
+ * <p>
  * <b>功能说明：</b>账号相关服务接口
- * </pre>
+ * </p>
  * @author <a href="mailto:xiegengcai@gmail.com">Gengcai Xie</a>
  * 2012-9-21
  */
@@ -56,9 +56,9 @@ public class AccountService {
 	private AppCommentAction<AppComment> appCommentAction;
 	
 	/**
-	 * <pre>
+	 * <p>
 	 * <b>功能说明：</b>账号登录
-	 * </pre>
+	 * </p>
 	 * @param request
 	 * <table border='1'>
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
@@ -88,9 +88,9 @@ public class AccountService {
         return  accountResponse;
     }
 	/**
-	 * <pre>
+	 * <p>
 	 * <b>功能说明：</b>账号登出
-	 * </pre>
+	 * </p>
 	 * @param request
 	 * <table border='1'>
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
@@ -109,9 +109,9 @@ public class AccountService {
 	}
 	
 	/**
-	 * <pre>
+	 * <p>
 	 * <b>功能说明：</b>账号登录
-	 * </pre>
+	 * </p>
 	 * @param request
 	 * <table border='1'>
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
@@ -143,9 +143,9 @@ public class AccountService {
 	}
 	
 	/**
-	 * <pre>
+	 * <p>
 	 * <b>功能说明：</b>修改账号资料
-	 * </pre>
+	 * </p>
 	 * @param request
 	 * <table border='1'>
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
@@ -224,9 +224,9 @@ public class AccountService {
         return  accountResponse;
 	}
 	/**
-	 * <pre>
+	 * <p>
 	 * <b>功能说明：</b>修改账号密码
-	 * </pre>
+	 * </p>
 	 * @param request
 	 * <table border='1'>
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
@@ -265,9 +265,9 @@ public class AccountService {
 	}
 	
 	/**
-	 * <pre>
+	 * <p>
 	 * <b>功能说明：</b>修改账号资料
-	 * </pre>
+	 * </p>
 	 * @param request
 	 * <table border='1'>
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
@@ -314,9 +314,9 @@ public class AccountService {
 	}
 	
 	/**
-	 * <pre>
+	 * <p>
 	 * <b>功能说明：</b>修改账号资料
-	 * </pre>
+	 * </p>
 	 * @param request
 	 * <table border='1'>
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
@@ -351,9 +351,9 @@ public class AccountService {
 	}
 	
 	/**
-	 * <pre>
+	 * <p>
 	 * <b>功能说明：</b>修改账号资料
-	 * </pre>
+	 * </p>
 	 * @param request
 	 * <table border='1'>
 	 * 	<tr><th>参数名</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>

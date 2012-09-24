@@ -20,23 +20,24 @@ public class EffectiveAccountInterceptor extends AbstractInterceptor {
 			Account t = CacheManager.getInstance().getAccount(email);
 			if (t==null) {// 账号不存在
 				ropRequestContext.setRopResponse(new NotExistErrorResponse("account","email",email,ropRequestContext.getLocale()));
-			}
-			String password=ropRequestContext.getParamValue("password");
-			// 密码加密
-			password=MD5Util.md5Hex(password);
-			// 二次加密
-			password=MD5Util.md5Hex(email+password+MD5Util.DISTURBSTR);
-			if (!password.equalsIgnoreCase(t.getPassword())) {
-				//密码错误
-				ropRequestContext.setRopResponse(new BusinessServiceErrorResponse(
-						ropRequestContext.getMethod(), Constants.PASSWORD_ERROR,
-						ropRequestContext.getLocale(), email));
-			}
-			if(t.getStatus()!=Constants.STATUS_VALID){
-				// 帐号没启用
-				ropRequestContext.setRopResponse(new BusinessServiceErrorResponse(
-						ropRequestContext.getMethod(), Constants.ACCOUNT_LOCKED,
-						ropRequestContext.getLocale(), email));
+			} else {
+				String password=ropRequestContext.getParamValue("password");
+				// 密码加密
+				password=MD5Util.md5Hex(password);
+				// 二次加密
+				password=MD5Util.md5Hex(email+password+MD5Util.DISTURBSTR);
+				if (!password.equalsIgnoreCase(t.getPassword())) {
+					//密码错误
+					ropRequestContext.setRopResponse(new BusinessServiceErrorResponse(
+							ropRequestContext.getMethod(), Constants.PASSWORD_ERROR,
+							ropRequestContext.getLocale(), email));
+				}
+				if(t.getStatus()!=Constants.STATUS_VALID){
+					// 帐号没启用
+					ropRequestContext.setRopResponse(new BusinessServiceErrorResponse(
+							ropRequestContext.getMethod(), Constants.ACCOUNT_LOCKED,
+							ropRequestContext.getLocale(), email));
+				}
 			}
 		}
 	}

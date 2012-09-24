@@ -15,6 +15,13 @@ import cn.com.carit.platform.response.AccountResponse;
 import cn.com.carit.platform.response.ErrorResponse;
 import cn.com.carit.platform.response.LogonResponse;
 
+/**
+ * <p>
+ * <b>功能说明：</b>
+ * </p>
+ * @author <a href="mailto:xiegengcai@gmail.com">Gengcai Xie</a>
+ * @date 2012-9-24
+ */
 public class CaritClient {
 	
 	public enum MessageFormat{
@@ -170,7 +177,7 @@ public class CaritClient {
 		String sign2=ClientUtils.sign(paramValues2, ClientHolder.INSTANCE.appSecret);
 		// 不需要签名的参数放后面
 		paramValues2.put("sign", sign2);
-		paramValues2.put("password", "123456");
+		paramValues2.put("password", "1234567");
 		
 		
 		
@@ -186,10 +193,12 @@ public class CaritClient {
 			try {
 				AccountResponse account=(AccountResponse) JsonUtil.jsonToObject(msg, AccountResponse.class);
 				System.out.println(account);
+				
 			} catch (Exception e) {
 				try {
 					ErrorResponse error=(ErrorResponse) JsonUtil.jsonToObject(msg, ErrorResponse.class);
 					System.out.println(error);
+					
 				} catch (Exception e2) {
 					e.printStackTrace();
 				}
