@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 
 
-public class Utils {
+public class ClientUtils {
 	/**
      * 使用<code>secret</code>对paramValues按以下算法进行签名： <br/>
      * uppercase(hex(sha1(secretkey1value1key2value2...secret))

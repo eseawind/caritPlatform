@@ -176,5 +176,17 @@ public class AccountResponse {
 	public void setLastLoginTime(Date lastLoginTime) {
 		this.lastLoginTime = lastLoginTime;
 	}
+
+	@Override
+	public String toString() {
+		return "AccountResponse [id=" + id + ", email=" + email + ", nickName="
+				+ nickName + ", gender=" + gender + ", birthday=" + birthday
+				+ ", photo=" + photo + ", thumbPhoto=" + thumbPhoto
+				+ ", balance=" + balance + ", realName=" + realName
+				+ ", idCard=" + idCard + ", officePhone=" + officePhone
+				+ ", mobile=" + mobile + ", address=" + address
+				+ ", lastLoginIp=" + lastLoginIp + ", lastLoginTime="
+				+ lastLoginTime + "]";
+	}
 	
 }

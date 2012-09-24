@@ -40,7 +40,7 @@ import com.rop.response.CommonRopResponse;
 
 /**
  * <pre>
- * 功能说明：账号相关服务接口
+ * <b>功能说明：</b>账号相关服务接口
  * </pre>
  * @author <a href="mailto:xiegengcai@gmail.com">Gengcai Xie</a>
  * 2012-9-21
@@ -59,8 +59,8 @@ public class AccountService {
 	 * <pre>
 	 * <b>功能说明：</b>账号登录
 	 * </pre>
-	 * <b>参数：</b>
-	 * <tabel>
+	 * @param request
+	 * <table border='1'>
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>method</td><td>account.logon</td><td>是</td><td>是</td></tr>
@@ -70,8 +70,7 @@ public class AccountService {
 	 *  <tr><td>email</td><td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>password</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
-	 * </tabel>
-	 * @param request
+	 * </table>
 	 * @return
 	 * @throws Exception
 	 */
@@ -92,8 +91,8 @@ public class AccountService {
 	 * <pre>
 	 * <b>功能说明：</b>账号登出
 	 * </pre>
-	 * <b>参数：</b>
-	 * <tabel>
+	 * @param request
+	 * <table border='1'>
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>method</td><td>account.logout</td><td>是</td><td>是</td></tr>
@@ -101,8 +100,7 @@ public class AccountService {
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
-	 * </tabel>
-	 * @param request
+	 * </table>
 	 * @return
 	 */
 	@ServiceMethod(method = "account.logout",version = "1.0", httpAction=HttpAction.GET)
@@ -114,8 +112,8 @@ public class AccountService {
 	 * <pre>
 	 * <b>功能说明：</b>账号登录
 	 * </pre>
-	 * <b>参数：</b>
-	 * <tabel>
+	 * @param request
+	 * <table border='1'>
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>method</td><td>account.register</td><td>是</td><td>是</td></tr>
@@ -127,8 +125,7 @@ public class AccountService {
 	 *  <tr><td>password</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>nickName</td><td>字符长度3~50</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
-	 * </tabel>
-	 * @param request
+	 * </table>
 	 * @return
 	 * @throws Exception
 	 */
@@ -149,8 +146,8 @@ public class AccountService {
 	 * <pre>
 	 * <b>功能说明：</b>修改账号资料
 	 * </pre>
-	 * <b>参数：</b>
-	 * <tabel>
+	 * @param request
+	 * <table border='1'>
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>method</td><td>account.update</td><td>是</td><td>是</td></tr>
@@ -167,10 +164,9 @@ public class AccountService {
 	 *  <tr><td>idCard</td><td>15或18位字符串</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>officePhone</td><td>限长18字符</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>mobile</td><td>11位手机号码</td><td>是</td><td>否</td></tr>
-	 *  <tr><td>address</td><td>限长18字符</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>address</td><td>限长200字符</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
-	 * </tabel>
-	 * @param request
+	 * </table>
 	 * @return
 	 * @throws Exception
 	 */
@@ -231,8 +227,8 @@ public class AccountService {
 	 * <pre>
 	 * <b>功能说明：</b>修改账号密码
 	 * </pre>
-	 * <b>参数：</b>
-	 * <tabel>
+	 * @param request
+	 * <table border='1'>
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>method</td><td>account.update.password</td><td>是</td><td>是</td></tr>
@@ -244,8 +240,7 @@ public class AccountService {
 	 *  <tr><td>password</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>newPassword</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
-	 * </tabel>
-	 * @param request
+	 * </table>
 	 * @return
 	 * @throws Exception
 	 */
@@ -273,8 +268,8 @@ public class AccountService {
 	 * <pre>
 	 * <b>功能说明：</b>修改账号资料
 	 * </pre>
-	 * <b>参数：</b>
-	 * <tabel>
+	 * @param request
+	 * <table border='1'>
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>method</td><td>account.upload.photo</td><td>是</td><td>是</td></tr>
@@ -286,8 +281,7 @@ public class AccountService {
 	 *  <tr><td>password</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>photo</td><td>文件类型后缀（如png|jpg|gif）@文件二进制字节流串</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
-	 * </tabel>
-	 * @param request
+	 * </table>
 	 * @return
 	 * @throws Throwable
 	 */
@@ -323,8 +317,8 @@ public class AccountService {
 	 * <pre>
 	 * <b>功能说明：</b>修改账号资料
 	 * </pre>
-	 * <b>参数：</b>
-	 * <tabel>
+	 * @param request
+	 * <table border='1'>
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>method</td><td>account.upload.photo</td><td>是</td><td>是</td></tr>
@@ -336,8 +330,7 @@ public class AccountService {
 	 *  <tr><td>password</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>appId</td><td>应用Id</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
-	 * </tabel>
-	 * @param request
+	 * </table>
 	 * @return
 	 * @throws Throwable
 	 */
@@ -361,9 +354,9 @@ public class AccountService {
 	 * <pre>
 	 * <b>功能说明：</b>修改账号资料
 	 * </pre>
-	 * <b>参数：</b>
-	 * <tabel>
-	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数名</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>method</td><td>account.upload.photo</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
@@ -376,8 +369,7 @@ public class AccountService {
 	 *  <tr><td>grade</td><td>应用评价(0~10)</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>comment</td><td>200字符内</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
-	 * </tabel>
-	 * @param request
+	 * </table>
 	 * @return
 	 * @throws Throwable
 	 */
