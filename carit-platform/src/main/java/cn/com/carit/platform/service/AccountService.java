@@ -401,7 +401,7 @@ public class AccountService {
 		
 		// 没下载过应用
 		return new BusinessServiceErrorResponse(
-				request.getRopRequestContext().getMethod(), Constants.ACCOUNT_LOCKED,
+				request.getRopRequestContext().getMethod(), Constants.HAVENT_DOWNLOAD_APPLICTION,
 				request.getRopRequestContext().getLocale(), t.getEmail(), request.getAppId());
 		
 	}

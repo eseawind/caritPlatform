@@ -68,7 +68,7 @@ public class AccountServiceTestCase {
 	
 	@Test
 	public void testAddComment(){
-		CommentRequest request=new CommentRequest("xiegc@carit.com.cn", "123456", 6, "很好很强大", 10);
+		CommentRequest request=new CommentRequest("xiegc@carit.com.cn", "123456", 8, "很好很强大", 10);
 		RopTestCaseClient.getInstance().getSession();
 		RopTestCaseClient.getInstance().buildClientRequest().post(request, CommonRopResponse.class, "account.application.addComment", "1.0");
 	}
