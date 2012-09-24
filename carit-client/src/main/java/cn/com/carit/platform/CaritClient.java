@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import cn.com.carit.platform.response.AccountResponse;
+import cn.com.carit.platform.response.CommonRopResponse;
 import cn.com.carit.platform.response.ErrorResponse;
 import cn.com.carit.platform.response.LogonResponse;
 
@@ -66,7 +67,8 @@ public class CaritClient {
 			serverUrl=prop.getProperty("serverUrl");
 			appKey=prop.getProperty("appKey");
 			appSecret=prop.getProperty("appSecret");
-		} catch (IOException e) {
+			getSession();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
     }
@@ -144,51 +146,91 @@ public class CaritClient {
 		return paramValues;
 	}
 	
-	public static void main(String[] args) throws Exception {
-		Map<String, String> paramValues=getInstance().buildParamValues("platform.getSession", "1.0");
-		// 生成签名
-		String sign=ClientUtils.sign(paramValues, getInstance().appSecret);
-		// 不需要签名的参数放后面
-		paramValues.put(SYSTEM_PARAM_SIGN, sign);
-		
-		StringBuilder urlStr=new StringBuilder(getInstance().serverUrl);
-		for (Entry<String, String> e: paramValues.entrySet()) {
-			urlStr.append(e.getKey()).append("=").append(e.getValue()).append("&");
-		}
-		HttpURLConnection conn=(HttpURLConnection) new URL(urlStr.toString()).openConnection(); 
-		if (conn.getResponseCode() == 200) {
-			BufferedReader reader=new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-			String msg=reader.readLine();
-			try{
-				LogonResponse response=(LogonResponse) JsonUtil.jsonToObject(msg, LogonResponse.class);
-				getInstance().setSessionId(response.getSessionId());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+	/**
+	 * 获取session
+	 * @throws Exception
+	 */
+	public void getSession() throws Exception{
+		if(getInstance().getSessionId()==null){
+			Map<String, String> paramValues=getInstance().buildParamValues("platform.getSession", "1.0");
+			// 生成签名
+			String sign=ClientUtils.sign(paramValues, getInstance().appSecret);
+			// 不需要签名的参数放后面
+			paramValues.put(SYSTEM_PARAM_SIGN, sign);
 			
-			reader.close();
+			StringBuilder urlStr=new StringBuilder(getInstance().serverUrl);
+			for (Entry<String, String> e: paramValues.entrySet()) {
+				urlStr.append(e.getKey()).append("=").append(e.getValue()).append("&");
+			}
+			HttpURLConnection conn=(HttpURLConnection) new URL(urlStr.toString()).openConnection(); 
+			if (conn.getResponseCode() == 200) {
+				BufferedReader reader=new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+				String msg=reader.readLine();
+				try{
+					LogonResponse response=(LogonResponse) JsonUtil.jsonToObject(msg, LogonResponse.class);
+					getInstance().setSessionId(response.getSessionId());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				reader.close();
+			}
+			conn.disconnect();
 		}
-		conn.disconnect();
 		
+	}
+	
+	/**
+	 * 删除session
+	 * @throws Exception
+	 */
+	public void removeSession() throws Exception{
+		if(getInstance().getSessionId()==null){
+			Map<String, String> paramValues=getInstance().buildParamValues("platform.removeSession", "1.0", getInstance().getSessionId());
+			// 生成签名
+			String sign=ClientUtils.sign(paramValues, getInstance().appSecret);
+			// 不需要签名的参数放后面
+			paramValues.put(SYSTEM_PARAM_SIGN, sign);
+			
+			StringBuilder urlStr=new StringBuilder(getInstance().serverUrl);
+			for (Entry<String, String> e: paramValues.entrySet()) {
+				urlStr.append(e.getKey()).append("=").append(e.getValue()).append("&");
+			}
+			HttpURLConnection conn=(HttpURLConnection) new URL(urlStr.toString()).openConnection(); 
+			if (conn.getResponseCode() == 200) {
+				BufferedReader reader=new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+				String msg=reader.readLine();
+				try{
+					JsonUtil.jsonToObject(msg, CommonRopResponse.class);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				reader.close();
+			}
+			conn.disconnect();
+		}
+	}
+	
+	public static void main(String[] args) throws Exception {
 		
 		// 登录
-		Map<String, String> paramValues2=getInstance().buildParamValues("account.logon", "1.0", getInstance().getSessionId());
-		paramValues2.put("email", "xiegc@carit.com.cn");
-		String sign2=ClientUtils.sign(paramValues2, ClientHolder.INSTANCE.appSecret);
+		Map<String, String> paramValues=getInstance().buildParamValues("account.logon", "1.0", getInstance().getSessionId());
+		paramValues.put("email", "xiegc@carit.com.cn");
+		String sign=ClientUtils.sign(paramValues, ClientHolder.INSTANCE.appSecret);
 		// 不需要签名的参数放后面
-		paramValues2.put("sign", sign2);
-		paramValues2.put("password", "1234567");
+		paramValues.put("sign", sign);
+		paramValues.put("password", "1234567");
 		
 		
 		
 		StringBuilder urlStr2=new StringBuilder(ClientHolder.INSTANCE.serverUrl);
-		for (Entry<String, String> e: paramValues2.entrySet()) {
+		for (Entry<String, String> e: paramValues.entrySet()) {
 			urlStr2.append(e.getKey()).append("=").append(e.getValue()).append("&");
 		}
-		HttpURLConnection conn2=(HttpURLConnection) new URL(urlStr2.toString()).openConnection();
-		conn2.setRequestMethod("POST");
+		HttpURLConnection conn=(HttpURLConnection) new URL(urlStr2.toString()).openConnection();
+		conn.setRequestMethod("POST");
 		if (conn.getResponseCode() == 200) {
-			BufferedReader reader=new BufferedReader(new InputStreamReader(conn2.getInputStream(), "UTF-8"));
+			BufferedReader reader=new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
 			String msg=reader.readLine();
 			try {
 				AccountResponse account=(AccountResponse) JsonUtil.jsonToObject(msg, AccountResponse.class);
@@ -206,6 +248,6 @@ public class CaritClient {
 			
 			reader.close();
 		}
-		conn2.disconnect();
+		conn.disconnect();
 	}
 }
