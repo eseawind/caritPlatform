@@ -13,6 +13,11 @@ import com.rop.session.Session;
 import cn.com.carit.session.CaritPlatformSession;
 import cn.com.carit.session.CaritSessionManager;
 
+/**
+ * <b>功能描述：</b>Session管理job。激活状态的session超过半小时内没有连接过的设置为掉线;掉线状态的session超过半小时没连接删除
+ * @author <a href="mailto:xiegengcai@gmail.com">Gengcai Xie</a>
+ * 2012-8-16
+ */
 public class SessionManagerJob {
 	private final Logger logger=LoggerFactory.getLogger(getClass());
 	
@@ -23,7 +28,7 @@ public class SessionManagerJob {
 		// 获取到所有session
 		Map<String, Session> sessionCache=sessionManager.getSessionCache();
 		Calendar beforeHalfAnHour=Calendar.getInstance();
-		logger.info("===========================");
+		logger.info("SessionManagerJob start...");
 		// 半小时前
 		beforeHalfAnHour.add(Calendar.MINUTE, 30);
 		for (Map.Entry<String, Session> e: sessionCache.entrySet()) {
@@ -41,5 +46,6 @@ public class SessionManagerJob {
 				}
 			}
 		}
+		logger.info("SessionManagerJob end...");
 	}
 }
