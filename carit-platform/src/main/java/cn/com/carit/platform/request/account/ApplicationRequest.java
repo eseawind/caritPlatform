@@ -2,7 +2,6 @@ package cn.com.carit.platform.request.account;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.Null;
 
 
 /**
@@ -12,32 +11,31 @@ import javax.validation.constraints.Null;
  * @author <a href="mailto:xiegengcai@gmail.com">Gengcai Xie</a>
  * 2012-9-22
  */
-public class DownloadApplicationRequest extends AccountRequest {
+public class ApplicationRequest extends AccountRequest {
 
-	@Null
 	@Min(value=1)
 	@Max(value=Integer.MAX_VALUE)
-	private Integer appId;
+	private int appId;
 
 	
-	public DownloadApplicationRequest() {
+	public ApplicationRequest() {
 		super();
 	}
 
-	public DownloadApplicationRequest(String email, String password) {
+	public ApplicationRequest(String email, String password) {
 		super(email, password);
 	}
 
-	public DownloadApplicationRequest(String email, String password, Integer appId) {
+	public ApplicationRequest(String email, String password, int appId) {
 		super(email, password);
 		this.appId = appId;
 	}
 
-	public Integer getAppId() {
+	public int getAppId() {
 		return appId;
 	}
 
-	public void setAppId(Integer appId) {
+	public void setAppId(int appId) {
 		this.appId = appId;
 	}
 	

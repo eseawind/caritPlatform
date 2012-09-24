@@ -5,31 +5,31 @@ import javax.validation.constraints.Min;
 
 import org.hibernate.validator.constraints.Length;
 
-public class AddApplicationCommentRequest extends DownloadApplicationRequest {
+public class CommentRequest extends ApplicationRequest {
 
 	@Length(max=200)
 	private String comment;
 	
 	@Min(value=0)
 	@Max(value=10)
-	private Integer grade;
+	private int grade;
 
 	
-	public AddApplicationCommentRequest() {
+	public CommentRequest() {
 		super();
 	}
 
-	public AddApplicationCommentRequest(String email, String password) {
+	public CommentRequest(String email, String password) {
 		super(email, password);
 	}
 	
-	public AddApplicationCommentRequest(String email, String password,
-			Integer appId) {
+	public CommentRequest(String email, String password,
+			int appId) {
 		super(email, password, appId);
 	}
 
-	public AddApplicationCommentRequest(String email, String password,
-			Integer appId, String comment, Integer grade) {
+	public CommentRequest(String email, String password,
+			int appId, String comment, int grade) {
 		super(email, password, appId);
 		this.comment = comment;
 		this.grade = grade;
@@ -43,11 +43,11 @@ public class AddApplicationCommentRequest extends DownloadApplicationRequest {
 		this.comment = comment;
 	}
 
-	public Integer getGrade() {
+	public int getGrade() {
 		return grade;
 	}
 
-	public void setGrade(Integer grade) {
+	public void setGrade(int grade) {
 		this.grade = grade;
 	}
 	

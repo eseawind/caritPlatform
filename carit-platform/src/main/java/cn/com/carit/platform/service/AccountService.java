@@ -20,8 +20,8 @@ import cn.com.carit.platform.bean.AppDownloadLog;
 import cn.com.carit.platform.bean.Application;
 import cn.com.carit.platform.cache.CacheManager;
 import cn.com.carit.platform.request.account.AccountRequest;
-import cn.com.carit.platform.request.account.AddApplicationCommentRequest;
-import cn.com.carit.platform.request.account.DownloadApplicationRequest;
+import cn.com.carit.platform.request.account.CommentRequest;
+import cn.com.carit.platform.request.account.ApplicationRequest;
 import cn.com.carit.platform.request.account.RegisterAccountRequest;
 import cn.com.carit.platform.request.account.UpdateAccountRequest;
 import cn.com.carit.platform.request.account.UpdatePasswordRequest;
@@ -342,7 +342,7 @@ public class AccountService {
 	 * @throws Throwable
 	 */
 	@ServiceMethod(method = "account.download.application",version = "1.0",needInSession = NeedInSessionType.YES, httpAction=HttpAction.POST)
-	public Object downloadApplicaton(DownloadApplicationRequest request){
+	public Object downloadApplicaton(ApplicationRequest request){
 		// 查询缓存
 		Account t = CacheManager.getInstance().getAccount(request.getEmail());
 		Application application = CacheManager.getInstance().getApplicationCache().get(request.getAppId());
@@ -382,14 +382,15 @@ public class AccountService {
 	 * @throws Throwable
 	 */
 	@ServiceMethod(method = "account.application.addComment",version = "1.0",needInSession = NeedInSessionType.YES, httpAction=HttpAction.POST)
-	public Object addComment(AddApplicationCommentRequest request){
+	public Object addComment(CommentRequest request){
 		// 查询缓存
 		Account t = CacheManager.getInstance().getAccount(request.getEmail());
 		
-		if (appDownloadLogAction.hasDownloaded(t.getId(), request.getAppId())) {
+		int appId = Integer.valueOf(request.getAppId());
+		if (appDownloadLogAction.hasDownloaded(t.getId(), appId)) {
 			// 下载过应用，可以评论
 			AppComment comment=new AppComment();
-			comment.setAppId(request.getAppId());
+			comment.setAppId(appId);
 			comment.setUserId(t.getId());
 			comment.setGrade(request.getGrade());
 			comment.setComment(request.getComment());
