@@ -227,7 +227,16 @@ public class CaritClient {
 			if (responseCode == HttpURLConnection.HTTP_OK) {
 				reader = new BufferedReader(new InputStreamReader(
 						conn.getInputStream(), "UTF-8"));
-				response = reader.readLine();
+				// 防止多行响应数据，变更读取方法
+				char [] cbuf=new char[2048];
+				StringBuilder sb=new StringBuilder();
+				int n=reader.read(cbuf);
+				while (n!=-1) {
+					sb.append(cbuf);
+					n=reader.read(cbuf);
+				}
+//				response = reader.readLine();
+				response=sb.toString();
 			} else {
 				response = "{\"httpError\":" + responseCode + "}";
 			}
@@ -273,6 +282,5 @@ public class CaritClient {
 				e.printStackTrace();
 			}
 		}
-			
 	}
 }

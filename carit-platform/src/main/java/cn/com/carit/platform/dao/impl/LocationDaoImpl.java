@@ -10,6 +10,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -23,6 +24,7 @@ import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonPage;
 import cn.com.carit.platform.bean.Location;
 import cn.com.carit.platform.dao.LocationDao;
+import cn.com.carit.platform.request.LocationRequest;
 
 @Repository
 public class LocationDaoImpl extends DaoImpl implements LocationDao<Location> {
@@ -198,6 +200,31 @@ public class LocationDaoImpl extends DaoImpl implements LocationDao<Location> {
 			argTypes.add(93);// java.sql.Types type
 		}
 		return sql.toString();
+	}
+
+	@Override
+	public int batchAdd(final List<LocationRequest> locationList, final String deviceId) {
+		final String sql = "insert into t_upload_location (device_id, lat, lng, create_time) " 
+				+ "values (?, ?, ?, ?)";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		return jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+			
+			@Override
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
+				int index=1;
+				ps.setString(index++, deviceId);
+				ps.setDouble(index++, locationList.get(i).getLat());
+				ps.setDouble(index++, locationList.get(i).getLng());
+				ps.setDate(index++, new Date(locationList.get(i).getTime()));
+			}
+			
+			@Override
+			public int getBatchSize() {
+				return locationList.size();
+			}
+		}).length;
 	}
 
 }

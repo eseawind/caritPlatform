@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import cn.com.carit.platform.bean.Location;
-
 import com.rop.AbstractRopRequest;
 /**
  * <p>
@@ -17,16 +15,16 @@ import com.rop.AbstractRopRequest;
 public class UploadLocationRequest extends AbstractRopRequest {
 	
 	@NotEmpty
-	private List<Location> lists;
+	private List<LocationRequest> lists;
 	
 	@NotEmpty
     private String deviceId;
 
-	public List<Location> getLists() {
+	public List<LocationRequest> getLists() {
 		return lists;
 	}
 
-	public void setLists(List<Location> lists) {
+	public void setLists(List<LocationRequest> lists) {
 		this.lists = lists;
 	}
 

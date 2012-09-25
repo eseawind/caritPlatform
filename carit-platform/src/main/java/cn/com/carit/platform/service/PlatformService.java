@@ -2,6 +2,11 @@ package cn.com.carit.platform.service;
 
 import java.util.Calendar;
 
+import javax.annotation.Resource;
+
+import cn.com.carit.platform.action.LocationAction;
+import cn.com.carit.platform.bean.Location;
+import cn.com.carit.platform.request.UploadLocationRequest;
 import cn.com.carit.platform.response.LogonResponse;
 import cn.com.carit.session.CaritPlatformSession;
 
@@ -20,6 +25,9 @@ import com.rop.response.CommonRopResponse;
 @ServiceMethodBean(version = "1.0")
 public class PlatformService {
 
+	@Resource
+	private LocationAction<Location> locationAction;
+	
 	/**
 	 * <p>
 	 * <b>功能说明：</b>登录服务平台。用于获取sessionId，所有其它开放平台服务接口的前置接口。
@@ -31,7 +39,7 @@ public class PlatformService {
 	 *  <tr><td>method</td><td>platform.getSession</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
 	 * </table>
 	 * @return
@@ -61,7 +69,7 @@ public class PlatformService {
 	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
 	 * </table>
 	 * @return
@@ -87,7 +95,7 @@ public class PlatformService {
 	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
 	 * </table>
 	 * @return
@@ -99,8 +107,29 @@ public class PlatformService {
 		return CommonRopResponse.SUCCESSFUL_RESPONSE;
 	}
 	
-//	public Object postLocationData(UploadLocationRequest request){
-//		
-//	}
+	/**
+	 * <p>
+	 * <b>功能说明：</b>上传位置信息
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数名</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>platform.heartbeat</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>deviceId</td><td>NotEmpty</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>lists</td><td>json数据格式</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 * </table>
+	 * @return
+	 * @throws Exception
+	 */
+	@ServiceMethod(method = "platform.location.upload",version = "1.0", needInSession=NeedInSessionType.NO)
+	public Object postLocationData(UploadLocationRequest request){
+		locationAction.batchAdd(request.getLists(), request.getDeviceId());
+		return CommonRopResponse.SUCCESSFUL_RESPONSE;
+	}
 	
 }
