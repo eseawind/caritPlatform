@@ -37,4 +37,9 @@ public class ChangeNicknameInterceptor extends AbstractInterceptor {
 	public boolean isMatch(RopRequestContext ropRequestContext) {
 		return "account.update".equals(ropRequestContext.getMethod());
 	}
+	
+	@Override
+	public int getOrder() {
+		return 1;
+	}
 }

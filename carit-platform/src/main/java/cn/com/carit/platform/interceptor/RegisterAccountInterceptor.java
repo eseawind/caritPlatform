@@ -34,6 +34,7 @@ public class RegisterAccountInterceptor extends AbstractInterceptor {
 			if (StringUtils.hasText(email) && CacheManager.getInstance().getAccountCache().containsKey(email)) {
 				//设置了RopResponse后，后续的服务将不执行，直接返回这个RopResponse响应
 				ropRequestContext.setRopResponse(new BusinessServiceErrorResponse(ropRequestContext.getMethod(), Constants.EMAIL_REGISTERED, ropRequestContext.getLocale(), email));
+				return;
 			}
 			String nickName = ropRequestContext.getParamValue("nickName");
 			if (StringUtils.hasText(nickName) && CacheManager.getInstance().getNickNameCache().containsKey(nickName)) {
@@ -52,6 +53,11 @@ public class RegisterAccountInterceptor extends AbstractInterceptor {
 	@Override
 	public boolean isMatch(RopRequestContext ropRequestContext) {
 		return "account.register".equals(ropRequestContext.getMethod());
+	}
+
+	@Override
+	public int getOrder() {
+		return 1;
 	}
 
 }

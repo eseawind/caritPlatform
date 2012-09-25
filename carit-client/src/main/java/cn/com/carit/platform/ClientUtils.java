@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 
@@ -98,4 +99,19 @@ public class ClientUtils {
         UUID uuid = UUID.randomUUID();
         return uuid.toString().toUpperCase();
     }
+    
+    /**
+     * 构建请求路径
+     * @param serverUrl
+     * @param paramValues
+     * @return
+     */
+    public static String buildRequestUrl(String serverUrl, Map<String, String> paramValues){
+    	StringBuilder url=new StringBuilder(serverUrl);
+    	for (Entry<String, String> e: paramValues.entrySet()) {
+			url.append(e.getKey()).append("=").append(e.getValue()).append("&");
+		}
+    	return url.toString();
+    }
+
 }

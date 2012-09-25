@@ -30,4 +30,12 @@ public class ApplicationInterceptor extends AbstractInterceptor {
 		return "account.download.application".equals(ropRequestContext.getMethod())||"account.application.addComment".equals(ropRequestContext.getMethod());
 	}
 
+	/**
+	 * 让该拦截器在AbstractInterceptor前执行
+	 */
+	@Override
+	public int getOrder() {
+		return Integer.MAX_VALUE-1;
+	}
+
 }

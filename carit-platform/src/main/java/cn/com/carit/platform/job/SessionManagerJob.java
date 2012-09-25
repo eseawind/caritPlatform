@@ -30,9 +30,12 @@ public class SessionManagerJob {
 		Calendar beforeHalfAnHour=Calendar.getInstance();
 		logger.info("SessionManagerJob start...");
 		// 半小时前
-		beforeHalfAnHour.add(Calendar.MINUTE, 30);
+		beforeHalfAnHour.add(Calendar.MINUTE, -30);
 		for (Map.Entry<String, Session> e: sessionCache.entrySet()) {
 			CaritPlatformSession session=(CaritPlatformSession) e.getValue();
+			if (logger.isDebugEnabled()) {
+				logger.debug("session updateTime: "+session.getUpdateTime().getTime()+", now:"+beforeHalfAnHour.getTime());
+			}
 			if (session.getUpdateTime().before(beforeHalfAnHour)) {
 				// 激活状态的session超过半小时没请求
 				if (session.getStatus()==CaritPlatformSession.SessionStatus.ACTIVATE) {

@@ -172,7 +172,7 @@ public class AppDownloadLogDaoImpl extends DaoImpl implements AppDownloadLogDao<
 
 	@Override
 	public boolean hasDownloaded(int accountId, int appId) {
-		String sql="select 1 from t_app_download_log where account_id=? and app_id=?";
+		String sql="select count(1) from t_app_download_log where account_id=? and app_id=?";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}

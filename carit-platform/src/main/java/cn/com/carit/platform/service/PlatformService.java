@@ -99,4 +99,8 @@ public class PlatformService {
 		return CommonRopResponse.SUCCESSFUL_RESPONSE;
 	}
 	
+//	public Object postLocationData(UploadLocationRequest request){
+//		
+//	}
+	
 }
