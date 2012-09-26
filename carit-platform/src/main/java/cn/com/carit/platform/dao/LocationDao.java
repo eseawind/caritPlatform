@@ -3,9 +3,17 @@ package cn.com.carit.platform.dao;
 import java.util.List;
 
 import cn.com.carit.Dao;
-import cn.com.carit.platform.request.LocationRequest;
+import cn.com.carit.platform.request.SearchLoactionRequest;
+import cn.com.carit.platform.response.LocationResponse;
 
 public interface LocationDao<Location> extends Dao<Location> {
 
-	int batchAdd(final List<LocationRequest> locationList, final String deviceId);
+	int batchAdd(final List<Location> locationList);
+	
+	/**
+	 * 安装查询请求对象查询数据
+	 * @param request
+	 * @return
+	 */
+	List<LocationResponse> query(SearchLoactionRequest request);
 }

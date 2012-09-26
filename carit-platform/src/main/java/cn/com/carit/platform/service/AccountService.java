@@ -21,6 +21,8 @@ import cn.com.carit.platform.bean.Application;
 import cn.com.carit.platform.cache.CacheManager;
 import cn.com.carit.platform.request.account.AccountRequest;
 import cn.com.carit.platform.request.account.ApplicationRequest;
+import cn.com.carit.platform.request.account.CheckEmailRequest;
+import cn.com.carit.platform.request.account.CheckNicknameRequest;
 import cn.com.carit.platform.request.account.CommentRequest;
 import cn.com.carit.platform.request.account.RegisterAccountRequest;
 import cn.com.carit.platform.request.account.UpdateAccountRequest;
@@ -107,6 +109,53 @@ public class AccountService {
 	public Object logout(RopRequest request){
 		return CommonRopResponse.SUCCESSFUL_RESPONSE;
 	}
+	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>检测账号。检测email是否已注册
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数名</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>platform.heartbeat</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>email</td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}<td></td><td>是</td><td>是</td></tr>
+	 * </table>
+	 * @param request
+	 * @return
+	 */
+	@ServiceMethod(method = "account.check.email",version = "1.0", httpAction=HttpAction.GET)
+	public Object checkEmail(CheckEmailRequest request){
+		return CommonRopResponse.SUCCESSFUL_RESPONSE;
+	}
+	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>检测账号。检测nickName是否已注册
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数名</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>platform.heartbeat</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>nickName</td>@Length(min=3 ,max=50)<td></td><td>是</td><td>是</td></tr>
+	 * </table>
+	 * @param request
+	 * @return
+	 */
+	@ServiceMethod(method = "account.check.nickname",version = "1.0", httpAction=HttpAction.GET)
+	public Object checkNickname(CheckNicknameRequest request){
+		return CommonRopResponse.SUCCESSFUL_RESPONSE;
+	}
+	
 	
 	/**
 	 * <p>

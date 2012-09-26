@@ -13,7 +13,8 @@ import cn.com.carit.common.utils.JsonPage;
 import cn.com.carit.platform.action.LocationAction;
 import cn.com.carit.platform.bean.Location;
 import cn.com.carit.platform.dao.LocationDao;
-import cn.com.carit.platform.request.LocationRequest;
+import cn.com.carit.platform.request.SearchLoactionRequest;
+import cn.com.carit.platform.response.LocationResponse;
 
 @Service
 @Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
@@ -62,11 +63,16 @@ public class LocationActionImpl implements LocationAction<Location> {
 
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
 	@Override
-	public int batchAdd(final List<LocationRequest> locationList, final String deviceId) {
+	public int batchAdd(final List<Location> locationList) {
 		if (locationList!=null && locationList.size()>0) {
-			return dao.batchAdd(locationList, deviceId);
+			return dao.batchAdd(locationList);
 		}
 		return 0;
+	}
+
+	@Override
+	public List<LocationResponse> query(SearchLoactionRequest request) {
+		return dao.query(request);
 	}
 
 }

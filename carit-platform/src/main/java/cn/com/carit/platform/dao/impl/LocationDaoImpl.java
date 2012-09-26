@@ -1,13 +1,15 @@
 package cn.com.carit.platform.dao.impl;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -24,7 +26,8 @@ import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonPage;
 import cn.com.carit.platform.bean.Location;
 import cn.com.carit.platform.dao.LocationDao;
-import cn.com.carit.platform.request.LocationRequest;
+import cn.com.carit.platform.request.SearchLoactionRequest;
+import cn.com.carit.platform.response.LocationResponse;
 
 @Repository
 public class LocationDaoImpl extends DaoImpl implements LocationDao<Location> {
@@ -62,7 +65,7 @@ public class LocationDaoImpl extends DaoImpl implements LocationDao<Location> {
 				ps.setString(index++, t.getDeviceId());
 				ps.setDouble(index++, t.getLat());
 				ps.setDouble(index++, t.getLng());
-				ps.setDate(index++, new Date(t.getCreateTime()));
+				ps.setTimestamp(index++, new Timestamp(t.getCreateTime()));
 				return ps;
 			}
 		}, gkHolder);
@@ -203,7 +206,7 @@ public class LocationDaoImpl extends DaoImpl implements LocationDao<Location> {
 	}
 
 	@Override
-	public int batchAdd(final List<LocationRequest> locationList, final String deviceId) {
+	public int batchAdd(final List<Location> locationList) {
 		final String sql = "insert into t_upload_location (device_id, lat, lng, create_time) " 
 				+ "values (?, ?, ?, ?)";
 		if (log.isDebugEnabled()) {
@@ -214,10 +217,10 @@ public class LocationDaoImpl extends DaoImpl implements LocationDao<Location> {
 			@Override
 			public void setValues(PreparedStatement ps, int i) throws SQLException {
 				int index=1;
-				ps.setString(index++, deviceId);
+				ps.setString(index++, locationList.get(i).getDeviceId());
 				ps.setDouble(index++, locationList.get(i).getLat());
 				ps.setDouble(index++, locationList.get(i).getLng());
-				ps.setDate(index++, new Date(locationList.get(i).getTime()));
+				ps.setTimestamp(index++, new Timestamp(locationList.get(i).getCreateTime()));
 			}
 			
 			@Override
@@ -225,6 +228,54 @@ public class LocationDaoImpl extends DaoImpl implements LocationDao<Location> {
 				return locationList.size();
 			}
 		}).length;
+	}
+
+	@Override
+	public List<LocationResponse> query(SearchLoactionRequest request) {
+		StringBuilder sql = new StringBuilder(
+				"select lat, lng, create_time from t_upload_location where 1=1");
+		List<Object> args = new ArrayList<Object>();
+		List<Integer> argTypes = new ArrayList<Integer>();
+		sql.append(" and device_id=?");
+		args.add(request.getDeviceId());
+		argTypes.add(Types.VARCHAR);
+		if (request.getType()==SearchLoactionRequest.TYPE_TODAY) {
+			Calendar today=Calendar.getInstance();
+			// 清除时分秒
+			today.set(Calendar.HOUR_OF_DAY, 0);
+			today.set(Calendar.MINUTE, 0);
+			today.set(Calendar.SECOND, 0);
+			today.set(Calendar.MILLISECOND, 0);
+			
+			sql.append(" and create_time>=?");
+			args.add(today.getTime());
+			argTypes.add(Types.TIMESTAMP);
+			
+			// 加一天
+			today.add(Calendar.DATE, 1);
+			sql.append(" and create_time<?");
+			args.add(today.getTime());
+			argTypes.add(Types.TIMESTAMP);
+		}
+		if (request.getType()==SearchLoactionRequest.TYPE_CUSTOMIZED){
+			sql.append(" and create_time>=?");
+			args.add(new Date(request.getStartTime()));
+			argTypes.add(Types.TIMESTAMP);
+			
+			sql.append(" and create_time<?");
+			args.add(new Date(request.getEndTime()));
+			argTypes.add(Types.TIMESTAMP);
+		}
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		return query(sql.toString(), args, argTypes, new RowMapper<LocationResponse>() {
+			@Override
+			public LocationResponse mapRow(final ResultSet rs, final int rowNum) throws SQLException {
+				return new LocationResponse(rs.getDouble("lat"), rs.getDouble("lng"), rs.getTimestamp("create_time").getTime());
+			}
+			
+		});
 	}
 
 }

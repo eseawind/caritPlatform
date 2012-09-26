@@ -1,7 +1,5 @@
 package cn.com.carit.platform.request;
 
-import java.util.List;
-
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.rop.AbstractRopRequest;
@@ -12,19 +10,19 @@ import com.rop.AbstractRopRequest;
  * @author <a href="mailto:xiegengcai@gmail.com">Gengcai Xie</a>
  * @date 2012-9-25
  */
-public class UploadLocationRequest extends AbstractRopRequest {
+public class LocationUploadRequest extends AbstractRopRequest {
 	
 	@NotEmpty
-	private List<LocationRequest> lists;
+	private String lists;
 	
 	@NotEmpty
     private String deviceId;
 
-	public List<LocationRequest> getLists() {
+	public String getLists() {
 		return lists;
 	}
 
-	public void setLists(List<LocationRequest> lists) {
+	public void setLists(String lists) {
 		this.lists = lists;
 	}
 

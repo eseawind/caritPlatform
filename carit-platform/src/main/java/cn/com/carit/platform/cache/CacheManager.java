@@ -21,19 +21,19 @@ public class CacheManager {
 	private final Logger logger=LoggerFactory.getLogger(getClass());
 	
 	/* Action */
-	private AccountAction<Account> accountAction;
-	private AppSecretAction<AppSecret> appSecretAction;
-	private ApplicationAction<Application> applicationAction;
+	private final AccountAction<Account> accountAction;
+	private final AppSecretAction<AppSecret> appSecretAction;
+	private final ApplicationAction<Application> applicationAction;
 	
 	/**账号缓存，以邮箱地址为key*/
-	private Map<String, Account> accountCache;
+	private final Map<String, Account> accountCache;
 	
 	/**昵称缓存*/
-	private Map<String, String> nickNameCache;
+	private final Map<String, String> nickNameCache;
 	
-	private Map<String, String> appKeySecretCache;
+	private final Map<String, String> appKeySecretCache;
 	
-	private Map<Integer, Application> applicationCache;
+	private final Map<Integer, Application> applicationCache;
 	
 	private static class CacheHolder {
 		private static final CacheManager INSTANCE = new CacheManager();
@@ -92,12 +92,13 @@ public class CacheManager {
 	}
 	
 	/**
-	 * 刷新账号{email}的缓存
+	 * 刷新账号{email}的缓存,如果不存在则把 {t}新增至缓存
 	 * @param email
 	 * @param t
 	 */
 	public void refreshAccount(String email, Account t){
 		accountCache.put(email, t);
+		nickNameCache.put(t.getNickName(), email);
 	}
 	
 	/**

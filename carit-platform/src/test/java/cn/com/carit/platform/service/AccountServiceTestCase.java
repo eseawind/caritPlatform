@@ -5,8 +5,10 @@ import java.io.File;
 import org.testng.annotations.Test;
 
 import cn.com.carit.platform.RopTestCaseClient;
-import cn.com.carit.platform.request.account.CommentRequest;
 import cn.com.carit.platform.request.account.ApplicationRequest;
+import cn.com.carit.platform.request.account.CheckEmailRequest;
+import cn.com.carit.platform.request.account.CheckNicknameRequest;
+import cn.com.carit.platform.request.account.CommentRequest;
 import cn.com.carit.platform.request.account.UpdateAccountRequest;
 import cn.com.carit.platform.request.account.UploadUserPhotoRequest;
 import cn.com.carit.platform.response.AccountResponse;
@@ -71,5 +73,21 @@ public class AccountServiceTestCase {
 		CommentRequest request=new CommentRequest("xiegc@carit.com.cn", "123456", 8, "很好很强大", 10);
 		RopTestCaseClient.getInstance().getSession();
 		RopTestCaseClient.getInstance().buildClientRequest().post(request, CommonRopResponse.class, "account.application.addComment", "1.0");
+	}
+	
+	@Test
+	public void testCheckEmail(){
+		CheckEmailRequest request=new CheckEmailRequest();
+		request.setEmail("xiegc@carit.com.cn");
+		RopTestCaseClient.getInstance().getSession();
+		RopTestCaseClient.getInstance().buildClientRequest().get(request, CommonRopResponse.class, "account.check.email", "1.0");
+	}
+	
+	@Test
+	public void testCheckNickname(){
+		CheckNicknameRequest request=new CheckNicknameRequest();
+		request.setNickName("風一樣的男子");
+		RopTestCaseClient.getInstance().getSession();
+		RopTestCaseClient.getInstance().buildClientRequest().get(request, CommonRopResponse.class, "account.check.nickname", "1.0");
 	}
 }

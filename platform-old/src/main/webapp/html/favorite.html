@@ -1,0 +1,42 @@
+<div id="fav">
+	<form id="fav_form" method="post">
+	<ul>
+	</ul>
+	<div>
+		<span id="fav_submit">提交</span>
+		<span id="fav_reset" onclick="$('#fav_form').form('clear');">重置</span>
+	</div>
+	</form>
+</div>
+
+<script type="text/javascript">
+<!--
+$(function() {
+	var html='';
+	$.each(allNavigation,function(i,m){
+		html+='<li><input name="ids" type="checkbox" value="'+m.id+'" ';
+		if(m.checked){
+			html+='checked="checked"';
+		}
+		html+='/>'+m.name+'</li>';
+	});
+	$('#fav ul').html(html);
+	$('#fav_reset').click(function(){$('#fav_form').form('clear');});
+	$('#fav_submit').click(function(){
+		$('#fav_form').form({
+			url:app.name+'/portal/navigation/add_favorite/'+account.id,
+			dataType:'text',  
+	    	success:function(data){
+				if(data==-1){
+					tips('fav_submit','超时，请重新登录','bottom');
+				}else if(data>=0){
+					location.reload();
+				}else{
+					tips('fav_submit','后台系统异','bottom');
+				}
+		    }
+		}).submit();
+	});
+});
+//-->
+</script>

@@ -266,6 +266,7 @@ public class CaritClient {
 		// 登录
 		Map<String, String> paramValues=getInstance().buildParamValues("account.logon", "1.0", getInstance().getSessionId());
 		paramValues.put("email", "xiegc@carit.com.cn");
+		
 		String sign=ClientUtils.sign(paramValues, ClientHolder.INSTANCE.appSecret);
 		// 不需要签名的参数放后面
 		paramValues.put("sign", sign);

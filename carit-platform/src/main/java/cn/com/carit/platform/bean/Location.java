@@ -15,9 +15,23 @@ public class Location {
 	
 //	private Date updateTime;
 
+	public Location() {
+	}
+	
+	public Location(String deviceId, Double lat, Double lng, Long createTime) {
+		super();
+		this.deviceId = deviceId;
+		this.lat = lat;
+		this.lng = lng;
+		this.createTime = createTime;
+	}
+
+
+
 	public int getId() {
 		return id;
 	}
+
 
 	public void setId(int id) {
 		this.id = id;

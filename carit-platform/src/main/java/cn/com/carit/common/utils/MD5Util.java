@@ -142,5 +142,6 @@ public class MD5Util {
 		}
 		
 		System.out.println(Locale.SIMPLIFIED_CHINESE.toString());
+		
 	}
 }
