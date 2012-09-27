@@ -1,8 +1,7 @@
 package cn.com.carit.platform.dao;
 
-import java.util.List;
+import cn.com.carit.Dao;
 
-public interface ApplicationDao<Application> {
+public interface ApplicationDao<Application> extends Dao<Application>{
 
-	List<Application> queryAll();
 }

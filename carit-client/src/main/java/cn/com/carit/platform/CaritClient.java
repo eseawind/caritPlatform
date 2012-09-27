@@ -12,9 +12,7 @@ import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import cn.com.carit.platform.response.AccountResponse;
 import cn.com.carit.platform.response.CommonRopResponse;
-import cn.com.carit.platform.response.ErrorResponse;
 import cn.com.carit.platform.response.LogonResponse;
 
 /**
@@ -73,7 +71,6 @@ public class CaritClient {
 			serverUrl=prop.getProperty("serverUrl");
 			appKey=prop.getProperty("appKey");
 			appSecret=prop.getProperty("appSecret");
-			timer=new Timer("keep connection timer", false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -169,6 +166,7 @@ public class CaritClient {
 				LogonResponse response=(LogonResponse) JsonUtil.jsonToObject(resonse, LogonResponse.class);
 				getInstance().setSessionId(response.getSessionId());
 				// 开启一个延时5分钟每间隔5分钟执行一次的定时器
+				timer=new Timer("keep connection timer", false);
 				timer.schedule(new TimerTask() {
 					
 					@Override
@@ -257,31 +255,43 @@ public class CaritClient {
 		return response;
 	}
 
-	public String getHttpResponse(String url) {
+	public static String getHttpResponse(String url) {
 		return getHttpResponse(url, HTTP_METHOD_GET);
 	}
 	
 	public static void main(String[] args) throws Exception {
-		getInstance().getSession();
-		// 登录
-		Map<String, String> paramValues=getInstance().buildParamValues("account.logon", "1.0", getInstance().getSessionId());
-		paramValues.put("email", "xiegc@carit.com.cn");
+//		getInstance().getSession();
+//		// 登录
+//		Map<String, String> paramValues=getInstance().buildParamValues("account.logon", "1.0", getInstance().getSessionId());
+//		paramValues.put("email", "xiegc@carit.com.cn");
+//		
+//		String sign=ClientUtils.sign(paramValues, ClientHolder.INSTANCE.appSecret);
+//		// 不需要签名的参数放后面
+//		paramValues.put("sign", sign);
+//		paramValues.put("password", "123456");
+//		String resonse=getHttpResponse(ClientUtils.buildRequestUrl(getInstance().serverUrl, paramValues), HTTP_METHOD_POST);
+//		try {
+//			AccountResponse account=(AccountResponse) JsonUtil.jsonToObject(resonse, AccountResponse.class);
+//			System.out.println(account);
+//		} catch (Exception e) {
+//			try {
+//				ErrorResponse error=(ErrorResponse) JsonUtil.jsonToObject(resonse, ErrorResponse.class);
+//				System.out.println(error);
+//			} catch (Exception e2) {
+//				e.printStackTrace();
+//			}
+//		}
 		
-		String sign=ClientUtils.sign(paramValues, ClientHolder.INSTANCE.appSecret);
-		// 不需要签名的参数放后面
-		paramValues.put("sign", sign);
-		paramValues.put("password", "123456");
-		String resonse=getHttpResponse(ClientUtils.buildRequestUrl(getInstance().serverUrl, paramValues), HTTP_METHOD_POST);
-		try {
-			AccountResponse account=(AccountResponse) JsonUtil.jsonToObject(resonse, AccountResponse.class);
-			System.out.println(account);
-		} catch (Exception e) {
-			try {
-				ErrorResponse error=(ErrorResponse) JsonUtil.jsonToObject(resonse, ErrorResponse.class);
-				System.out.println(error);
-			} catch (Exception e2) {
-				e.printStackTrace();
-			}
-		}
+		Map<String, String> param=getInstance().buildParamValues("platform.obd.newestData", "1.0");
+		param.put("deviceId", "B8EA553F");
+		
+		String sign=ClientUtils.sign(param, getInstance().appSecret);
+		
+		param.put(SYSTEM_PARAM_SIGN, sign);
+		
+		String url=ClientUtils.buildRequestUrl(getInstance().getServerUrl(), param);
+		System.out.println(url);
+		System.out.println(getHttpResponse(url));
+		
 	}
 }

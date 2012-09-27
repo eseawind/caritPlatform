@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonPage;
 import cn.com.carit.platform.action.AppDownloadLogAction;
-import cn.com.carit.platform.bean.AppDownloadLog;
+import cn.com.carit.platform.bean.market.AppDownloadLog;
 import cn.com.carit.platform.dao.AppDownloadLogDao;
 
 @Service

@@ -5,10 +5,25 @@ import cn.com.carit.common.Constants;
 public class DataGridModel  implements java.io.Serializable {
 	
 	private static final long serialVersionUID = 7232798260610351343L;
-	private int page; //当前页,名字必须为page
+	private int page=Constants.PAGE_START; //当前页,名字必须为page
 	private int rows=Constants.PAGE_SIZE ; //每页大小,名字必须为rows
 	private String sort; //排序字段
 	private String order; //排序规则
+	
+	public DataGridModel() {
+		super();
+	}
+	
+	public DataGridModel(int page, int rows, String sort, String order) {
+		super();
+		this.page = page;
+		this.rows = rows;
+		this.sort = sort;
+		this.order = order;
+	}
+
+
+
 	public int getPage() {
 		return page;
 	}

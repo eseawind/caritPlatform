@@ -18,23 +18,22 @@ public class JsonUtil {
 	public static final ObjectMapper MAPPER = new ObjectMapper();
 	
 	@SuppressWarnings("unchecked")
-	public static Map<String,String> jsonToMap(String json) throws Exception{
+	public static <K, V> Map<K,V> jsonToMap(String json) throws Exception{
 		return MAPPER.readValue(json, Map.class);
 	}
 	
-	@SuppressWarnings("rawtypes")
-	public static String mapToStr(Map map) throws Exception{
+	public static <K, V> String mapToStr(Map<K, V> map) throws Exception{
 		return MAPPER.writeValueAsString(map);
 	}
 	
-	public static String[] jsonToStrArray(String json) throws Exception {
+	public static Object [] jsonToStrArray(String json) throws Exception {
 		if (json==null || json.isEmpty()) {
 			json="[]";
 		}
-		return MAPPER.readValue(json, String[].class);
+		return MAPPER.readValue(json, Object[].class);
 	}
 	
-	public static String arrayToStr(String [] array) throws Exception{
+	public static String arrayToStr(Object [] array) throws Exception{
 		if (array!=null && array.length>0) {
 			return MAPPER.writeValueAsString(array);
 		}
@@ -65,8 +64,8 @@ public class JsonUtil {
 		}
 		System.out.println(mapToStr(map));
 		String json2="[\"010201\",\"010302\"]";
-		String [] array=jsonToStrArray(json2);
-		for(String str:array){
+		Object [] array=jsonToStrArray(json2);
+		for(Object str:array){
 			System.out.println(str);
 		}
 		System.out.println(arrayToStr(array));

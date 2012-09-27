@@ -1,4 +1,4 @@
-package cn.com.carit.platform.bean;
+package cn.com.carit.platform.bean.market;
 
 import java.util.Date;
 

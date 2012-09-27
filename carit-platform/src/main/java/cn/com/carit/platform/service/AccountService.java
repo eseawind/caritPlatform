@@ -14,10 +14,10 @@ import cn.com.carit.common.utils.MD5Util;
 import cn.com.carit.platform.action.AccountAction;
 import cn.com.carit.platform.action.AppCommentAction;
 import cn.com.carit.platform.action.AppDownloadLogAction;
-import cn.com.carit.platform.bean.Account;
-import cn.com.carit.platform.bean.AppComment;
-import cn.com.carit.platform.bean.AppDownloadLog;
-import cn.com.carit.platform.bean.Application;
+import cn.com.carit.platform.bean.account.Account;
+import cn.com.carit.platform.bean.market.AppComment;
+import cn.com.carit.platform.bean.market.AppDownloadLog;
+import cn.com.carit.platform.bean.market.Application;
 import cn.com.carit.platform.cache.CacheManager;
 import cn.com.carit.platform.request.account.AccountRequest;
 import cn.com.carit.platform.request.account.ApplicationRequest;
@@ -25,9 +25,11 @@ import cn.com.carit.platform.request.account.CheckEmailRequest;
 import cn.com.carit.platform.request.account.CheckNicknameRequest;
 import cn.com.carit.platform.request.account.CommentRequest;
 import cn.com.carit.platform.request.account.RegisterAccountRequest;
+import cn.com.carit.platform.request.account.SearchAccountRequest;
 import cn.com.carit.platform.request.account.UpdateAccountRequest;
 import cn.com.carit.platform.request.account.UpdatePasswordRequest;
 import cn.com.carit.platform.request.account.UploadUserPhotoRequest;
+import cn.com.carit.platform.request.market.SearchSystemMessageRequest;
 import cn.com.carit.platform.response.AccountResponse;
 import cn.com.carit.platform.response.DownloadResponse;
 import cn.com.carit.platform.response.UploadUserPhotoResponse;
@@ -387,7 +389,7 @@ public class AccountService {
 	public Object downloadApplicaton(ApplicationRequest request){
 		// 查询缓存
 		Account t = CacheManager.getInstance().getAccount(request.getEmail());
-		Application application = CacheManager.getInstance().getApplicationCache().get(request.getAppId());
+		Application application = CacheManager.getInstance().getApplication(request.getAppId());
 		
 		// 保存下载记录
 		AppDownloadLog log=new AppDownloadLog();
@@ -445,5 +447,29 @@ public class AccountService {
 				request.getRopRequestContext().getMethod(), Constants.HAVENT_DOWNLOAD_APPLICTION,
 				request.getRopRequestContext().getLocale(), t.getEmail(), request.getAppId());
 		
+	}
+	
+	@ServiceMethod(method = "account.query.account.downloaded.log",version = "1.0",httpAction=HttpAction.GET)
+	public Object queryAccountDownloadLogs(SearchAccountRequest request){
+		// TODO
+		return null;
+	}
+	
+	@ServiceMethod(method = "account.query.sys.msg",version = "1.0",httpAction=HttpAction.GET)
+	public Object queryAccountSystemMessage(SearchSystemMessageRequest request){
+		// TODO
+		return null;
+	}
+	
+	@ServiceMethod(method = "account.read.sys.msg",version = "1.0",httpAction=HttpAction.GET)
+	public Object readAccountSystemMessage(SearchSystemMessageRequest request){
+		// TODO
+		return null;
+	}
+	
+	@ServiceMethod(method = "account.delete.sys.msg",version = "1.0",httpAction=HttpAction.GET)
+	public Object deleteAccountSystemMessage(SearchSystemMessageRequest request){
+		// TODO
+		return null;
 	}
 }

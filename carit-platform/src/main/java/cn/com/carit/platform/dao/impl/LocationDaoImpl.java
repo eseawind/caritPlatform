@@ -278,4 +278,13 @@ public class LocationDaoImpl extends DaoImpl implements LocationDao<Location> {
 		});
 	}
 
+	@Override
+	public void deleteDuplicateData() {
+		String sql="delete from a using t_upload_location a,t_upload_location b where a.id<b.id and a.create_time=b.create_time";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		jdbcTemplate.update(sql);
+	}
+
 }

@@ -1,4 +1,6 @@
-package cn.com.carit.platform.bean;
+package cn.com.carit.platform.bean.market;
+
+import cn.com.carit.platform.bean.BaseBean;
 
 public class AppComment extends BaseBean{
 

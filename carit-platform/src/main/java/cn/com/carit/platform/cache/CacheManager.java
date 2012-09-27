@@ -13,9 +13,9 @@ import org.springframework.web.context.WebApplicationContext;
 import cn.com.carit.platform.action.AccountAction;
 import cn.com.carit.platform.action.AppSecretAction;
 import cn.com.carit.platform.action.ApplicationAction;
-import cn.com.carit.platform.bean.Account;
 import cn.com.carit.platform.bean.AppSecret;
-import cn.com.carit.platform.bean.Application;
+import cn.com.carit.platform.bean.account.Account;
+import cn.com.carit.platform.bean.market.Application;
 
 public class CacheManager {
 	private final Logger logger=LoggerFactory.getLogger(getClass());
@@ -56,7 +56,6 @@ public class CacheManager {
 		
 		refreshAccounts();
 		refreshAppKeySecretCache();
-		refreshApplicationCache();
 		logger.info(" init cache end ...");
 	}
 	
@@ -74,7 +73,6 @@ public class CacheManager {
 	public void refreshCache(){
 		refreshAccounts();
 		refreshAppKeySecretCache();
-		refreshApplicationCache();
 	}
 	
 	
@@ -172,16 +170,18 @@ public class CacheManager {
 		return getAccountCache().get(email);
 	}
 	
-	public void refreshApplicationCache(){
-		applicationCache.clear();
-		List<Application> list=applicationAction.queryAll();
-		for (Application t : list) {
-			applicationCache.put(t.getId(), t);
-		}
-	}
-
 	public Map<Integer, Application> getApplicationCache() {
 		return applicationCache;
 	}
 	
+	public Application getApplication(int appId) {
+		Application t=applicationCache.get(appId);
+		if (t==null) {
+			t=applicationAction.queryById(appId);
+			if (t!=null) {
+				applicationCache.put(appId, t);
+			}
+		}
+		return t;
+	}
 }

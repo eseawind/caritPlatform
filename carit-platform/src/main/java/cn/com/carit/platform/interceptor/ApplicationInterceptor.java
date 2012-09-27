@@ -19,7 +19,7 @@ public class ApplicationInterceptor extends AbstractInterceptor {
 	public void beforeService(RopRequestContext ropRequestContext) {
 		if (isMatch(ropRequestContext)) {
 			Integer appId=Integer.valueOf(ropRequestContext.getParamValue("appId"));
-			if (CacheManager.getInstance().getApplicationCache().get(appId)==null) {
+			if (CacheManager.getInstance().getApplication(appId)==null) {
 				ropRequestContext.setRopResponse(new NotExistErrorResponse("appllication","appId",appId,ropRequestContext.getLocale()));
 			}
 		}

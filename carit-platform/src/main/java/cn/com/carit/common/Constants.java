@@ -4,6 +4,7 @@ package cn.com.carit.common;
 public class Constants {
 	public static final String CHARACTER_ENCODING_UTF8="utf-8";
 	public static final int PAGE_SIZE=10;
+	public static final int PAGE_START=1;
 	public static final int STATUS_VALID=1;
 	public static final int STATUS_LOCKED=2;
 	public static final int STATUS_INVALID=0;
@@ -29,7 +30,7 @@ public class Constants {
 	public static final String BASE_PATH_PHOTOS="/photos/";
 	public static final String BASE_PATH_APKS="/apks/";
 	
-	public static final String DEAFULD_LANGUAGE="en";
+	public static final String DEAFULD_LANGUAGE="cn";
 	
 	//ERROR
 	public static final String PASSWORD_ERROR = "PASSWORD_ERROR";
@@ -37,6 +38,7 @@ public class Constants {
 	public static final String EMAIL_REGISTERED = "EMAIL_REGISTERED";
 	public static final String NICKNAME_REGISTERED = "NICKNAME_REGISTERED";
 	public static final String HAVENT_DOWNLOAD_APPLICTION = "HAVENT_DOWNLOAD_APPLICTION";
+	public static final String DEVICE_ID_IS_EMPTY="DEVICE_ID_IS_EMPTY";
 	
 	// 正则模式
 	public static final String REGEXP_EMAIL="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";

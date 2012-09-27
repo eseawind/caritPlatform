@@ -1,6 +1,8 @@
-package cn.com.carit.platform.bean;
+package cn.com.carit.platform.bean.account;
 
 import java.util.Date;
+
+import cn.com.carit.platform.bean.BaseBean;
 
 /**
  * AccountInfo

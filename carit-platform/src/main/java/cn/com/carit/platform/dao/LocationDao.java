@@ -11,9 +11,14 @@ public interface LocationDao<Location> extends Dao<Location> {
 	int batchAdd(final List<Location> locationList);
 	
 	/**
-	 * 安装查询请求对象查询数据
+	 * 按照查询请求对象查询数据
 	 * @param request
 	 * @return
 	 */
 	List<LocationResponse> query(SearchLoactionRequest request);
+	
+	/**
+	 * 删除重复数据
+	 */
+	void deleteDuplicateData();
 }

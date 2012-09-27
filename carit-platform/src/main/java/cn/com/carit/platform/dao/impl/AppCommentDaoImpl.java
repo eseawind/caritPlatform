@@ -14,7 +14,7 @@ import cn.com.carit.DaoImpl;
 import cn.com.carit.common.utils.CaritUtils;
 import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonPage;
-import cn.com.carit.platform.bean.AppComment;
+import cn.com.carit.platform.bean.market.AppComment;
 import cn.com.carit.platform.dao.AppCommentDao;
 
 @Repository

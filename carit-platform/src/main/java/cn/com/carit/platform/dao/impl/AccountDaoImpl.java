@@ -14,7 +14,7 @@ import cn.com.carit.DaoImpl;
 import cn.com.carit.common.utils.CaritUtils;
 import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonPage;
-import cn.com.carit.platform.bean.Account;
+import cn.com.carit.platform.bean.account.Account;
 import cn.com.carit.platform.dao.AccountDao;
 
 @Repository

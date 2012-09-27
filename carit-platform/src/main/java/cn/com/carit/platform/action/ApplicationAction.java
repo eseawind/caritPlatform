@@ -1,7 +1,6 @@
 package cn.com.carit.platform.action;
 
-import java.util.List;
+import cn.com.carit.Action;
 
-public interface ApplicationAction<Application> {
-	List<Application> queryAll();
+public interface ApplicationAction<Application> extends Action<Application> {
 }

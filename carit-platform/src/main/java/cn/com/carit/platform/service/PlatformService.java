@@ -3,22 +3,36 @@ package cn.com.carit.platform.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.Resource;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.type.TypeReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
+import cn.com.carit.common.Constants;
+import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonUtil;
 import cn.com.carit.platform.action.LocationAction;
+import cn.com.carit.platform.action.ObdDataAction;
 import cn.com.carit.platform.bean.Location;
+import cn.com.carit.platform.bean.ObdData;
 import cn.com.carit.platform.request.LocationRequest;
 import cn.com.carit.platform.request.LocationUploadRequest;
+import cn.com.carit.platform.request.ObdDataUploadRequest;
 import cn.com.carit.platform.request.SearchLoactionRequest;
+import cn.com.carit.platform.request.SearchObdDataRequest;
 import cn.com.carit.platform.response.LocationListResponse;
 import cn.com.carit.platform.response.LogonResponse;
+import cn.com.carit.platform.response.ObdDataResponse;
 import cn.com.carit.session.CaritPlatformSession;
 
 import com.rop.RopRequest;
@@ -26,6 +40,7 @@ import com.rop.annotation.HttpAction;
 import com.rop.annotation.NeedInSessionType;
 import com.rop.annotation.ServiceMethod;
 import com.rop.annotation.ServiceMethodBean;
+import com.rop.response.BusinessServiceErrorResponse;
 import com.rop.response.CommonRopResponse;
 /**
  * <p>
@@ -39,6 +54,11 @@ public class PlatformService {
 
 	@Resource
 	private LocationAction<Location> locationAction;
+	
+	@Resource
+	private ObdDataAction<ObdData> obdDataAction;
+	
+	protected final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	/**
 	 * <p>
@@ -179,5 +199,142 @@ public class PlatformService {
 	@ServiceMethod(method = "platform.location.search",version = "1.0", needInSession=NeedInSessionType.NO, httpAction=HttpAction.GET)
 	public Object searchLocation(SearchLoactionRequest request){
 		return new LocationListResponse(locationAction.query(request));
+	}
+	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>发送OBD数据
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数名</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>platform.obd.upload</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>deviceId</td><td>NotEmpty</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>data</td><td>数据，格式如：{"08":"23","09":"24","04":"152047890","05":"19","15":"36","06":"20","16":"37","07":"5653","13":"34","14":"35","01":"5","11":"32","02":"6","12":"33","03":"1800","10":"25"}</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>location</td><td>坐标，格式如：22.543099,114.057868</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>date</td><td>数据产生时间（时间截毫秒值）</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>error</td><td>错误，格式如：["010201","010302"]</td><td>是</td><td>是</td></tr>
+	 * </table>
+	 * @param request
+	 * @return
+	 */
+	@ServiceMethod(method = "platform.obd.upload",version = "1.0", needInSession=NeedInSessionType.NO, httpAction=HttpAction.POST)
+	public Object postObdData(ObdDataUploadRequest request) {
+		try {
+			// 构造Data
+			ObdData t=new ObdData();
+			t.setDate(new Date(request.getDate()));
+			t.setDeviceId(request.getDeviceID());
+			t.setLocation(request.getLocation());
+			t.setError(request.getError());
+			int index=1;
+			Map<String, String> data=JsonUtil.jsonToMap(request.getData());
+			for (Entry<String, String> e: data.entrySet()) {
+				logger.info("第 "+index+" 个数据:"+e.getKey()+":"+e.getValue());
+				if (e.getKey()!=null) {
+					t.getValues()[Integer.valueOf(e.getKey())-1]=Integer.valueOf(e.getValue());//传过来的key 1~16
+				}
+				index++;
+			}
+			// 保存数据
+			obdDataAction.add(t);
+		} catch (Exception e) {
+			logger.error("post obd data error...", e);
+			return CommonRopResponse.FAILURE_RESPONSE;
+		}
+		return CommonRopResponse.SUCCESSFUL_RESPONSE;
+	}
+	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>查询OBD数据
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数名</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>platform.obd.search</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>deviceId</td><td>设备ID</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>startTime</td><td>起始时间（long型时间截）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>endTime</td><td>结束时间（long型时间截）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>page</td><td>起始页（默认1）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>rows</td><td>每页显示记录数（默认10）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sort</td><td>排序字段</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>order</td><td>排序规则（desc/asc）</td><td>是</td><td>否</td></tr>
+	 * </table>
+	 * @param request
+	 * @return
+	 */
+	@ServiceMethod(method = "platform.obd.search",version = "1.0", needInSession=NeedInSessionType.NO, httpAction=HttpAction.GET)
+	public Object searchObdData(SearchObdDataRequest request){
+		// 构造Data
+		ObdData t=new ObdData();
+		if (StringUtils.hasText(request.getDeviceId())) {
+			t.setDeviceId(request.getDeviceId());
+		}
+		if (request.getStartTime()!=null) {
+			t.setStartDate(new Date(request.getStartTime()));
+		}
+		if (request.getEndTime()!=null) {
+			t.setEndDate(new Date(request.getEndTime()));
+		}
+		return obdDataAction.queryByExemple(t
+				, new DataGridModel(request.getPage()
+						, request.getRows(), request.getSort(), request.getOrder())
+		);
+	}
+	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>按设备Id查询最新的数据
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数名</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>platform.obd.search</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>deviceId</td><td>设备ID</td><td>是</td><td>是</td></tr>
+	 * </table>
+	 * @param request
+	 * @return
+	 */
+	@ServiceMethod(method = "platform.obd.newestData",version = "1.0", needInSession=NeedInSessionType.NO, httpAction=HttpAction.GET)
+	public Object newestDbdData(RopRequest request) throws Exception{
+		String deviceId=request.getRopRequestContext().getParamValue("deviceId");
+		if (StringUtils.hasText(deviceId)) {
+			ObdDataResponse res=new ObdDataResponse();
+			ObdData data=obdDataAction.queryLastByDeviceId(deviceId);
+			if (data!=null) {
+				res.setDeviceId(data.getDeviceId());
+				res.setLocation(data.getLocation());
+				res.setDate(data.getDate());
+				Map<Integer,Integer> map=new HashMap<Integer,Integer>();
+				if (data.getValues()!=null) {
+					for (int i = 0; i < data.getValues().length; i++) {
+						map.put(i+1, data.getValues()[i]);
+					}
+				}
+				res.setData(map);
+				res.setError(JsonUtil.jsonToStrArray(data.getError()));
+			}
+			return res;
+		} else {
+			return new BusinessServiceErrorResponse(request.getRopRequestContext().getMethod()
+					, Constants.DEVICE_ID_IS_EMPTY
+					, request.getRopRequestContext().getLocale(), deviceId);
+		}
 	}
 }

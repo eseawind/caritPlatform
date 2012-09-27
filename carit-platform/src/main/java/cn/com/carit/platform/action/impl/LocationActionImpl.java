@@ -64,10 +64,13 @@ public class LocationActionImpl implements LocationAction<Location> {
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
 	@Override
 	public int batchAdd(final List<Location> locationList) {
+		int insertRows=0;
 		if (locationList!=null && locationList.size()>0) {
-			return dao.batchAdd(locationList);
+			insertRows = dao.batchAdd(locationList);
+			// 删除重复数据
+			dao.deleteDuplicateData();
 		}
-		return 0;
+		return insertRows;
 	}
 
 	@Override

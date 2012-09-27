@@ -2,7 +2,7 @@ package cn.com.carit.platform.interceptor;
 
 import cn.com.carit.common.Constants;
 import cn.com.carit.common.utils.MD5Util;
-import cn.com.carit.platform.bean.Account;
+import cn.com.carit.platform.bean.account.Account;
 import cn.com.carit.platform.cache.CacheManager;
 
 import com.rop.AbstractInterceptor;
