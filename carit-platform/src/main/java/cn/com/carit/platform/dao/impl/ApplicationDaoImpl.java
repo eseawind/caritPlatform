@@ -413,7 +413,7 @@ public class ApplicationDaoImpl extends DaoImpl implements ApplicationDao<Applic
 			args.add(t.getMainPic());
 			argTypes.add(12);// java.sql.Types type
 		}
-		return null;
+		return sql.toString();
 	}
 	
 
