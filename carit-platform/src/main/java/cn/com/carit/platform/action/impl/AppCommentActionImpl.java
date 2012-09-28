@@ -13,6 +13,7 @@ import cn.com.carit.common.utils.JsonPage;
 import cn.com.carit.platform.action.AppCommentAction;
 import cn.com.carit.platform.bean.market.AppComment;
 import cn.com.carit.platform.dao.AppCommentDao;
+import cn.com.carit.platform.response.market.AppCommentResponse;
 
 @Service
 @Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
@@ -57,6 +58,12 @@ public class AppCommentActionImpl implements AppCommentAction<AppComment> {
 	@Override
 	public List<AppComment> queryAll() {
 		return dao.queryAll();
+	}
+
+	@Override
+	public JsonPage<AppCommentResponse> queryAppComments(int appId,
+			DataGridModel dgm) {
+		return dao.queryAppComments(appId, dgm);
 	}
 
 }

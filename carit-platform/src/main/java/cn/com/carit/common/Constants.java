@@ -39,6 +39,7 @@ public class Constants {
 	public static final String NICKNAME_REGISTERED = "NICKNAME_REGISTERED";
 	public static final String HAVENT_DOWNLOAD_APPLICTION = "HAVENT_DOWNLOAD_APPLICTION";
 	public static final String DEVICE_ID_IS_EMPTY="DEVICE_ID_IS_EMPTY";
+	public static final String MESSAGE_ACCOUNT_ID_NOT_MATCH="MESSAGE_ACCOUNT_ID_NOT_MATCH";
 	
 	// 正则模式
 	public static final String REGEXP_EMAIL="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";

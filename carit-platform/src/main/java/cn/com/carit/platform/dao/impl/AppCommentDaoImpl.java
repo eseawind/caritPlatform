@@ -11,11 +11,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import cn.com.carit.DaoImpl;
+import cn.com.carit.common.Constants;
 import cn.com.carit.common.utils.CaritUtils;
 import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonPage;
 import cn.com.carit.platform.bean.market.AppComment;
 import cn.com.carit.platform.dao.AppCommentDao;
+import cn.com.carit.platform.response.market.AppCommentResponse;
 
 @Repository
 public class AppCommentDaoImpl extends DaoImpl implements AppCommentDao<AppComment> {
@@ -207,6 +209,54 @@ public class AppCommentDaoImpl extends DaoImpl implements AppCommentDao<AppComme
 			argTypes.add(4);// java.sql.Types type
 		}
 		return sql.toString();
+	}
+
+	@Override
+	public JsonPage<AppCommentResponse> queryAppComments(int appId,
+			DataGridModel dgm) {
+		StringBuilder sql = new StringBuilder(
+				"select a.grade, a.comment, a.update_time, b.nick_name from t_app_comment a left join t_account_info b on a.user_id=b.id where a.status=? and a.app_id=?");
+		String countSql = "select count(1) from t_app_comment a left join t_account_info b on a.user_id=b.id where a.status=? and a.app_id=?";
+		JsonPage<AppCommentResponse> jsonPage = new JsonPage<AppCommentResponse>(dgm.getPage(), dgm.getRows());
+		List<Object> args = new ArrayList<Object>();
+		List<Integer> argTypes = new ArrayList<Integer>();
+		args.add(Constants.STATUS_VALID);
+		argTypes.add(Types.INTEGER);
+		args.add(appId);
+		argTypes.add(Types.INTEGER);
+		// 排序
+		if (StringUtils.hasText(dgm.getOrder())
+				&& StringUtils.hasText(dgm.getSort())) {
+			sql.append(" order by ")
+					.append(CaritUtils.splitFieldWords(dgm.getSort()))
+					.append(" ").append(dgm.getOrder());
+		} else {
+			sql.append(" order by a.update_time desc");
+		}
+		log.debug(String.format("\n%1$s\n", countSql));
+		int totalRow = queryForInt(countSql, args, argTypes);
+		sql.append(" limit ?, ?");
+		args.add(jsonPage.getStartRow());
+		args.add(jsonPage.getPageSize());
+		argTypes.add(Types.INTEGER);
+		argTypes.add(Types.INTEGER);
+		// 更新
+		jsonPage.setTotal(totalRow);
+		log.debug(String.format("\n%1$s\n", sql));
+		jsonPage.setRows(query(sql.toString(), args, argTypes, new RowMapper<AppCommentResponse>() {
+
+			@Override
+			public AppCommentResponse mapRow(ResultSet rs, int rowNum)
+					throws SQLException {
+				AppCommentResponse t=new AppCommentResponse();
+				t.setGrade(rs.getInt("grade"));
+				t.setComment(rs.getString("comment"));
+				t.setNickName(rs.getString("nick_name"));
+				t.setUpdateTime(rs.getTimestamp("update_time"));
+				return t;
+			}
+		}));
+		return jsonPage;
 	}
 
 }

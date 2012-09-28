@@ -14,4 +14,9 @@ public interface ObdDataDao<ObdData> extends Dao<ObdData> {
 	 * @return
 	 */
 	ObdData queryLastByDeviceId(String deviceId);
+	
+	/**
+	 * 删除同一设备同一上传时间的重复数据（保留最后上传的）
+	 */
+	void deleteDuplicateData();
 }

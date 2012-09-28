@@ -27,6 +27,9 @@ public class SearchApplicationRequest extends SearchRequest {
 	private String developerEmail;
 	
 	/** 分类名称 */
+	@Min(value=1)
+	@Max(value=Integer.MAX_VALUE)
+	private Integer catalogId;
 	private String catalogName;
 	private String size;
 	
@@ -38,7 +41,17 @@ public class SearchApplicationRequest extends SearchRequest {
 	/** 下载次数 */
 	private Integer downCount;
 	/**  应用评级 */
+	@Min(value=1)
+	@Max(value=Integer.MAX_VALUE)
 	private Integer appLevel;
+	private Double price;
+	private Integer status;
+	public int getAppId() {
+		return appId;
+	}
+	public void setAppId(int appId) {
+		this.appId = appId;
+	}
 	public String getAppName() {
 		return appName;
 	}
@@ -68,6 +81,12 @@ public class SearchApplicationRequest extends SearchRequest {
 	}
 	public void setDeveloperEmail(String developerEmail) {
 		this.developerEmail = developerEmail;
+	}
+	public Integer getCatalogId() {
+		return catalogId;
+	}
+	public void setCatalogId(Integer catalogId) {
+		this.catalogId = catalogId;
 	}
 	public String getCatalogName() {
 		return catalogName;
@@ -105,5 +124,17 @@ public class SearchApplicationRequest extends SearchRequest {
 	public void setAppLevel(Integer appLevel) {
 		this.appLevel = appLevel;
 	}
-	
+	public Double getPrice() {
+		return price;
+	}
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
 }

@@ -1,25 +1,21 @@
 package cn.com.carit.platform.request.market;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
-import cn.com.carit.platform.request.SearchRequest;
+import cn.com.carit.platform.request.account.SearchByAccountRequest;
 
-public class SearchSystemMessageRequest extends SearchRequest {
+public class SearchSystemMessageRequest extends SearchByAccountRequest {
 	
-	@NotNull
-	private Integer accountId;
+	@Min(value=0)
+	@Max(value=1)
 	private Integer msgType;
 	
-	private Integer msgId;
-
-	public Integer getAccountId() {
-		return accountId;
-	}
-
-	public void setAccountId(Integer accountId) {
-		this.accountId = accountId;
-	}
-
+	/**状态*/
+	@Min(value=0)
+	@Max(value=1)
+	private Integer status;
+	
 	public Integer getMsgType() {
 		return msgType;
 	}
@@ -28,12 +24,12 @@ public class SearchSystemMessageRequest extends SearchRequest {
 		this.msgType = msgType;
 	}
 
-	public Integer getMsgId() {
-		return msgId;
+	public Integer getStatus() {
+		return status;
 	}
 
-	public void setMsgId(Integer msgId) {
-		this.msgId = msgId;
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
-	
+
 }

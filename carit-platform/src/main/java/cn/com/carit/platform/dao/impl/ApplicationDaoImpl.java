@@ -23,11 +23,18 @@ import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonPage;
 import cn.com.carit.platform.bean.market.Application;
 import cn.com.carit.platform.dao.ApplicationDao;
+import cn.com.carit.platform.request.market.DownloadedReferencedRequest;
+import cn.com.carit.platform.request.market.SearchAppDeveloperRequest;
+import cn.com.carit.platform.request.market.SearchApplicationRequest;
+import cn.com.carit.platform.request.market.TopRequest;
+import cn.com.carit.platform.request.market.ViewApplicationRequest;
+import cn.com.carit.platform.response.market.AppDeveloperResponse;
+import cn.com.carit.platform.response.market.ApplicationResponse;
 
 @Repository
 public class ApplicationDaoImpl extends DaoImpl implements ApplicationDao<Application> {
 
-	
+	private final String DEFAULT_VIEW="v_application_cn";
 	private final RowMapper<Application> rowMapper = new RowMapper<Application>() {
 
 		@Override
@@ -415,6 +422,403 @@ public class ApplicationDaoImpl extends DaoImpl implements ApplicationDao<Applic
 		}
 		return sql.toString();
 	}
-	
 
+	private final RowMapper<ApplicationResponse> responseRowMapper=new RowMapper<ApplicationResponse>() {
+		
+		@Override
+		public ApplicationResponse mapRow(ResultSet rs, int rowNum)
+				throws SQLException {
+			ApplicationResponse t=new ApplicationResponse();
+			t.setId(rs.getInt("id"));
+			t.setAppName(rs.getString("app_name"));
+			t.setIcon(rs.getString("icon"));
+			t.setBigIcon(rs.getString("big_icon"));
+			t.setDeveloper(rs.getString("developer"));
+			t.setDeveloperWebsite(rs.getString("website"));
+			t.setDeveloperEmail(rs.getString("email"));
+			t.setVersion(rs.getString("version"));
+			t.setCatalogName(rs.getString("catalog_name"));
+			t.setSize(rs.getString("size"));
+			t.setAppFilePath(rs.getString("app_file_path"));
+			t.setAppLevel(rs.getInt("app_level"));
+			t.setAppFilePath(rs.getString("app_file_path"));
+			t.setPlatform(rs.getString("platform"));
+			t.setSupportLanguages(rs.getString("support_languages"));
+			t.setPrice(rs.getDouble("price"));
+			t.setDownCount(rs.getInt("down_count"));
+			t.setAppLevel(rs.getInt("app_level"));
+			t.setDescription(rs.getString("description"));
+			t.setFeatures(rs.getString("features"));
+			t.setPermissionDesc(rs.getString("permission_desc"));
+			String images=rs.getString("images");
+			if (StringUtils.hasText(images)) {
+				t.setImageList(images.split(";"));
+			}
+			t.setUpdateTime(rs.getTimestamp("update_time"));
+			t.setMainPic(rs.getString("main_pic"));
+//			t.setStatus(rs.getInt("status"));
+			return t;
+		}
+	};
+	
+	@Override
+	public JsonPage<ApplicationResponse> queryByExemple(
+			SearchApplicationRequest request) {
+		String viewName=DEFAULT_VIEW;
+		if (!Constants.DEAFULD_LANGUAGE.equalsIgnoreCase(request.getLanguage())) {
+			viewName="v_application_en";
+		}
+		DataGridModel dgm = new DataGridModel();
+		dgm.setSort(request.getSort());
+		dgm.setOrder(request.getOrder());
+		dgm.setPage(request.getPage());
+		dgm.setRows(request.getRows());
+		JsonPage<ApplicationResponse> jsonPage = new JsonPage<ApplicationResponse>(dgm.getPage(), dgm.getRows());
+		StringBuilder sql = new StringBuilder("select * from ").append(
+				viewName).append(" where 1=1");
+		StringBuilder countSql=new StringBuilder("select count(1) from ").append(
+				viewName).append(" where 1=1");
+		List<Object> args = new ArrayList<Object>();
+		List<Integer> argTypes = new ArrayList<Integer>();
+		if (StringUtils.hasText(request.getAppName())) {
+			sql.append(" and app_name like CONCAT('%',?,'%')");
+			countSql.append(" and app_name like CONCAT('%',?,'%')");
+			args.add(request.getAppName());
+			argTypes.add(12);// java.sql.Types type
+		}
+		if (StringUtils.hasText(request.getVersion())) {
+			sql.append(" and version like CONCAT('%',?,'%')");
+			countSql.append(" and version like CONCAT('%',?,'%')");
+			args.add(request.getVersion());
+			argTypes.add(12);// java.sql.Types type
+		}
+		if (StringUtils.hasText(request.getDeveloper())) {
+			sql.append(" and developer=?");
+			countSql.append(" and developer=?");
+			args.add(request.getDeveloper());
+			argTypes.add(12);// java.sql.Types type
+		}
+		if (StringUtils.hasText(request.getDeveloperWebsite())) {
+			sql.append(" and website like CONCAT('%',?,'%')");
+			countSql.append(" and website like CONCAT('%',?,'%')");
+			args.add(request.getDeveloperWebsite());
+			argTypes.add(12);// java.sql.Types type
+		}
+		if (StringUtils.hasText(request.getDeveloperEmail())) {
+			sql.append(" and email like CONCAT('%',?,'%')");
+			countSql.append(" and email like CONCAT('%',?,'%')");
+			args.add(request.getDeveloperEmail());
+			argTypes.add(12);// java.sql.Types type
+		}
+		if (request.getCatalogId() != null) {
+			sql.append(" and catalog_id=?");
+			countSql.append(" and catalog_id=?");
+			args.add(request.getCatalogId());
+			argTypes.add(4);// java.sql.Types type
+		}
+		if (StringUtils.hasText(request.getCatalogName())) {
+			sql.append(" and catalog_name like CONCAT('%',?,'%')");
+			countSql.append(" and catalog_name like CONCAT('%',?,'%')");
+			args.add(request.getCatalogId());
+			argTypes.add(12);// java.sql.Types type
+		}
+		if (StringUtils.hasText(request.getSize())) {
+			sql.append(" and size like CONCAT('%',?,'%')");
+			countSql.append(" and size like CONCAT('%',?,'%')");
+			args.add(request.getSize());
+			argTypes.add(12);// java.sql.Types type
+		}
+		if (StringUtils.hasText(request.getPlatform())) {
+			sql.append(" and platform like CONCAT('%',?,'%')");
+			countSql.append(" and platform like CONCAT('%',?,'%')");
+			args.add(request.getPlatform());
+			argTypes.add(12);// java.sql.Types type
+		}
+		if (StringUtils.hasText(request.getSupportLanguages())) {
+			sql.append(" and support_languages like CONCAT('%',?,'%')");
+			countSql.append(" and support_languages like CONCAT('%',?,'%')");
+			args.add(request.getSupportLanguages());
+			argTypes.add(4);// java.sql.Types type
+		}
+		if (request.getPrice() != null) {
+			sql.append(" and price=?");
+			countSql.append(" and price=?");
+			args.add(request.getPrice());
+			argTypes.add(8);// java.sql.Types type
+		}
+		if (request.getDownCount() != null) {
+			sql.append(" and down_count=?");
+			countSql.append(" and down_count=?");
+			args.add(request.getDownCount());
+			argTypes.add(4);// java.sql.Types type
+		}
+		if (request.getAppLevel() != null) {
+			sql.append(" and app_level=?");
+			countSql.append(" and app_level=?");
+			args.add(request.getAppLevel());
+			argTypes.add(4);// java.sql.Types type
+		}
+		if (request.getStatus()!=null) {
+			sql.append(" and (status&?)!=0");
+			countSql.append(" and (status&?)!=0");
+			args.add(request.getStatus());
+			argTypes.add(Types.INTEGER);
+		}
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", countSql));
+		}
+		int totalRow = queryForInt(countSql.toString(), args, argTypes);
+		// 排序
+		if (StringUtils.hasText(dgm.getOrder())
+				&& StringUtils.hasText(dgm.getSort())) {
+			sql.append(" order by ")
+					.append(CaritUtils.splitFieldWords(dgm.getSort()))
+					.append(" ").append(dgm.getOrder());
+		} else {
+			sql.append(" order by update_time desc");
+		}
+		sql.append(" limit ?, ?");
+		args.add(jsonPage.getStartRow());
+		args.add(jsonPage.getPageSize());
+		argTypes.add(Types.INTEGER);
+		argTypes.add(Types.INTEGER);
+		// 更新
+		jsonPage.setTotal(totalRow);
+		log.debug(String.format("\n%1$s\n", sql));
+		jsonPage.setRows(query(sql.toString(), args, argTypes, responseRowMapper));
+		return jsonPage;
+	}
+
+	@Override
+	public ApplicationResponse queryAppById(ViewApplicationRequest request) {
+		String viewName=DEFAULT_VIEW;
+		if (!Constants.DEAFULD_LANGUAGE.equalsIgnoreCase(request.getLanguage())) {
+			viewName="v_application_en";
+		}
+		String sql = "select * from "+viewName+" where id=?";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql, request.getAppId()));
+		}
+		return query(sql, request.getAppId(), responseRowMapper);
+	}
+
+	@Override
+	public List<ApplicationResponse> queryHotFree(TopRequest request) {
+		String viewName=DEFAULT_VIEW;
+		if (!Constants.DEAFULD_LANGUAGE.equalsIgnoreCase(request.getLanguage())) {
+			viewName="v_application_en";
+		}
+		String sql="select * from "+viewName+" where price=0 order by down_count desc limit ?";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql, request.getLimit()));
+		}
+		return jdbcTemplate.query(sql, new Object[]{request.getLimit()}, responseRowMapper);
+	}
+
+	@Override
+	public List<ApplicationResponse> queryHotNewFree(TopRequest request) {
+		String viewName=DEFAULT_VIEW;
+		if (Constants.DEAFULD_LANGUAGE.equalsIgnoreCase(request.getLanguage())) {
+			viewName="v_application_en";
+		}
+		String sql="select * from "+viewName+" where price=0 order by down_count,update_time desc limit ?";
+
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql, request.getLimit()));
+		}
+		return jdbcTemplate.query(sql, new Object[]{request.getLimit()}, responseRowMapper);
+	}
+
+	@Override
+	public JsonPage<ApplicationResponse> fullTextSearch(String language,
+			String ids, DataGridModel dgm) {
+		String viewName=DEFAULT_VIEW;
+		if (!Constants.DEAFULD_LANGUAGE.equalsIgnoreCase(language)) {
+			viewName="v_application_en";
+		}
+		JsonPage<ApplicationResponse> jsonPage = new JsonPage<ApplicationResponse>(dgm.getPage(), dgm.getRows());
+		StringBuilder sql = new StringBuilder("select * from ").append(
+				viewName).append(" where id in (").append(ids).append(")");
+		StringBuilder countSql=new StringBuilder("select count(1) from ").append(
+				viewName).append(" where id in (").append(ids).append(")");
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", countSql));
+		}
+		int totalRow = jdbcTemplate.queryForInt(countSql.toString());
+		// 更新
+		jsonPage.setTotal(totalRow);
+		// 排序
+		if (StringUtils.hasText(dgm.getOrder())
+				&& StringUtils.hasText(dgm.getSort())) {
+			sql.append(" order by ")
+					.append(CaritUtils.splitFieldWords(dgm.getSort()))
+					.append(" ").append(dgm.getOrder());
+		} else {
+			sql.append(" order by update_time desc");
+		}
+		sql.append(" limit ?, ?");
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		List<ApplicationResponse> rows=jdbcTemplate.query(sql.toString()
+				, new Object[]{jsonPage.getStartRow()
+			, jsonPage.getPageSize()}, responseRowMapper);
+		jsonPage.setRows(rows);
+		return jsonPage;
+	}
+
+	@Override
+	public JsonPage<ApplicationResponse> queryAccountDownloadedApp(int accountId, String language, DataGridModel dgm){
+		String viewName=DEFAULT_VIEW;
+		if (!Constants.DEAFULD_LANGUAGE.equalsIgnoreCase(language)) {
+			viewName="v_application_en";
+		}
+		JsonPage<ApplicationResponse> jsonPage = new JsonPage<ApplicationResponse>(dgm.getPage(), dgm.getRows());
+		StringBuilder sql = new StringBuilder("select a.* from ")
+				.append(viewName)
+				.append(" a where exists (select 1 from t_app_download_log where app_id=a.id and account_id=?)");
+		StringBuilder countSql = new StringBuilder("select count(1) from ")
+				.append(viewName)
+				.append(" a where exists (select 1 from t_app_download_log where app_id=a.id and account_id=?)");
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", countSql));
+		}
+		int totalRow = jdbcTemplate.queryForInt(countSql.toString(), accountId);
+		// 更新
+		jsonPage.setTotal(totalRow);
+		// 排序
+		if (StringUtils.hasText(dgm.getOrder())
+				&& StringUtils.hasText(dgm.getSort())) {
+			sql.append(" order by ")
+					.append(CaritUtils.splitFieldWords(dgm.getSort()))
+					.append(" ").append(dgm.getOrder());
+		} else {
+			sql.append(" order by update_time desc");
+		}
+		sql.append(" limit ?, ?");
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		List<ApplicationResponse> rows = jdbcTemplate.query(
+				sql.toString(),
+				new Object[] {accountId , jsonPage.getStartRow(),
+						jsonPage.getPageSize() }, responseRowMapper);
+		jsonPage.setRows(rows);
+		return jsonPage;
+	}
+
+	@Override
+	public JsonPage<ApplicationResponse> queryDownloadedReferencedApps(DownloadedReferencedRequest request) {
+		String viewName=DEFAULT_VIEW;
+		if (!Constants.DEAFULD_LANGUAGE.equalsIgnoreCase(request.getLanguage())) {
+			viewName="v_application_en";
+		}
+		DataGridModel dgm=new DataGridModel();
+		dgm.setSort(request.getSort());
+		dgm.setOrder(request.getOrder());
+		dgm.setPage(request.getPage());
+		dgm.setRows(request.getRows());
+		JsonPage<ApplicationResponse> jsonPage = new JsonPage<ApplicationResponse>(dgm.getPage(), dgm.getRows());
+		StringBuilder sql = new StringBuilder("select a.* from ")
+		.append(viewName)
+		.append(" a left join t_app_download_log b on a.id=b.app_id left join t_app_download_log c on b.account_id=c.account_id where c.app_id=? and b.app_id!=? group by b.app_id");
+		StringBuilder countSql = new StringBuilder("select count(distinct a.id) from ")
+				.append(viewName)
+				.append(" a left join t_app_download_log b on a.id=b.app_id left join t_app_download_log c on b.account_id=c.account_id where c.app_id=? and b.app_id!=?");
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", countSql));
+		}
+		int totalRow = jdbcTemplate.queryForInt(countSql.toString(), request.getAppId(), request.getAppId());
+		// 更新
+		jsonPage.setTotal(totalRow);
+		// 排序
+		if (StringUtils.hasText(dgm.getOrder())
+				&& StringUtils.hasText(dgm.getSort())) {
+			sql.append(" order by ")
+					.append(CaritUtils.splitFieldWords(dgm.getSort()))
+					.append(" ").append(dgm.getOrder());
+		} else {
+			sql.append(" order by update_time desc");
+		}
+		sql.append(" limit ?, ?");
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		List<ApplicationResponse> rows = jdbcTemplate.query(
+				sql.toString(),
+				new Object[] { request.getAppId(), request.getAppId(), jsonPage.getStartRow(),
+						jsonPage.getPageSize() }, responseRowMapper);
+		jsonPage.setRows(rows);
+		return jsonPage;
+	}
+
+	@Override
+	public JsonPage<AppDeveloperResponse> queryAppDeveloper(
+			SearchAppDeveloperRequest request) {
+		StringBuilder sql=new StringBuilder("select * from t_app_developer where 1=1");
+		StringBuilder countSql = new StringBuilder("select * from t_app_developer where 1=1");
+		DataGridModel dgm=new DataGridModel();
+		dgm.setSort(request.getSort());
+		dgm.setOrder(request.getOrder());
+		dgm.setPage(request.getPage());
+		dgm.setRows(request.getRows());
+		JsonPage<AppDeveloperResponse> jsonPage = new JsonPage<AppDeveloperResponse>(dgm.getPage(), dgm.getRows());
+		List<Object> args = new ArrayList<Object>();
+		List<Integer> argTypes = new ArrayList<Integer>();
+		if (StringUtils.hasText(request.getEmail())) {
+			sql.append(" and email like CONCAT('%',?,'%')");
+			countSql.append(" and email like CONCAT('%',?,'%')");
+			args.add(request.getEmail());
+			argTypes.add(Types.VARCHAR);
+		}
+		if (StringUtils.hasText(request.getWebsite())) {
+			sql.append(" and website like CONCAT('%',?,'%')");
+			countSql.append(" and website like CONCAT('%',?,'%')");
+			args.add(request.getWebsite());
+			argTypes.add(Types.VARCHAR);
+		}
+		if (StringUtils.hasText(request.getName())) {
+			sql.append(" and name like CONCAT('%',?,'%')");
+			countSql.append(" and name like CONCAT('%',?,'%')");
+			args.add(request.getName());
+			argTypes.add(Types.VARCHAR);
+		}
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", countSql));
+		}
+		int totalRow = queryForInt(countSql.toString(), args, argTypes);
+		// 更新
+		jsonPage.setTotal(totalRow);
+		// 排序
+		if (StringUtils.hasText(dgm.getOrder())
+				&& StringUtils.hasText(dgm.getSort())) {
+			sql.append(" order by ")
+					.append(CaritUtils.splitFieldWords(dgm.getSort()))
+					.append(" ").append(dgm.getOrder());
+		} else {
+			sql.append(" order by update_time desc");
+		}
+		sql.append(" limit ?, ?");
+		args.add(jsonPage.getStartRow());
+		args.add(jsonPage.getPageSize());
+		argTypes.add(Types.INTEGER);
+		argTypes.add(Types.INTEGER);
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		jsonPage.setRows(query(sql.toString(), args, argTypes, new RowMapper<AppDeveloperResponse>() {
+
+			@Override
+			public AppDeveloperResponse mapRow(ResultSet rs, int rowNum)
+					throws SQLException {
+				AppDeveloperResponse t=new AppDeveloperResponse();
+				t.setEmail(rs.getString("email"));
+				t.setName(rs.getString("name"));
+				t.setWebsite(rs.getString("website"));
+				return t;
+			}
+		}));
+		return jsonPage;
+	}
+	
 }

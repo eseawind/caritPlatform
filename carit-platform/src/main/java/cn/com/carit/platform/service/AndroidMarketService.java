@@ -5,14 +5,21 @@ import javax.annotation.Resource;
 import org.springframework.util.StringUtils;
 
 import cn.com.carit.common.Constants;
+import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.platform.action.AppCommentAction;
 import cn.com.carit.platform.action.AppDownloadLogAction;
+import cn.com.carit.platform.action.AppVersionAction;
+import cn.com.carit.platform.action.ApplicationAction;
 import cn.com.carit.platform.bean.market.AppComment;
 import cn.com.carit.platform.bean.market.AppDownloadLog;
-import cn.com.carit.platform.request.account.SearchAccountRequest;
+import cn.com.carit.platform.bean.market.AppVersion;
+import cn.com.carit.platform.bean.market.Application;
+import cn.com.carit.platform.request.market.DownloadedReferencedRequest;
+import cn.com.carit.platform.request.market.FullTextSearchRequest;
+import cn.com.carit.platform.request.market.SearchAppDeveloperRequest;
 import cn.com.carit.platform.request.market.SearchApplicationRequest;
-import cn.com.carit.platform.request.market.SearchDeveloperRequest;
 import cn.com.carit.platform.request.market.TopRequest;
+import cn.com.carit.platform.request.market.ViewApplicationRequest;
 
 import com.rop.RopRequest;
 import com.rop.annotation.HttpAction;
@@ -32,19 +39,23 @@ public class AndroidMarketService {
 	private final static String LANGUAGE_PARAM_NAME="language";
 	
 	@Resource
+	private ApplicationAction<Application> applicationAction;
+	@Resource
+	private AppVersionAction<AppVersion> appVersionAction;
+	@Resource
 	private AppDownloadLogAction<AppDownloadLog> appDownloadLogAction;
 	@Resource
 	private AppCommentAction<AppComment> appCommentAction;
 	
 	/**
 	 * <p>
-	 * <b>功能说明：</b>账号登录
+	 * <b>功能说明：</b>获取所有有效应用分类
 	 * </p>
 	 * @param request
 	 * <table border='1'>
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>method</td><td>account.logon</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>market.all.application.catalog</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
@@ -62,76 +73,306 @@ public class AndroidMarketService {
 		return null;
 	}
 	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>查询应用
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>account.logon</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>language</td><td>语言(cn/en)</td><td>是</td><td>否（默认cn）</td></tr>
+	 *  <tr><td>page</td><td>起始页（默认1）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>rows</td><td>每页显示记录数（默认10）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sort</td><td>排序字段</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>order</td><td>排序规则（desc/asc）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>appName</td><td>应用名称</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>version</td><td>版本</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>developer</td><td>开发者</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>catalogId</td><td>分类Id</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>catalogName</td><td>分类名称</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>size</td><td>应用大小</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>platform</td><td>适用平台</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>supportLanguages</td><td>支持语言</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>downCount</td><td>下载次数</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>appLevel</td><td>评级</td><td>是</td><td>否</td></tr>
+	 * </table>
+	 * @return
+	 */
 	@ServiceMethod(method = "market.query.application",version = "1.0", httpAction=HttpAction.GET)
 	public Object queryApplication(SearchApplicationRequest request){
-		// TODO
-		return null;
+		return applicationAction.queryByExemple(request);
 	}
 	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>查看应用
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>account.logon</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>language</td><td>语言(cn/en)</td><td>是</td><td>否（默认cn）</td></tr>
+	 *  <tr><td>appId</td><td> @NotNull @Min(value=1) @Max(value=Integer.MAX_VALUE)</td><td>是</td><td>是</td></tr>
+	 * </table>
+	 * @return
+	 */
 	@ServiceMethod(method = "market.view.application",version = "1.0", httpAction=HttpAction.GET)
-	public Object viewApplication(SearchApplicationRequest request){
-		// TODO
-		return null;
+	public Object viewApplication(ViewApplicationRequest request){
+		return applicationAction.queryAppById(request);
 	}
 	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>查询应用版本
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>market.query.application.versions</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>language</td><td>语言(cn/en)</td><td>是</td><td>否（默认cn）</td></tr>
+	 *  <tr><td>page</td><td>起始页（默认1）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>rows</td><td>每页显示记录数（默认10）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sort</td><td>排序字段</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>order</td><td>排序规则（desc/asc）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>appId</td><td> @NotNull @Min(value=1) @Max(value=Integer.MAX_VALUE)</td><td>是</td><td>是</td></tr>
+	 * </table>
+	 * @return
+	 */
 	@ServiceMethod(method = "market.query.application.versions",version = "1.0", httpAction=HttpAction.GET)
-	public Object queryAppVersions(SearchApplicationRequest request){
-		// TODO
-		return null;
+	public Object queryAppVersions(DownloadedReferencedRequest request){
+		return appVersionAction.queryAppVersions(request);
 	}
 	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>查询应用评论
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>market.query.application.comments</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>appId</td><td> @NotNull @Min(value=1) @Max(value=Integer.MAX_VALUE)</td><td>是</td><td>是</td></tr>
+	 * </table>
+	 * @return
+	 */
 	@ServiceMethod(method = "market.query.application.comments",version = "1.0", httpAction=HttpAction.GET)
-	public Object queryAppComments(SearchApplicationRequest request){
-		// TODO
-		return null;
+	public Object queryAppComments(DownloadedReferencedRequest request){
+		DataGridModel dgm = new DataGridModel();
+		dgm.setSort(request.getSort());
+		dgm.setOrder(request.getOrder());
+		dgm.setPage(request.getPage());
+		dgm.setRows(request.getRows());
+		return appCommentAction.queryAppComments(request.getAppId(), dgm);
 	}
 	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>热门免费应用
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>market.application.hot.free</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>language</td><td>语言(cn/en)</td><td>是</td><td>否（默认cn）</td></tr>
+	 *  <tr><td>limit</td><td> @NotNull @Min(value=1) @Max(value=Integer.MAX_VALUE)</td><td>是</td><td>是</td></tr>
+	 * </table>
+	 * @return
+	 */
 	@ServiceMethod(method = "market.application.hot.free",version = "1.0",httpAction=HttpAction.GET)
 	public Object queryHotFreeApplication(TopRequest request){
-		// TODO
-		return null;
+		return applicationAction.queryHotFree(request);
 	}
 	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>热门免费新应用
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>market.application.hot.new.free</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>language</td><td>语言(cn/en)</td><td>是</td><td>否（默认cn）</td></tr>
+	 *  <tr><td>limit</td><td> @NotNull @Min(value=1) @Max(value=Integer.MAX_VALUE)</td><td>是</td><td>是</td></tr>
+	 * </table>
+	 * @return
+	 */
 	@ServiceMethod(method = "market.application.hot.new.free",version = "1.0",httpAction=HttpAction.GET)
 	public Object queryHotNewFreeApplication(TopRequest request){
-		// TODO
-		return null;
+		return applicationAction.queryHotNewFree(request);
 	}
 	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>应用评级统计
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>market.application.stat.grade</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>appId</td><td> @NotNull @Min(value=1) @Max(value=Integer.MAX_VALUE)</td><td>是</td><td>是</td></tr>
+	 * </table>
+	 * @return
+	 */
 	@ServiceMethod(method = "market.application.stat.grade",version = "1.0",httpAction=HttpAction.GET)
 	public Object statApplicationCommentGrade(SearchApplicationRequest request){
 		//TODO
 		return null;
 	}
 	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>查询应用平均评分
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>market.application.avg.grade</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>appId</td><td> @NotNull @Min(value=1) @Max(value=Integer.MAX_VALUE)</td><td>是</td><td>是</td></tr>
+	 * </table>
+	 * @return
+	 */
 	@ServiceMethod(method = "market.application.avg.grade",version = "1.0",httpAction=HttpAction.GET)
 	public Object queryApplicationAvgGrade(SearchApplicationRequest request){
 		//TODO
 		return null;
 	}
 	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>查询应用一个月内的下载趋势
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>market.application.download.trend.one.month</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>appId</td><td> @NotNull @Min(value=1) @Max(value=Integer.MAX_VALUE)</td><td>是</td><td>是</td></tr>
+	 * </table>
+	 * @return
+	 */
 	@ServiceMethod(method = "market.application.download.trend.one.month",version = "1.0",httpAction=HttpAction.GET)
 	public Object applicationOneMonthDownTrend(SearchApplicationRequest request){
 		// TODO
 		return null;
 	}
 	
-	@ServiceMethod(method = "market.application.account.downloaded",version = "1.0",httpAction=HttpAction.GET)
-	public Object queryAccountDownloadedApp(SearchAccountRequest request) {
-		// TODO
-		return null;
-	}
-	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>查询下载过该应用的用户还下载过那些应用
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>account.logon</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>language</td><td>语言(cn/en)</td><td>是</td><td>否（默认cn）</td></tr>
+	 *  <tr><td>page</td><td>起始页（默认1）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>rows</td><td>每页显示记录数（默认10）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sort</td><td>排序字段</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>order</td><td>排序规则（desc/asc）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>appId</td><td> @NotNull @Min(value=1) @Max(value=Integer.MAX_VALUE)</td><td>是</td><td>是</td></tr>
+	 * </table>
+	 * @return
+	 */
 	@ServiceMethod(method = "market.application.downloaded.referenced",version = "1.0",httpAction=HttpAction.GET)
-	public Object queryDownloadedReferencedApps(SearchApplicationRequest request){
-		// TODO
-		return null;
+	public Object queryDownloadedReferencedApps(DownloadedReferencedRequest request){
+		return applicationAction.queryDownloadedReferencedApps(request);
 	}
 	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>查询应用开发者
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>market.application.download.trend.one.month</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>email</td><td>开发者邮箱</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>name</td><td>开发者名称</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>website</td><td>开发者网站</td><td>是</td><td>否</td></tr>
+	 * </table>
+	 * @return
+	 */
 	@ServiceMethod(method = "market.developer.query",version = "1.0",httpAction=HttpAction.GET)
-	public Object queryDeveloper(SearchDeveloperRequest request){
-		// TODO
-		return null;
+	public Object queryDeveloper(SearchAppDeveloperRequest request){
+		return applicationAction.queryAppDeveloper(request);
 	}
 	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>全文检索应用应用
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>account.logon</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>language</td><td>语言(cn/en)</td><td>是</td><td>否（默认cn）</td></tr>
+	 *  <tr><td>page</td><td>起始页（默认1）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>rows</td><td>每页显示记录数（默认10）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>keyword</td><td> @NotNull </td><td>是</td><td>是</td></tr>
+	 * </table>
+	 * @return
+	 */
+	public Object fullTextSearch(FullTextSearchRequest request){
+		return applicationAction.fullTextSearch(request);
+	}
 }

@@ -9,12 +9,16 @@ import org.springframework.util.StringUtils;
 import cn.com.carit.common.Constants;
 import cn.com.carit.common.utils.AttachmentUtil;
 import cn.com.carit.common.utils.CaritUtils;
+import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.ImageUtils;
 import cn.com.carit.common.utils.MD5Util;
 import cn.com.carit.platform.action.AccountAction;
 import cn.com.carit.platform.action.AppCommentAction;
 import cn.com.carit.platform.action.AppDownloadLogAction;
+import cn.com.carit.platform.action.ApplicationAction;
+import cn.com.carit.platform.action.SystemMessageAction;
 import cn.com.carit.platform.bean.account.Account;
+import cn.com.carit.platform.bean.account.SystemMessage;
 import cn.com.carit.platform.bean.market.AppComment;
 import cn.com.carit.platform.bean.market.AppDownloadLog;
 import cn.com.carit.platform.bean.market.Application;
@@ -25,13 +29,15 @@ import cn.com.carit.platform.request.account.CheckEmailRequest;
 import cn.com.carit.platform.request.account.CheckNicknameRequest;
 import cn.com.carit.platform.request.account.CommentRequest;
 import cn.com.carit.platform.request.account.RegisterAccountRequest;
-import cn.com.carit.platform.request.account.SearchAccountRequest;
+import cn.com.carit.platform.request.account.SearchByAccountRequest;
 import cn.com.carit.platform.request.account.UpdateAccountRequest;
 import cn.com.carit.platform.request.account.UpdatePasswordRequest;
 import cn.com.carit.platform.request.account.UploadUserPhotoRequest;
+import cn.com.carit.platform.request.market.ReadSystemMessageRequest;
 import cn.com.carit.platform.request.market.SearchSystemMessageRequest;
 import cn.com.carit.platform.response.AccountResponse;
 import cn.com.carit.platform.response.DownloadResponse;
+import cn.com.carit.platform.response.SystemMessageResponse;
 import cn.com.carit.platform.response.UploadUserPhotoResponse;
 
 import com.rop.RopRequest;
@@ -41,6 +47,7 @@ import com.rop.annotation.ServiceMethod;
 import com.rop.annotation.ServiceMethodBean;
 import com.rop.response.BusinessServiceErrorResponse;
 import com.rop.response.CommonRopResponse;
+import com.rop.response.NotExistErrorResponse;
 
 /**
  * <p>
@@ -55,9 +62,14 @@ public class AccountService {
 	@Resource
 	private AccountAction<Account> action;
 	@Resource
+	private ApplicationAction<Application> applicationAction;
+	
+	@Resource
 	private AppDownloadLogAction<AppDownloadLog> appDownloadLogAction;
 	@Resource
 	private AppCommentAction<AppComment> appCommentAction;
+	@Resource
+	private SystemMessageAction<SystemMessage> systemMessageAction;
 	
 	/**
 	 * <p>
@@ -449,27 +461,122 @@ public class AccountService {
 		
 	}
 	
-	@ServiceMethod(method = "account.query.account.downloaded.log",version = "1.0",httpAction=HttpAction.GET)
-	public Object queryAccountDownloadLogs(SearchAccountRequest request){
-		// TODO
-		return null;
+	/**
+	 * <p>
+	 * <b>功能说明：</b>查询用户下载过的应用
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>account.downloaded.application</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>language</td><td>语言(cn/en)</td><td>是</td><td>否（默认cn）</td></tr>
+	 *  <tr><td>page</td><td>起始页（默认1）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>rows</td><td>每页显示记录数（默认10）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sort</td><td>排序字段</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>order</td><td>排序规则（desc/asc）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>accountId</td><td> @NotNull @Min(value=1) @Max(value=Integer.MAX_VALUE)</td><td>是</td><td>是</td></tr>
+	 * </table>
+	 * @return
+	 */
+	@ServiceMethod(method = "account.downloaded.application",version = "1.0",httpAction=HttpAction.GET)
+	public Object queryAccountDownloadedApp(SearchByAccountRequest request) {
+		DataGridModel dgm = new DataGridModel();
+		dgm.setSort(request.getSort());
+		dgm.setOrder(request.getOrder());
+		dgm.setPage(request.getPage());
+		dgm.setRows(request.getRows());
+		//查询账号
+		Account account=CacheManager.getInstance().getAccount(request.getEmail());
+		return applicationAction.queryAccountDownloadedApp(account.getId(), request.getLanguage(), dgm);
 	}
 	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>查询用户下载过的应用
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>account.downloaded.application</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>language</td><td>语言(cn/en)</td><td>是</td><td>否（默认cn）</td></tr>
+	 *  <tr><td>page</td><td>起始页（默认1）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>rows</td><td>每页显示记录数（默认10）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sort</td><td>排序字段</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>order</td><td>排序规则（desc/asc）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>accountId</td><td> @NotNull @Min(value=1) @Max(value=Integer.MAX_VALUE)</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>msgType</td><td>0:系统推送消息；1：应用更新消息</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>status</td><td>0：未读；1：已读</td><td>是</td><td>否</td></tr>
+	 * </table>
+	 * @return
+	 */
 	@ServiceMethod(method = "account.query.sys.msg",version = "1.0",httpAction=HttpAction.GET)
 	public Object queryAccountSystemMessage(SearchSystemMessageRequest request){
-		// TODO
-		return null;
+		DataGridModel dgm = new DataGridModel();
+		dgm.setSort(request.getSort());
+		dgm.setOrder(request.getOrder());
+		dgm.setPage(request.getPage());
+		dgm.setRows(request.getRows());
+		//查询账号
+		Account account=CacheManager.getInstance().getAccount(request.getEmail());
+		SystemMessage t=new SystemMessage();
+		t.setAccountId(account.getId());
+		t.setCatalog(request.getMsgType());
+		t.setStatus(request.getStatus());
+		return systemMessageAction.queryByExemple(t, dgm);
 	}
 	
 	@ServiceMethod(method = "account.read.sys.msg",version = "1.0",httpAction=HttpAction.GET)
-	public Object readAccountSystemMessage(SearchSystemMessageRequest request){
-		// TODO
-		return null;
+	public Object readAccountSystemMessage(ReadSystemMessageRequest request){
+		//查询账号
+		Account account=CacheManager.getInstance().getAccount(request.getEmail());
+		SystemMessage msg=systemMessageAction.queryById(request.getMsgId());
+		if (msg==null) { // 没有这条消息
+			return new NotExistErrorResponse("SystemMessage", "id"
+					, request.getMsgId(), request.getRopRequestContext().getLocale());
+		}
+		if (msg.getAccountId()!=account.getId()) { // 不是你的消息读个求啊
+			return new BusinessServiceErrorResponse(request.getRopRequestContext().getMethod()
+					, Constants.MESSAGE_ACCOUNT_ID_NOT_MATCH
+					, request.getRopRequestContext().getLocale()
+					, msg.getAccountId(), account.getId());
+		}
+		// 置为已读
+		systemMessageAction.readSystemMessage(msg.getId());
+		// 构建响应
+		SystemMessageResponse response=new SystemMessageResponse();
+		response.setCatalog(msg.getCatalog());
+		response.setTitle(msg.getTitle());
+		response.setContent(msg.getContent());
+		return response;
 	}
 	
 	@ServiceMethod(method = "account.delete.sys.msg",version = "1.0",httpAction=HttpAction.GET)
-	public Object deleteAccountSystemMessage(SearchSystemMessageRequest request){
-		// TODO
-		return null;
+	public Object deleteAccountSystemMessage(ReadSystemMessageRequest request){
+		//查询账号
+		Account account=CacheManager.getInstance().getAccount(request.getEmail());
+		SystemMessage msg=systemMessageAction.queryById(request.getMsgId());
+		if (msg==null) { // 没有这条消息
+			return new NotExistErrorResponse("SystemMessage", "id"
+					, request.getMsgId(), request.getRopRequestContext().getLocale());
+		}
+		if (msg.getAccountId()!=account.getId()) { // 不是你的消息，别乱删
+			return new BusinessServiceErrorResponse(request.getRopRequestContext().getMethod()
+					, Constants.MESSAGE_ACCOUNT_ID_NOT_MATCH
+					, request.getRopRequestContext().getLocale()
+					, msg.getAccountId(), account.getId());
+		}
+		// 删除
+		systemMessageAction.delete(msg.getId());
+		return CommonRopResponse.SUCCESSFUL_RESPONSE;
 	}
 }

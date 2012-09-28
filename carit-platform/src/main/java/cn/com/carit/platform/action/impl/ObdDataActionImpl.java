@@ -65,6 +65,8 @@ public class ObdDataActionImpl implements ObdDataAction<ObdData> {
 		int insertRows=0;
 		if (locationList!=null && locationList.size()>0) {
 			insertRows = dao.batchAdd(locationList);
+			// 删除重复数据
+//			dao.deleteDuplicateData();
 		}
 		return insertRows;
 	}

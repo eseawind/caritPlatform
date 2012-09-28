@@ -10,33 +10,26 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonPage;
-import cn.com.carit.platform.action.AppVersionAction;
-import cn.com.carit.platform.bean.market.AppVersion;
-import cn.com.carit.platform.dao.AppVersionDao;
-import cn.com.carit.platform.request.market.DownloadedReferencedRequest;
-import cn.com.carit.platform.response.market.AppVersionResponse;
+import cn.com.carit.platform.action.SystemMessageAction;
+import cn.com.carit.platform.bean.account.SystemMessage;
+import cn.com.carit.platform.dao.SystemMessageDao;
 
 @Service
 @Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
-public class AppVersionActionImpl implements AppVersionAction<AppVersion> {
-
-	@Resource
-	private AppVersionDao<AppVersion> dao;
+public class SystemMessageActionImpl implements SystemMessageAction<SystemMessage> {
 	
-	@Override
-	public List<AppVersion> queryAll() {
-		return dao.queryAll();
-	}
+	@Resource
+	private SystemMessageDao<SystemMessage> dao;
 
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
 	@Override
-	public int add(AppVersion t) {
+	public int add(SystemMessage t) {
 		return dao.add(t);
 	}
 
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
 	@Override
-	public int update(AppVersion t) {
+	public int update(SystemMessage t) {
 		return dao.update(t);
 	}
 
@@ -47,24 +40,32 @@ public class AppVersionActionImpl implements AppVersionAction<AppVersion> {
 	}
 
 	@Override
-	public AppVersion queryById(int id) {
+	public SystemMessage queryById(int id) {
 		return dao.queryById(id);
 	}
 
 	@Override
-	public JsonPage<AppVersion> queryByExemple(AppVersion t, DataGridModel dgm) {
+	public JsonPage<SystemMessage> queryByExemple(SystemMessage t, DataGridModel dgm) {
 		return dao.queryByExemple(t, dgm);
 	}
 
 	@Override
-	public List<AppVersion> queryByExemple(AppVersion t) {
+	public List<SystemMessage> queryByExemple(SystemMessage t) {
 		return dao.queryByExemple(t);
 	}
 
 	@Override
-	public JsonPage<AppVersionResponse> queryAppVersions(
-			DownloadedReferencedRequest request) {
-		return dao.queryAppVersions(request);
+	public List<SystemMessage> queryAll() {
+		return dao.queryAll();
 	}
 	
+	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Override
+	public void readSystemMessage(int id) {
+		SystemMessage t=new SystemMessage();
+		t.setId(id);
+		t.setStatus(SystemMessage.STATUS_READ);
+		dao.update(t);
+	}
+
 }

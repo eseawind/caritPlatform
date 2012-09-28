@@ -17,11 +17,14 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import cn.com.carit.DaoImpl;
+import cn.com.carit.common.Constants;
 import cn.com.carit.common.utils.CaritUtils;
 import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonPage;
 import cn.com.carit.platform.bean.market.AppVersion;
 import cn.com.carit.platform.dao.AppVersionDao;
+import cn.com.carit.platform.request.market.DownloadedReferencedRequest;
+import cn.com.carit.platform.response.market.AppVersionResponse;
 
 @Repository
 public class AppVersionDaoImpl extends DaoImpl implements AppVersionDao<AppVersion> {
@@ -232,5 +235,60 @@ public class AppVersionDaoImpl extends DaoImpl implements AppVersionDao<AppVersi
 		return sql.toString();
 	}
 	
+	@Override
+	public JsonPage<AppVersionResponse> queryAppVersions(
+			DownloadedReferencedRequest request) {
+		String viewName="v_app_version_file_cn";
+		if (!Constants.DEAFULD_LANGUAGE.equalsIgnoreCase(request.getLanguage())) {
+			viewName="v_app_version_file_en";
+		}
+		DataGridModel dgm = new DataGridModel();
+		dgm.setSort(request.getSort());
+		dgm.setOrder(request.getOrder());
+		dgm.setPage(request.getPage());
+		dgm.setRows(request.getRows());
+		JsonPage<AppVersionResponse> jsonPage = new JsonPage<AppVersionResponse>(dgm.getPage(), dgm.getRows());
+		StringBuilder sql=new StringBuilder("select * from ").append(viewName).append(" where status=1 and app_id=?");
+		StringBuilder countSql=new StringBuilder("select count(1) from ").append(viewName).append(" where status=1 and app_id=?");
+		List<Object> args = new ArrayList<Object>();
+		args.add(request.getAppId());
+		List<Integer> argTypes = new ArrayList<Integer>();
+		argTypes.add(Types.INTEGER);
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", countSql));
+		}
+		int totalRow = queryForInt(countSql.toString(), args, argTypes);
+		jsonPage.setTotal(totalRow);
+		// 排序
+		if (StringUtils.hasText(dgm.getOrder())
+				&& StringUtils.hasText(dgm.getSort())) {
+			sql.append(" order by ")
+					.append(CaritUtils.splitFieldWords(dgm.getSort()))
+					.append(" ").append(dgm.getOrder());
+		}
+		sql.append(" limit ?, ?");
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		args.add(jsonPage.getStartRow());
+		args.add(jsonPage.getPageSize());
+		argTypes.add(Types.INTEGER);
+		argTypes.add(Types.INTEGER);
+		jsonPage.setRows(query(sql.toString(), args, argTypes, new RowMapper<AppVersionResponse>() {
 
+			@Override
+			public AppVersionResponse mapRow(ResultSet rs, int rowNum)
+					throws SQLException {
+				AppVersionResponse t=new AppVersionResponse();
+				t.setId(rs.getInt("id"));
+				t.setVersion(rs.getString("version"));
+				t.setSize(rs.getString("size"));
+				t.setFilePath(rs.getString("file_path"));
+				t.setNewFeatures(rs.getString("new_features"));
+				return t;
+			}
+		}));
+		return jsonPage;
+	}
+	
 }

@@ -4,20 +4,34 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.sphx.api.SphinxException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonPage;
+import cn.com.carit.common.utils.SphinxUtil;
 import cn.com.carit.platform.action.ApplicationAction;
 import cn.com.carit.platform.bean.market.Application;
 import cn.com.carit.platform.dao.ApplicationDao;
+import cn.com.carit.platform.request.market.DownloadedReferencedRequest;
+import cn.com.carit.platform.request.market.FullTextSearchRequest;
+import cn.com.carit.platform.request.market.SearchAppDeveloperRequest;
+import cn.com.carit.platform.request.market.SearchApplicationRequest;
+import cn.com.carit.platform.request.market.TopRequest;
+import cn.com.carit.platform.request.market.ViewApplicationRequest;
+import cn.com.carit.platform.response.market.AppDeveloperResponse;
+import cn.com.carit.platform.response.market.ApplicationResponse;
 
 @Service
 @Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
 public class ApplicationActionImpl implements ApplicationAction<Application> {
 
+	private final Logger logger=LoggerFactory.getLogger(getClass());
 	@Resource
 	private ApplicationDao<Application> dao;
 	
@@ -58,4 +72,64 @@ public class ApplicationActionImpl implements ApplicationAction<Application> {
 	public List<Application> queryByExemple(Application t) {
 		return dao.queryByExemple(t);
 	}
+
+	@Override
+	public JsonPage<ApplicationResponse> queryByExemple(
+			SearchApplicationRequest request) {
+		return dao.queryByExemple(request);
+	}
+
+	@Override
+	public ApplicationResponse queryAppById(ViewApplicationRequest request) {
+		return dao.queryAppById(request);
+	}
+
+	@Override
+	public List<ApplicationResponse> queryHotFree(TopRequest request) {
+		return dao.queryHotFree(request);
+	}
+
+	@Override
+	public List<ApplicationResponse> queryHotNewFree(TopRequest request) {
+		return dao.queryHotNewFree(request);
+	}
+
+	@Override
+	public JsonPage<ApplicationResponse> fullTextSearch(FullTextSearchRequest request) {
+		JsonPage<ApplicationResponse> jsonPage=null;
+		try {
+			String ids = SphinxUtil.getApplicationIdsAsStr(request.getKeyword());
+			if (StringUtils.hasText(ids)) {
+				DataGridModel dgm=new DataGridModel();
+//				dgm.setSort(request.getSort());
+//				dgm.setOrder(request.getOrder());
+				dgm.setPage(request.getPage());
+				dgm.setRows(request.getRows());
+				jsonPage=dao.fullTextSearch(request.getLanguage(), ids, dgm);
+			}
+		} catch (SphinxException e) {
+			logger.error("fullTextSearch application error...\r\n"+e.getMessage());
+			jsonPage=new JsonPage<ApplicationResponse>();
+		}
+		return jsonPage;
+	}
+
+
+	@Override
+	public JsonPage<ApplicationResponse> queryAccountDownloadedApp(
+			int accountId, String language, DataGridModel dgm) {
+		return dao.queryAccountDownloadedApp(accountId, language, dgm);
+	}
+
+	@Override
+	public JsonPage<ApplicationResponse> queryDownloadedReferencedApps(DownloadedReferencedRequest request) {
+		return dao.queryDownloadedReferencedApps(request);
+	}
+
+	@Override
+	public JsonPage<AppDeveloperResponse> queryAppDeveloper(
+			SearchAppDeveloperRequest request) {
+		return dao.queryAppDeveloper(request);
+	}
+	
 }

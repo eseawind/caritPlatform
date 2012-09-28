@@ -18,7 +18,7 @@ public interface LocationDao<Location> extends Dao<Location> {
 	List<LocationResponse> query(SearchLoactionRequest request);
 	
 	/**
-	 * 删除重复数据
+	 * 删除同一设备同一上传时间的重复数据（保留最后上传的）
 	 */
 	void deleteDuplicateData();
 }

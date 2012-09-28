@@ -2,7 +2,6 @@ package cn.com.carit.platform.bean.account;
 
 import java.util.Date;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import cn.com.carit.common.jackjson.CustomDateSerializer;
@@ -28,9 +27,13 @@ public class SystemMessage  extends BaseBean {
 	private String content;
 	/**状态*/
 	private Integer status;
-	/**账号ID列表*/
-	@JsonIgnore
-	private String [] accountIds;
+	
+	public SystemMessage() {
+	}
+	public SystemMessage(Integer accountId) {
+		super();
+		this.accountId = accountId;
+	}
 	public Integer getAccountId() {
 		return accountId;
 	}
@@ -63,14 +66,6 @@ public class SystemMessage  extends BaseBean {
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
-	
-	public String[] getAccountIds() {
-		return accountIds;
-	}
-	public void setAccountIds(String[] accountIds) {
-		this.accountIds = accountIds;
-	}
-	
 	
 	@Override
 	@JsonSerialize(using = CustomDateSerializer.class)

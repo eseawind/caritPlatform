@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -24,7 +25,7 @@ public class JsonPage<T> {
 	/** 每页显示数 */
 	private int pageSize = Constants.PAGE_SIZE;
 	/** 总行数 */
-	@XmlElement
+	@XmlAttribute
 	private int total = 0;
 	/*
 		*//** 总页数 */
@@ -110,6 +111,7 @@ public class JsonPage<T> {
 		this.rows = rows;
 	}
 	
+	@XmlAttribute
 	public int getTotalPage(){
 		if (total%pageSize!=0) {
 			return (total/pageSize)+1;
