@@ -82,7 +82,7 @@ public class SystemMessageDaoImpl extends DaoImpl implements SystemMessageDao<Sy
 
 	@Override
 	public int delete(int id) {
-		String sql = "delete from t_upload_location where id=?";
+		String sql = "delete from t_sys_message where id=?";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
@@ -91,7 +91,7 @@ public class SystemMessageDaoImpl extends DaoImpl implements SystemMessageDao<Sy
 
 	@Override
 	public SystemMessage queryById(int id) {
-		String sql = "select * from t_upload_location where id=?";
+		String sql = "select * from t_sys_message where id=?";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
@@ -102,12 +102,12 @@ public class SystemMessageDaoImpl extends DaoImpl implements SystemMessageDao<Sy
 	public JsonPage<SystemMessage> queryByExemple(SystemMessage t, DataGridModel dgm) {
 		JsonPage<SystemMessage> jsonPage = new JsonPage<SystemMessage>(dgm.getPage(), dgm.getRows());
 		StringBuilder sql = new StringBuilder(
-				"select * from t_upload_location where 1=1");
+				"select * from t_sys_message where 1=1");
 		List<Object> args = new ArrayList<Object>();
 		List<Integer> argTypes = new ArrayList<Integer>();
 		String whereSql = buildWhere(args, argTypes, t);
 		sql.append(whereSql);
-		String countSql = "select count(1) from t_upload_location where 1=1"
+		String countSql = "select count(1) from t_sys_message where 1=1"
 				+ whereSql;
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", countSql));
@@ -140,7 +140,7 @@ public class SystemMessageDaoImpl extends DaoImpl implements SystemMessageDao<Sy
 	@Override
 	public List<SystemMessage> queryByExemple(SystemMessage t) {
 		StringBuilder sql = new StringBuilder(
-				"select * from t_upload_location where 1=1");
+				"select * from t_sys_message where 1=1");
 		List<Object> args = new ArrayList<Object>();
 		List<Integer> argTypes = new ArrayList<Integer>();
 		sql.append(buildWhere(args, argTypes, t));
@@ -152,7 +152,7 @@ public class SystemMessageDaoImpl extends DaoImpl implements SystemMessageDao<Sy
 
 	@Override
 	public List<SystemMessage> queryAll() {
-		String sql="select * from t_upload_location";
+		String sql="select * from t_sys_message";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}

@@ -175,7 +175,7 @@ public class CacheManager {
 	}
 	
 	public Application getApplication(int appId) {
-		Application t=applicationCache.get(appId);
+		Application t=getApplicationCache().get(appId);
 		if (t==null) {
 			t=applicationAction.queryById(appId);
 			if (t!=null) {

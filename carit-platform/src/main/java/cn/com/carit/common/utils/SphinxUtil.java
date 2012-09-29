@@ -1,7 +1,6 @@
 package cn.com.carit.common.utils;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -16,24 +15,21 @@ import org.springframework.util.StringUtils;
 
 public class SphinxUtil {
 	protected final static Logger logger = Logger.getLogger(SphinxUtil.class);
-	private static volatile SphinxUtil INSTANCE = null;
 
 	private static SphinxClient sphinxClient;
 	private static String SPHINX_INDEX;
 	private static Properties properties = new Properties();
+	
+	public static class SphinxUtilHolder{
+		public static SphinxUtil INSTANCE=new SphinxUtil();
+	}
 
 	private SphinxUtil() {
 		try {
 			logger.info("init SphinxUtil INSTANCE start...");
-			InputStream inStream = getClass().getResourceAsStream(
-					"/resources/dataSource.properties");
-			properties.load(inStream);
-			 sphinxClient = new SphinxClient(
-			 (String) properties.get("sphinx.host"),
-			 Integer.parseInt((String) properties.get("sphinx.port")));
-//			sphinxClient = new SphinxClient("192.168.0.241", 9312);
+			properties.load(ClassLoader.getSystemResourceAsStream("dataSource.properties"));
+			sphinxClient = new SphinxClient((String) properties.get("sphinx.host"), Integer.parseInt((String) properties.get("sphinx.port")));
 			 SPHINX_INDEX = (String) properties.get("sphinx.index");
-//			SPHINX_INDEX = "application_cn_idx";
 			sphinxClient.SetWeights(new int[] { 100, 1 });
 			sphinxClient.SetLimits(0, Integer.MAX_VALUE);
 			sphinxClient.SetMatchMode(SphinxClient.SPH_MATCH_EXTENDED2);
@@ -47,19 +43,14 @@ public class SphinxUtil {
 		}
 	}
 	
-	public static void init() {
-		if (INSTANCE == null) {
-			synchronized (AttachmentUtil.class) {
-				if (INSTANCE == null) {
-					INSTANCE = new SphinxUtil();
-				}
-			}
-		}
+	public static SphinxUtil getInstance(){
+		return SphinxUtilHolder.INSTANCE;
 	}
-	public static String getValue(String key) {
+	
+	public String getValue(String key) {
 		return (String) properties.get(key);
 	}
-	public static SphinxMatch[] getMatchs(String keywords)
+	public SphinxMatch[] getMatchs(String keywords)
 			throws SphinxException {
 		if (!StringUtils.hasText(keywords)) {
 			logger.error("criteria is null");
@@ -98,7 +89,7 @@ public class SphinxUtil {
 		return result.matches;
 	}
 
-	public static List<String> getApplicationIdsAsList(String keywords)
+	public List<String> getApplicationIdsAsList(String keywords)
 			throws SphinxException {
 		List<String> appIdsList = new ArrayList<String>();
 		SphinxMatch[] matches = getMatchs(keywords);
@@ -110,7 +101,7 @@ public class SphinxUtil {
 		return appIdsList;
 	}
 
-	public static String getApplicationIdsAsStr(String keywords)
+	public String getApplicationIdsAsStr(String keywords)
 			throws SphinxException {
 		StringBuilder ids = new StringBuilder();
 		SphinxMatch[] matches = getMatchs(keywords);
@@ -129,7 +120,7 @@ public class SphinxUtil {
 		return ids.toString();
 	}
 
-	private static String buildSearchQuery(String keywords) {
+	private String buildSearchQuery(String keywords) {
 		String keywordsArray[] = keywords.split(" ");
 		StringBuilder searchFor = new StringBuilder();
 		for (String key : keywordsArray) {
@@ -165,7 +156,7 @@ public class SphinxUtil {
 	}
 
 	public static void main(String[] args) throws SphinxException {
-		init();
-		System.out.println(getApplicationIdsAsStr("Android 新浪"));
+		SphinxUtil util=SphinxUtil.getInstance();
+		System.out.println(util.getApplicationIdsAsStr("Android 新浪"));
 	}
 }

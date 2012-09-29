@@ -1,6 +1,15 @@
 package cn.com.carit.platform.action;
 
-import cn.com.carit.Action;
+import java.util.List;
 
-public interface AppCatalogAction<AppVersion> extends Action<AppVersion> {
+import cn.com.carit.Action;
+import cn.com.carit.platform.response.market.AppCatalogResponse;
+
+public interface AppCatalogAction<AppCatalog> extends Action<AppCatalog> {
+	/**
+	 * 按语言查询
+	 * @param language
+	 * @return
+	 */
+	List<AppCatalogResponse> queryByLanguage(String language);
 }

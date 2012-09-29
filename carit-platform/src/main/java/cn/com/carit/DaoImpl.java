@@ -48,6 +48,7 @@ public class DaoImpl {
 	 */
 	public <T> T query(String sql, Object id, RowMapper<T> rowMapper){
 		int idType=Types.INTEGER;
+		T t = null;
 		if (id instanceof Long) {
 			idType=Types.BIGINT;
 		}
@@ -55,11 +56,11 @@ public class DaoImpl {
 			idType=Types.VARCHAR;
 		}
 		try {
-			return jdbcTemplate.queryForObject(sql, new Object[]{id}, new int[]{idType}, rowMapper);
+			t = jdbcTemplate.queryForObject(sql, new Object[]{id}, new int[]{idType}, rowMapper);
 		} catch (Exception e) {
 			log.warn("no record existed...");
-			return null;
 		}
+		return t;
 	}
 	
 	public <T> T queryForObject(String sql, List<Object> args, List<Integer> argTypes, RowMapper<T> rowMapper) {

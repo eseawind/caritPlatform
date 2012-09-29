@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -24,6 +25,7 @@ import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonPage;
 import cn.com.carit.platform.bean.ObdData;
 import cn.com.carit.platform.dao.ObdDataDao;
+import cn.com.carit.platform.request.SearchObdDataRequest;
 
 @Repository
 public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
@@ -221,16 +223,16 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 			args.add(t.getDeviceId());
 			argTypes.add(Types.VARCHAR);
 		}
-		if (t.getStartDate()!=null) {
-			sql.append(" and date>=?");
-			args.add(t.getStartDate());
-			argTypes.add(Types.DATE);
-		}
-		if (t.getEndDate()!=null) {
-			sql.append(" and date<=?");
-			args.add(t.getEndDate());
-			argTypes.add(Types.DATE);
-		}
+//		if (t.getStartDate()!=null) {
+//			sql.append(" and date>=?");
+//			args.add(t.getStartDate());
+//			argTypes.add(Types.DATE);
+//		}
+//		if (t.getEndDate()!=null) {
+//			sql.append(" and date<=?");
+//			args.add(t.getEndDate());
+//			argTypes.add(Types.DATE);
+//		}
 		if (StringUtils.hasText(t.getLocation())) {
 			sql.append(" and location like CONCAT('%',?,'%')");
 			args.add(t.getLocation());
@@ -283,6 +285,72 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
 		jdbcTemplate.update(sql);
+	}
+
+	@Override
+	public JsonPage<ObdData> query(SearchObdDataRequest request) {
+		DataGridModel dgm = new DataGridModel();
+		dgm.setSort(request.getSort());
+		dgm.setOrder(request.getOrder());
+		dgm.setPage(request.getPage());
+		dgm.setRows(request.getRows());
+		JsonPage<ObdData> jsonPage = new JsonPage<ObdData>(dgm.getPage(), dgm.getRows());
+		StringBuilder sql = new StringBuilder(
+				"select * from t_obd_data where 1=1");
+		StringBuilder countSql = new StringBuilder("select count(1) from t_obd_data where 1=1");
+		List<Object> args = new ArrayList<Object>();
+		List<Integer> argTypes = new ArrayList<Integer>();
+		if (StringUtils.hasText(request.getDeviceId())) {
+			sql.append(" and device_id=?");
+			countSql.append(" and device_id=?");
+			args.add(request.getDeviceId());
+			argTypes.add(Types.VARCHAR);
+		}
+		if (request.getStartTime()!=null) {
+			sql.append(" and date>=?");
+			countSql.append(" and date>=?");
+			args.add(new Date(request.getStartTime()));
+			argTypes.add(Types.DATE);
+		}
+		if (request.getEndTime()!=null) {
+			sql.append(" and date<=?");
+			sql.append(" and date<=?");
+			args.add(new Date(request.getEndTime()));
+			argTypes.add(Types.DATE);
+		}
+		if (StringUtils.hasText(request.getLocation())) {
+			sql.append(" and location like CONCAT('%',?,'%')");
+			sql.append(" and location like CONCAT('%',?,'%')");
+			args.add(request.getLocation());
+			argTypes.add(Types.VARCHAR);
+		}
+		
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", countSql));
+		}
+		int totalRow = queryForInt(countSql.toString(), args, argTypes);
+		// 更新
+		jsonPage.setTotal(totalRow);
+		// 排序
+		if (StringUtils.hasText(dgm.getOrder())
+				&& StringUtils.hasText(dgm.getSort())) {
+			sql.append(" order by ")
+					.append(CaritUtils.splitFieldWords(dgm.getSort()))
+					.append(" ").append(dgm.getOrder());
+
+		} else {
+			sql.append(" order by update_time desc");
+		}
+		sql.append(" limit ?, ?");
+		args.add(jsonPage.getStartRow());
+		args.add(jsonPage.getPageSize());
+		argTypes.add(Types.INTEGER);
+		argTypes.add(Types.INTEGER);
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		jsonPage.setRows(query(sql.toString(), args, argTypes, rowMapper));
+		return jsonPage;
 	}
 
 }

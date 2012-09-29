@@ -8,6 +8,8 @@ public class SearchObdDataRequest extends SearchRequest {
 	private Long startTime;
 	
 	private Long endTime;
+	
+	private String location;
 
 	
 	public String getDeviceId() {
@@ -32,6 +34,14 @@ public class SearchObdDataRequest extends SearchRequest {
 
 	public void setEndTime(Long endTime) {
 		this.endTime = endTime;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
 	}
 
 }

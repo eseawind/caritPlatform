@@ -16,10 +16,10 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
 import cn.com.carit.common.Constants;
-import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonUtil;
 import cn.com.carit.platform.action.LocationAction;
 import cn.com.carit.platform.action.ObdDataAction;
@@ -33,6 +33,7 @@ import cn.com.carit.platform.request.SearchObdDataRequest;
 import cn.com.carit.platform.response.LocationListResponse;
 import cn.com.carit.platform.response.LogonResponse;
 import cn.com.carit.platform.response.ObdDataResponse;
+import cn.com.carit.platform.response.PageResponse;
 import cn.com.carit.session.CaritPlatformSession;
 
 import com.rop.RopRequest;
@@ -276,21 +277,9 @@ public class PlatformService {
 	 */
 	@ServiceMethod(method = "platform.obd.search",version = "1.0", needInSession=NeedInSessionType.NO, httpAction=HttpAction.GET)
 	public Object searchObdData(SearchObdDataRequest request){
-		// 构造Data
-		ObdData t=new ObdData();
-		if (StringUtils.hasText(request.getDeviceId())) {
-			t.setDeviceId(request.getDeviceId());
-		}
-		if (request.getStartTime()!=null) {
-			t.setStartDate(new Date(request.getStartTime()));
-		}
-		if (request.getEndTime()!=null) {
-			t.setEndDate(new Date(request.getEndTime()));
-		}
-		return obdDataAction.queryByExemple(t
-				, new DataGridModel(request.getPage()
-						, request.getRows(), request.getSort(), request.getOrder())
-		);
+		PageResponse<ObdData> page=new PageResponse<ObdData>();
+		BeanUtils.copyProperties(obdDataAction.query(request), page);
+		return page;
 	}
 	
 	/**

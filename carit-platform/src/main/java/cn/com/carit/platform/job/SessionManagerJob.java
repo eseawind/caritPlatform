@@ -8,10 +8,10 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.rop.session.Session;
-
 import cn.com.carit.session.CaritPlatformSession;
 import cn.com.carit.session.CaritSessionManager;
+
+import com.rop.session.Session;
 
 /**
  * <b>功能描述：</b>Session管理job。激活状态的session超过半小时内没有连接过的设置为掉线;掉线状态的session超过半小时没连接删除
@@ -40,10 +40,9 @@ public class SessionManagerJob {
 				// 激活状态的session超过半小时没请求
 				if (session.getStatus()==CaritPlatformSession.SessionStatus.ACTIVATE) {
 					session.setStatus(CaritPlatformSession.SessionStatus.OFFLINE);
+					session.setUpdateTime(Calendar.getInstance());
 					logger.info("sessionId="+e.getKey()+"的session超过半小时没链接，将其状态设置为掉线。");
-				}
-				// session掉线超过半小时
-				if (session.getStatus()==CaritPlatformSession.SessionStatus.OFFLINE) {
+				} else { // session掉线超过半小时
 					sessionCache.remove(e.getKey());
 					logger.info("sessionId="+e.getKey()+"的session掉线后超过半小时没链接，将其删除。");
 				}

@@ -98,7 +98,7 @@ public class ApplicationActionImpl implements ApplicationAction<Application> {
 	public JsonPage<ApplicationResponse> fullTextSearch(FullTextSearchRequest request) {
 		JsonPage<ApplicationResponse> jsonPage=null;
 		try {
-			String ids = SphinxUtil.getApplicationIdsAsStr(request.getKeyword());
+			String ids = SphinxUtil.getInstance().getApplicationIdsAsStr(request.getKeyword());
 			if (StringUtils.hasText(ids)) {
 				DataGridModel dgm=new DataGridModel();
 //				dgm.setSort(request.getSort());

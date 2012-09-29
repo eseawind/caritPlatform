@@ -37,7 +37,7 @@ public class PreDoServiceEventListener implements RopEventListener<PreDoServiceE
 
     @Override
     public int getOrder() {
-        return 1;
+        return 0;
     }
 }
 

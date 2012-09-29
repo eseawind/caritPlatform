@@ -13,6 +13,7 @@ import cn.com.carit.common.utils.JsonPage;
 import cn.com.carit.platform.action.ObdDataAction;
 import cn.com.carit.platform.bean.ObdData;
 import cn.com.carit.platform.dao.ObdDataDao;
+import cn.com.carit.platform.request.SearchObdDataRequest;
 
 @Service
 @Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
@@ -74,6 +75,11 @@ public class ObdDataActionImpl implements ObdDataAction<ObdData> {
 	@Override
 	public ObdData queryLastByDeviceId(String deviceId) {
 		return dao.queryLastByDeviceId(deviceId);
+	}
+
+	@Override
+	public JsonPage<ObdData> query(SearchObdDataRequest request) {
+		return dao.query(request);
 	}
 
 }

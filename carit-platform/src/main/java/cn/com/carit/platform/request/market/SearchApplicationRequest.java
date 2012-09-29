@@ -1,8 +1,5 @@
 package cn.com.carit.platform.request.market;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-
 import cn.com.carit.platform.request.SearchRequest;
 
 /**
@@ -13,9 +10,6 @@ import cn.com.carit.platform.request.SearchRequest;
  * @date 2012-9-27
  */
 public class SearchApplicationRequest extends SearchRequest {
-
-	@Min(value=1)
-	@Max(value=Integer.MAX_VALUE)
 	private int appId;
 	
 	private String appName;
@@ -27,8 +21,6 @@ public class SearchApplicationRequest extends SearchRequest {
 	private String developerEmail;
 	
 	/** 分类名称 */
-	@Min(value=1)
-	@Max(value=Integer.MAX_VALUE)
 	private Integer catalogId;
 	private String catalogName;
 	private String size;
@@ -41,8 +33,6 @@ public class SearchApplicationRequest extends SearchRequest {
 	/** 下载次数 */
 	private Integer downCount;
 	/**  应用评级 */
-	@Min(value=1)
-	@Max(value=Integer.MAX_VALUE)
 	private Integer appLevel;
 	private Double price;
 	private Integer status;

@@ -9,10 +9,15 @@ import cn.com.carit.platform.request.account.ApplicationRequest;
 import cn.com.carit.platform.request.account.CheckEmailRequest;
 import cn.com.carit.platform.request.account.CheckNicknameRequest;
 import cn.com.carit.platform.request.account.CommentRequest;
+import cn.com.carit.platform.request.account.SearchByAccountRequest;
 import cn.com.carit.platform.request.account.UpdateAccountRequest;
 import cn.com.carit.platform.request.account.UploadUserPhotoRequest;
+import cn.com.carit.platform.request.market.ReadSystemMessageRequest;
+import cn.com.carit.platform.request.market.SearchSystemMessageRequest;
 import cn.com.carit.platform.response.AccountResponse;
 import cn.com.carit.platform.response.DownloadResponse;
+import cn.com.carit.platform.response.PageResponse;
+import cn.com.carit.platform.response.SystemMessageResponse;
 import cn.com.carit.platform.response.UploadUserPhotoResponse;
 
 import com.rop.request.UploadFile;
@@ -23,7 +28,7 @@ public class AccountServiceTestCase {
 	@Test
 	public void testLogon(){
 		RopTestCaseClient.getInstance().getSession();
-		RopTestCaseClient.getInstance().logon("xiegc@carit.info", "123456");
+		RopTestCaseClient.getInstance().logon("xiegc@carit.com.cn", "123456");
 	}
 	
 	@Test
@@ -70,7 +75,7 @@ public class AccountServiceTestCase {
 	
 	@Test
 	public void testAddComment(){
-		CommentRequest request=new CommentRequest("xiegc@carit.com.cn", "123456", 8, "很好很强大", 10);
+		CommentRequest request=new CommentRequest("xiegc@carit.com.cn", "123456", 6, "很好很强大", 10);
 		RopTestCaseClient.getInstance().getSession();
 		RopTestCaseClient.getInstance().buildClientRequest().post(request, CommonRopResponse.class, "account.application.addComment", "1.0");
 	}
@@ -89,5 +94,45 @@ public class AccountServiceTestCase {
 		request.setNickName("風一樣的男子");
 		RopTestCaseClient.getInstance().getSession();
 		RopTestCaseClient.getInstance().buildClientRequest().get(request, CommonRopResponse.class, "account.check.nickname", "1.0");
+	}
+	
+	@Test
+	public void testQueryAccountDownloadedApp(){
+		SearchByAccountRequest request=new SearchByAccountRequest();
+		request.setLanguage("cn");
+		request.setEmail("xiegc@carit.com.cn");
+		request.setPassword("123456");
+		RopTestCaseClient.getInstance().getSession();
+		RopTestCaseClient.getInstance().buildClientRequest().get(request, PageResponse.class, "account.downloaded.application", "1.0");
+	}
+	
+	@Test
+	public void testQueryAccountSystemMessage(){
+		SearchSystemMessageRequest request=new SearchSystemMessageRequest();
+		request.setLanguage("cn");
+		request.setEmail("xiegc@carit.com.cn");
+		request.setPassword("123456");
+		RopTestCaseClient.getInstance().getSession();
+		RopTestCaseClient.getInstance().buildClientRequest().get(request, PageResponse.class, "account.query.sys.msg", "1.0");
+	}
+	
+	@Test
+	public void testReadAccountSystemMessage(){
+		ReadSystemMessageRequest request=new ReadSystemMessageRequest();
+		request.setEmail("xiegc@carit.com.cn");
+		request.setPassword("123456");
+		request.setMsgId(1);
+		RopTestCaseClient.getInstance().getSession();
+		RopTestCaseClient.getInstance().buildClientRequest().get(request, SystemMessageResponse.class, "account.read.sys.msg", "1.0");
+	}
+	
+	@Test
+	public void testDeleteAccountSystemMessage(){
+		ReadSystemMessageRequest request=new ReadSystemMessageRequest();
+		request.setEmail("xiegc@carit.com.cn");
+		request.setPassword("123456");
+		request.setMsgId(1);
+		RopTestCaseClient.getInstance().getSession();
+		RopTestCaseClient.getInstance().buildClientRequest().get(request, CommonRopResponse.class, "account.delete.sys.msg", "1.0");
 	}
 }

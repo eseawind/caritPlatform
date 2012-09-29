@@ -756,7 +756,7 @@ public class ApplicationDaoImpl extends DaoImpl implements ApplicationDao<Applic
 	public JsonPage<AppDeveloperResponse> queryAppDeveloper(
 			SearchAppDeveloperRequest request) {
 		StringBuilder sql=new StringBuilder("select * from t_app_developer where 1=1");
-		StringBuilder countSql = new StringBuilder("select * from t_app_developer where 1=1");
+		StringBuilder countSql = new StringBuilder("select count(1) from t_app_developer where 1=1");
 		DataGridModel dgm=new DataGridModel();
 		dgm.setSort(request.getSort());
 		dgm.setOrder(request.getOrder());

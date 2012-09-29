@@ -13,6 +13,7 @@ import cn.com.carit.common.utils.JsonPage;
 import cn.com.carit.platform.action.AppCatalogAction;
 import cn.com.carit.platform.bean.market.AppCatalog;
 import cn.com.carit.platform.dao.AppCatalogDao;
+import cn.com.carit.platform.response.market.AppCatalogResponse;
 
 @Service
 @Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
@@ -58,4 +59,10 @@ public class AppCatalogActionImpl implements AppCatalogAction<AppCatalog> {
 	public List<AppCatalog> queryByExemple(AppCatalog t) {
 		return dao.queryByExemple(t);
 	}
+
+	@Override
+	public List<AppCatalogResponse> queryByLanguage(String language) {
+		return dao.queryByLanguage(language);
+	}
+	
 }

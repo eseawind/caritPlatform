@@ -30,7 +30,7 @@ public class PostInitializeEventListener implements RopEventListener<AfterStarte
 
     @Override
     public int getOrder() {
-        return 0;
+        return 1;
     }
 }
 

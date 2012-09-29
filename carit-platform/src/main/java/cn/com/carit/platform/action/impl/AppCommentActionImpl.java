@@ -1,6 +1,7 @@
 package cn.com.carit.platform.action.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -64,6 +65,16 @@ public class AppCommentActionImpl implements AppCommentAction<AppComment> {
 	public JsonPage<AppCommentResponse> queryAppComments(int appId,
 			DataGridModel dgm) {
 		return dao.queryAppComments(appId, dgm);
+	}
+
+	@Override
+	public List<Map<String, Object>> statCommentGrade(int appId) {
+		return dao.statCommentGrade(appId);
+	}
+
+	@Override
+	public Map<String, Object> statComment(int appId) {
+		return dao.statComment(appId);
 	}
 
 }

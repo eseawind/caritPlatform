@@ -4,13 +4,13 @@ import java.util.Calendar;
 
 import org.testng.annotations.Test;
 
-import cn.com.carit.common.utils.JsonPage;
 import cn.com.carit.platform.RopTestCaseClient;
 import cn.com.carit.platform.request.LocationUploadRequest;
 import cn.com.carit.platform.request.ObdDataUploadRequest;
 import cn.com.carit.platform.request.SearchLoactionRequest;
 import cn.com.carit.platform.request.SearchObdDataRequest;
 import cn.com.carit.platform.response.LocationListResponse;
+import cn.com.carit.platform.response.PageResponse;
 
 import com.rop.response.CommonRopResponse;
 
@@ -78,7 +78,7 @@ public class PlatformServiceTestCase {
 //		
 //		request.setStartTime(calendar.getTimeInMillis());
 		
-		RopTestCaseClient.getRopClient().buildClientRequest().get(request, JsonPage.class, "platform.obd.search", "1.0");
+		RopTestCaseClient.getRopClient().buildClientRequest().get(request, PageResponse.class, "platform.obd.search", "1.0");
 	}
 	
 }

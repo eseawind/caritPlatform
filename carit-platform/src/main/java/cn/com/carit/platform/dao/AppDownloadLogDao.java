@@ -1,6 +1,10 @@
 package cn.com.carit.platform.dao;
 
+import java.util.Date;
+import java.util.List;
+
 import cn.com.carit.Dao;
+import cn.com.carit.platform.response.market.AppDownStat;
 
 public interface AppDownloadLogDao<AppDownloadLog> extends Dao<AppDownloadLog> {
 	
@@ -11,4 +15,12 @@ public interface AppDownloadLogDao<AppDownloadLog> extends Dao<AppDownloadLog> {
 	 * @return
 	 */
 	boolean hasDownloaded(int accountId, int appId);
+	
+	/**
+	 * 统计应用从 startDate 到当前时间
+	 * @param appId
+	 * @param startDate
+	 * @return
+	 */
+	List<AppDownStat> statAppDownlog(int appId, Date startDate);
 }

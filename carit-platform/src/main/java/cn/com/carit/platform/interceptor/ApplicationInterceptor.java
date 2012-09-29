@@ -1,5 +1,7 @@
 package cn.com.carit.platform.interceptor;
 
+import org.springframework.util.StringUtils;
+
 import cn.com.carit.platform.cache.CacheManager;
 
 import com.rop.AbstractInterceptor;
@@ -18,16 +20,26 @@ public class ApplicationInterceptor extends AbstractInterceptor {
 	@Override
 	public void beforeService(RopRequestContext ropRequestContext) {
 		if (isMatch(ropRequestContext)) {
-			Integer appId=Integer.valueOf(ropRequestContext.getParamValue("appId"));
-			if (CacheManager.getInstance().getApplication(appId)==null) {
-				ropRequestContext.setRopResponse(new NotExistErrorResponse("appllication","appId",appId,ropRequestContext.getLocale()));
+			String appId=ropRequestContext.getParamValue("appId");
+			if (StringUtils.hasText(appId)) {
+				if (CacheManager.getInstance().getApplication(Integer.valueOf(appId))==null) {
+					ropRequestContext.setRopResponse(new NotExistErrorResponse("appllication","appId",appId,ropRequestContext.getLocale()));
+				}
 			}
 		}
 	}
 
 	@Override
 	public boolean isMatch(RopRequestContext ropRequestContext) {
-		return "account.download.application".equals(ropRequestContext.getMethod())||"account.application.addComment".equals(ropRequestContext.getMethod());
+		return "account.download.application".equals(ropRequestContext.getMethod())
+				||"account.application.addComment".equals(ropRequestContext.getMethod())
+				||"market.view.application".equals(ropRequestContext.getMethod())
+				||"market.query.application.versions".equals(ropRequestContext.getMethod())
+				||"market.query.application.comments".equals(ropRequestContext.getMethod())
+				||"market.application.stat.grade".equals(ropRequestContext.getMethod())
+				||"market.application.avg.grade".equals(ropRequestContext.getMethod())
+				||"market.application.download.trend.one.month".equals(ropRequestContext.getMethod())
+				;
 	}
 
 	/**

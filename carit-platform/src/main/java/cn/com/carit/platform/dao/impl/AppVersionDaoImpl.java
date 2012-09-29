@@ -248,8 +248,8 @@ public class AppVersionDaoImpl extends DaoImpl implements AppVersionDao<AppVersi
 		dgm.setPage(request.getPage());
 		dgm.setRows(request.getRows());
 		JsonPage<AppVersionResponse> jsonPage = new JsonPage<AppVersionResponse>(dgm.getPage(), dgm.getRows());
-		StringBuilder sql=new StringBuilder("select * from ").append(viewName).append(" where status=1 and app_id=?");
-		StringBuilder countSql=new StringBuilder("select count(1) from ").append(viewName).append(" where status=1 and app_id=?");
+		StringBuilder sql=new StringBuilder("select * from ").append(viewName).append(" where app_id=?");
+		StringBuilder countSql=new StringBuilder("select count(1) from ").append(viewName).append(" where app_id=?");
 		List<Object> args = new ArrayList<Object>();
 		args.add(request.getAppId());
 		List<Integer> argTypes = new ArrayList<Integer>();

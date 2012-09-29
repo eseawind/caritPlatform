@@ -13,8 +13,6 @@ public class ObdData {
 	private int id;
 
 	private Date date;
-	private Date startDate;
-	private Date endDate;
 	private String deviceId;
 	private String location;
 	private String error;
@@ -31,18 +29,6 @@ public class ObdData {
 	}
 	public void setDate(Date date) {
 		this.date = date;
-	}
-	public Date getStartDate() {
-		return startDate;
-	}
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-	public Date getEndDate() {
-		return endDate;
-	}
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
 	}
 	public String getDeviceId() {
 		return deviceId;
@@ -76,11 +62,9 @@ public class ObdData {
 	}
 	@Override
 	public String toString() {
-		return "ObdData [id=" + id + ", date=" + date + ", startDate="
-				+ startDate + ", endDate=" + endDate + ", deviceId=" + deviceId
-				+ ", location=" + location + ", error=" + error
+		return "ObdData [id=" + id + ", date=" + date + ", deviceId="
+				+ deviceId + ", location=" + location + ", error=" + error
 				+ ", createTime=" + createTime + ", values="
 				+ Arrays.toString(values) + "]";
 	}
-	
 }

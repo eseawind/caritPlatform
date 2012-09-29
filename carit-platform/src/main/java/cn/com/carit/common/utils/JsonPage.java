@@ -2,19 +2,11 @@ package cn.com.carit.common.utils;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import cn.com.carit.common.Constants;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "response")
 @JsonAutoDetect
 @JsonIgnoreProperties(value = { "currentPage", "pageSize", "startRow", "endRow"})
 public class JsonPage<T> {
@@ -25,7 +17,6 @@ public class JsonPage<T> {
 	/** 每页显示数 */
 	private int pageSize = Constants.PAGE_SIZE;
 	/** 总行数 */
-	@XmlAttribute
 	private int total = 0;
 	/*
 		*//** 总页数 */
@@ -39,7 +30,6 @@ public class JsonPage<T> {
 	// private Object queryObject;
 
 	/** 要显示的数据集 */
-	@XmlElement
 	private List<T> rows;
 
 	public JsonPage() {
@@ -111,7 +101,6 @@ public class JsonPage<T> {
 		this.rows = rows;
 	}
 	
-	@XmlAttribute
 	public int getTotalPage(){
 		if (total%pageSize!=0) {
 			return (total/pageSize)+1;

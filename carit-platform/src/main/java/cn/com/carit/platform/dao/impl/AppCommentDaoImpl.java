@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -259,4 +260,28 @@ public class AppCommentDaoImpl extends DaoImpl implements AppCommentDao<AppComme
 		return jsonPage;
 	}
 
+	@Override
+	public List<Map<String, Object>> statCommentGrade(int appId) {
+		String sql="select grade, count(1) total from t_app_comment where app_id=? group by grade";
+		log.debug(String.format("\n%1$s\n", sql));
+		try {
+			return jdbcTemplate.queryForList(sql, appId);
+		} catch (Exception e) {
+			log.warn("no comment of app["+appId+"]...");
+			log.warn(e.getMessage());
+		}
+		return null;
+	}
+	@Override
+	public Map<String,Object> statComment(int appId) {
+		String sql="select count(1) count, avg(grade) avg, sum(grade) sum from t_app_comment where app_id=?";
+		log.debug(String.format("\n%1$s\n", sql));
+		try {
+			return jdbcTemplate.queryForMap(sql, appId);
+		} catch (Exception e) {
+			log.warn("no comment of app["+appId+"]...");
+			log.warn(e.getMessage());
+		}
+		return null;
+	}
 }

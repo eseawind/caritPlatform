@@ -17,11 +17,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import cn.com.carit.DaoImpl;
+import cn.com.carit.common.Constants;
 import cn.com.carit.common.utils.CaritUtils;
 import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonPage;
 import cn.com.carit.platform.bean.market.AppCatalog;
 import cn.com.carit.platform.dao.AppCatalogDao;
+import cn.com.carit.platform.response.market.AppCatalogResponse;
 
 @Repository
 public class AppCatalogDaoImpl extends DaoImpl implements AppCatalogDao<AppCatalog> {
@@ -219,6 +221,28 @@ public class AppCatalogDaoImpl extends DaoImpl implements AppCatalogDao<AppCatal
 		}
 		return sql.toString();
 	}
-	
 
+	@Override
+	public List<AppCatalogResponse> queryByLanguage(String language) {
+		String viewName="v_app_catalog_cn";
+		if (!Constants.DEAFULD_LANGUAGE.equals(language)) {
+			viewName="v_app_catalog_en";
+		}
+		String sql="select * from "+viewName;
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		return jdbcTemplate.query(sql, new RowMapper<AppCatalogResponse>(){
+
+			@Override
+			public AppCatalogResponse mapRow(ResultSet rs, int rowNum)
+					throws SQLException {
+				AppCatalogResponse t=new AppCatalogResponse();
+				t.setId(rs.getInt("id"));
+				t.setName(rs.getString("name"));
+				t.setDescription(rs.getString("description"));
+				return t;
+			}});
+	}
+	
 }

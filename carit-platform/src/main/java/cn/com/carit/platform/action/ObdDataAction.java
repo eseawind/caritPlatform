@@ -3,6 +3,8 @@ package cn.com.carit.platform.action;
 import java.util.List;
 
 import cn.com.carit.Action;
+import cn.com.carit.common.utils.JsonPage;
+import cn.com.carit.platform.request.SearchObdDataRequest;
 
 public interface ObdDataAction<ObdData> extends Action<ObdData> {
 	
@@ -14,4 +16,6 @@ public interface ObdDataAction<ObdData> extends Action<ObdData> {
 	 * @return
 	 */
 	ObdData queryLastByDeviceId(String deviceId);
+	
+	JsonPage<ObdData> query(SearchObdDataRequest request);
 }

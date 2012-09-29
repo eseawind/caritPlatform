@@ -1,8 +1,5 @@
 package cn.com.carit.platform.request.market;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-
 import cn.com.carit.platform.request.SearchRequest;
 
 /**
@@ -14,8 +11,6 @@ import cn.com.carit.platform.request.SearchRequest;
  */
 public class SearchAppDeveloperRequest extends SearchRequest {
 	
-	@Min(value=1)
-	@Max(value=Integer.MAX_VALUE)
 	private int id;
 	
 	private String name;

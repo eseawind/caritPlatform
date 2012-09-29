@@ -1,5 +1,7 @@
 package cn.com.carit.platform.action;
 
+import java.util.Map;
+
 import cn.com.carit.Action;
 
 public interface AppDownloadLogAction<AppDownloadLog> extends
@@ -11,4 +13,11 @@ public interface AppDownloadLogAction<AppDownloadLog> extends
 	 * @return
 	 */
 	boolean hasDownloaded(int accountId, int appId);
+	
+	/**
+	 * 统计应用一个月的下载趋势
+	 * @param appId
+	 * @return map 包含两个key（categories和data），分表代表X轴数据和Y轴数据
+	 */
+	Map<String, Object> appOneMonthDownTrend(int appId);
 }

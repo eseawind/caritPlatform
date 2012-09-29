@@ -37,8 +37,10 @@ import cn.com.carit.platform.request.market.ReadSystemMessageRequest;
 import cn.com.carit.platform.request.market.SearchSystemMessageRequest;
 import cn.com.carit.platform.response.AccountResponse;
 import cn.com.carit.platform.response.DownloadResponse;
+import cn.com.carit.platform.response.PageResponse;
 import cn.com.carit.platform.response.SystemMessageResponse;
 import cn.com.carit.platform.response.UploadUserPhotoResponse;
+import cn.com.carit.platform.response.market.ApplicationResponse;
 
 import com.rop.RopRequest;
 import com.rop.annotation.HttpAction;
@@ -492,7 +494,9 @@ public class AccountService {
 		dgm.setRows(request.getRows());
 		//查询账号
 		Account account=CacheManager.getInstance().getAccount(request.getEmail());
-		return applicationAction.queryAccountDownloadedApp(account.getId(), request.getLanguage(), dgm);
+		PageResponse<ApplicationResponse> page=new PageResponse<ApplicationResponse>();
+		BeanUtils.copyProperties(applicationAction.queryAccountDownloadedApp(account.getId(), request.getLanguage(), dgm), page);
+		return page;
 	}
 	
 	/**
@@ -532,7 +536,9 @@ public class AccountService {
 		t.setAccountId(account.getId());
 		t.setCatalog(request.getMsgType());
 		t.setStatus(request.getStatus());
-		return systemMessageAction.queryByExemple(t, dgm);
+		PageResponse<SystemMessage> page=new PageResponse<SystemMessage>();
+		BeanUtils.copyProperties(systemMessageAction.queryByExemple(t, dgm), page);
+		return page;
 	}
 	
 	@ServiceMethod(method = "account.read.sys.msg",version = "1.0",httpAction=HttpAction.GET)
