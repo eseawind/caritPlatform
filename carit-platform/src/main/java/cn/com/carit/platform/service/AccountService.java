@@ -472,10 +472,13 @@ public class AccountService {
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>method</td><td>account.downloaded.application</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>email</td><td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>password</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>language</td><td>语言(cn/en)</td><td>是</td><td>否（默认cn）</td></tr>
 	 *  <tr><td>page</td><td>起始页（默认1）</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>rows</td><td>每页显示记录数（默认10）</td><td>是</td><td>否</td></tr>
@@ -501,18 +504,20 @@ public class AccountService {
 	
 	/**
 	 * <p>
-	 * <b>功能说明：</b>查询用户下载过的应用
+	 * <b>功能说明：</b>查询用户的系统消息
 	 * </p>
 	 * @param request
 	 * <table border='1'>
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>method</td><td>account.downloaded.application</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>account.query.sys.msg</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
-	 *  <tr><td>language</td><td>语言(cn/en)</td><td>是</td><td>否（默认cn）</td></tr>
+	 *  <tr><td>email</td><td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}</td><td>是</td><td>是</td></tr>
+	 *	<tr><td>password</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>page</td><td>起始页（默认1）</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>rows</td><td>每页显示记录数（默认10）</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>sort</td><td>排序字段</td><td>是</td><td>否</td></tr>
@@ -541,6 +546,26 @@ public class AccountService {
 		return page;
 	}
 	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>阅读消息
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>account.read.sys.msg</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>email</td><td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}</td><td>是</td><td>是</td></tr>
+	 *	<tr><td>password</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>msgId</td><td>@NotNull @Min(value=1) @Max(value=Integer.MAX_VALUE)</td><td>是</td><td>是</td></tr>
+	 * </table>
+	 * @return
+	 */
 	@ServiceMethod(method = "account.read.sys.msg",version = "1.0",httpAction=HttpAction.GET)
 	public Object readAccountSystemMessage(ReadSystemMessageRequest request){
 		//查询账号
@@ -566,6 +591,26 @@ public class AccountService {
 		return response;
 	}
 	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>删除消息
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>account.delete.sys.msg</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>email</td><td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}</td><td>是</td><td>是</td></tr>
+	 *	<tr><td>password</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>msgId</td><td>@NotNull @Min(value=1) @Max(value=Integer.MAX_VALUE)</td><td>是</td><td>是</td></tr>
+	 * </table>
+	 * @return
+	 */
 	@ServiceMethod(method = "account.delete.sys.msg",version = "1.0",httpAction=HttpAction.GET)
 	public Object deleteAccountSystemMessage(ReadSystemMessageRequest request){
 		//查询账号

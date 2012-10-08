@@ -290,7 +290,7 @@ public class PlatformService {
 	 * <table border='1'>
 	 * 	<tr><th>参数名</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>method</td><td>platform.obd.search</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>platform.obd.newestData</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>是</td></tr>

@@ -130,7 +130,7 @@ public class AndroidMarketService {
 	 * <table border='1'>
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>method</td><td>account.logon</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>market.full.text.search.application</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
@@ -157,7 +157,7 @@ public class AndroidMarketService {
 	 * <table border='1'>
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>method</td><td>account.logon</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>market.view.application</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
@@ -214,6 +214,10 @@ public class AndroidMarketService {
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>page</td><td>起始页（默认1）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>rows</td><td>每页显示记录数（默认10）</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sort</td><td>排序字段</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>order</td><td>排序规则（desc/asc）</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>appId</td><td> @NotNull @Min(value=1) @Max(value=Integer.MAX_VALUE)</td><td>是</td><td>是</td></tr>
 	 * </table>
 	 * @return
@@ -350,7 +354,7 @@ public class AndroidMarketService {
 	 * <table border='1'>
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>method</td><td>account.logon</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>market.application.downloaded.referenced</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
@@ -379,7 +383,7 @@ public class AndroidMarketService {
 	 * <table border='1'>
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>method</td><td>market.application.download.trend.one.month</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>market.developer.query</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
