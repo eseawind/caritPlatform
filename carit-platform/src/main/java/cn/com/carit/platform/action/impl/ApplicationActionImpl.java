@@ -1,6 +1,7 @@
 package cn.com.carit.platform.action.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -130,6 +131,11 @@ public class ApplicationActionImpl implements ApplicationAction<Application> {
 	public JsonPage<AppDeveloperResponse> queryAppDeveloper(
 			SearchAppDeveloperRequest request) {
 		return dao.queryAppDeveloper(request);
+	}
+
+	@Override
+	public List<Map<String, Object>> queryTopApps(String language, int limit) {
+		return dao.queryTopApps(language, limit);
 	}
 	
 }

@@ -286,8 +286,8 @@ public class CaritClient {
 //		paramValues.put("sign", sign);
 //		System.out.println(getHttpResponse(ClientUtils.buildRequestUrl(getInstance().getServerUrl(), paramValues)));
 		
-		Map<String, String> paramValues=getInstance().buildParamValues("market.application.download.trend.one.month", "1.0");
-		paramValues.put("appId", "6");
+		Map<String, String> paramValues=getInstance().buildParamValues("market.view.application", "1.0");
+		paramValues.put("appId", "65");
 		String sign=ClientUtils.sign(paramValues, ClientHolder.INSTANCE.appSecret);
 //		// 不需要签名的参数放后面
 		paramValues.put("sign", sign);

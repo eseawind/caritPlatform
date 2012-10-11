@@ -1,6 +1,7 @@
 package cn.com.carit.platform.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import cn.com.carit.Dao;
 import cn.com.carit.common.utils.DataGridModel;
@@ -71,4 +72,10 @@ public interface ApplicationDao<Application> extends Dao<Application>{
 	 * @return
 	 */
 	JsonPage<AppDeveloperResponse> queryAppDeveloper(SearchAppDeveloperRequest request);
+	
+	/**
+	 * 查询置顶应用
+	 * @return
+	 */
+	List<Map<String, Object>> queryTopApps(final String language, final int limit);
 }

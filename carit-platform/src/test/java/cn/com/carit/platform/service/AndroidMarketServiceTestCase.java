@@ -1,6 +1,7 @@
 package cn.com.carit.platform.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.testng.annotations.Test;
 
@@ -84,5 +85,15 @@ public class AndroidMarketServiceTestCase {
 	public void testQueryDeveloper(){
 		SearchAppDeveloperRequest request=new SearchAppDeveloperRequest();
 		RopTestCaseClient.getInstance().buildClientRequest().get(request, PageResponse.class, "market.developer.query", "1.0");
+	}
+	
+	@Test
+	public void testQueryTopApps(){
+		TopRequest request=new TopRequest();
+		request.setLimit(15);
+		List<Map<String, Object>> list=(List) RopTestCaseClient.getInstance().buildClientRequest().get(request, List.class, "market.query.top.application", "1.0").getSuccessResponse();
+		for (Map<String, Object> map : list) {
+			System.out.println(map.get("id")+"/t"+map.get("mainPic"));
+		}
 	}
 }

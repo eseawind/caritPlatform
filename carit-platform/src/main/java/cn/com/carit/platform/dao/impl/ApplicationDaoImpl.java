@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -819,6 +820,25 @@ public class ApplicationDaoImpl extends DaoImpl implements ApplicationDao<Applic
 			}
 		}));
 		return jsonPage;
+	}
+
+	@Override
+	public List<Map<String, Object>> queryTopApps(String language, int limit) {
+		String viewName=DEFAULT_VIEW;
+		if (!Constants.DEAFULD_LANGUAGE.equalsIgnoreCase(language)) {
+			viewName="v_application_en";
+		}
+		StringBuilder sql = new StringBuilder("select id, main_pic mainPic from ")
+		.append(viewName)
+		.append(" where (status&4)<>0");
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		// 排序
+		sql.append(" order by down_count, update_time desc");
+		sql.append(" limit ?");
+		// TODO Auto-generated method stub
+		return jdbcTemplate.queryForList(sql.toString(), limit);
 	}
 	
 }

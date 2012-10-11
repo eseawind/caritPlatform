@@ -405,6 +405,10 @@ public class AccountService {
 		Account t = CacheManager.getInstance().getAccount(request.getEmail());
 		Application application = CacheManager.getInstance().getApplication(request.getAppId());
 		
+		// 更新下载次数
+		application.setDownCount(application.getDownCount()+1);
+		applicationAction.update(application);
+		
 		// 保存下载记录
 		AppDownloadLog log=new AppDownloadLog();
 		log.setAccountId(t.getId());

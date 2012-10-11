@@ -15,7 +15,7 @@ public class TopRequest extends AbstractRopRequest {
 	@NotNull
 	@Min(value=1)
 	@Max(value=Integer.MAX_VALUE)
-	private Integer limit;
+	private Integer limit=10;
 
 	public String getLanguage() {
 		return language;

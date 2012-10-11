@@ -124,6 +124,29 @@ public class AndroidMarketService {
 	
 	/**
 	 * <p>
+	 * <b>功能说明：</b>查询置顶应用
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>market.query.top.application</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>language</td><td>语言(cn/en)</td><td>是</td><td>否（默认cn）</td></tr>
+	 *  <tr><td>limit</td><td>返回记录限制</td><td>是</td><td>否（默认10）</td></tr>
+	 * </table>
+	 * @return
+	 */
+	@ServiceMethod(method = "market.query.top.application",version = "1.0", httpAction=HttpAction.GET, needInSession=NeedInSessionType.NO)
+	public Object queryTopApps(TopRequest request){
+		return applicationAction.queryTopApps(request.getLanguage(), request.getLimit());
+	}
+	
+	/**
+	 * <p>
 	 * <b>功能说明：</b>全文检索应用应用
 	 * </p>
 	 * @param request
