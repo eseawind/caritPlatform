@@ -234,7 +234,9 @@ public class AppCommentDaoImpl extends DaoImpl implements AppCommentDao<AppComme
 		} else {
 			sql.append(" order by a.update_time desc");
 		}
-		log.debug(String.format("\n%1$s\n", countSql));
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", countSql));
+		}
 		int totalRow = queryForInt(countSql, args, argTypes);
 		sql.append(" limit ?, ?");
 		args.add(jsonPage.getStartRow());
@@ -243,7 +245,9 @@ public class AppCommentDaoImpl extends DaoImpl implements AppCommentDao<AppComme
 		argTypes.add(Types.INTEGER);
 		// 更新
 		jsonPage.setTotal(totalRow);
-		log.debug(String.format("\n%1$s\n", sql));
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
 		jsonPage.setRows(query(sql.toString(), args, argTypes, new RowMapper<AppCommentResponse>() {
 
 			@Override
@@ -263,7 +267,9 @@ public class AppCommentDaoImpl extends DaoImpl implements AppCommentDao<AppComme
 	@Override
 	public List<Map<String, Object>> statCommentGrade(int appId) {
 		String sql="select grade, count(1) total from t_app_comment where app_id=? group by grade";
-		log.debug(String.format("\n%1$s\n", sql));
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
 		try {
 			return jdbcTemplate.queryForList(sql, appId);
 		} catch (Exception e) {
@@ -275,7 +281,9 @@ public class AppCommentDaoImpl extends DaoImpl implements AppCommentDao<AppComme
 	@Override
 	public Map<String,Object> statComment(int appId) {
 		String sql="select count(1) count, avg(grade) avg, sum(grade) sum from t_app_comment where app_id=?";
-		log.debug(String.format("\n%1$s\n", sql));
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
 		try {
 			return jdbcTemplate.queryForMap(sql, appId);
 		} catch (Exception e) {

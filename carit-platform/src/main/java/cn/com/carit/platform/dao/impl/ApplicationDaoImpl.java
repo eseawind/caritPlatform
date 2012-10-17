@@ -258,7 +258,9 @@ public class ApplicationDaoImpl extends DaoImpl implements ApplicationDao<Applic
 		String whereSql=buildWhere(args, argTypes, t);
 		sql.append(whereSql);
 		String countSql="select count(1) from t_application where 1=1"+whereSql;
-		log.debug(String.format("\n%1$s\n", countSql));
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", countSql));
+		}
 		int totalRow = queryForInt(countSql, args, argTypes);
 		// 更新
 		jsonPage.setTotal(totalRow);
@@ -585,7 +587,9 @@ public class ApplicationDaoImpl extends DaoImpl implements ApplicationDao<Applic
 		argTypes.add(Types.INTEGER);
 		// 更新
 		jsonPage.setTotal(totalRow);
-		log.debug(String.format("\n%1$s\n", sql));
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
 		jsonPage.setRows(query(sql.toString(), args, argTypes, responseRowMapper));
 		return jsonPage;
 	}
@@ -837,7 +841,6 @@ public class ApplicationDaoImpl extends DaoImpl implements ApplicationDao<Applic
 		// 排序
 		sql.append(" order by down_count, update_time desc");
 		sql.append(" limit ?");
-		// TODO Auto-generated method stub
 		return jdbcTemplate.queryForList(sql.toString(), limit);
 	}
 	

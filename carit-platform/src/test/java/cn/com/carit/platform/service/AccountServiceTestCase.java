@@ -1,10 +1,13 @@
 package cn.com.carit.platform.service;
 
 import java.io.File;
+import java.util.List;
 
 import org.testng.annotations.Test;
 
 import cn.com.carit.platform.RopTestCaseClient;
+import cn.com.carit.platform.request.account.AccountRequest;
+import cn.com.carit.platform.request.account.AddEquipmentRequest;
 import cn.com.carit.platform.request.account.ApplicationRequest;
 import cn.com.carit.platform.request.account.CheckEmailRequest;
 import cn.com.carit.platform.request.account.CheckNicknameRequest;
@@ -134,5 +137,19 @@ public class AccountServiceTestCase {
 		request.setMsgId(1);
 		RopTestCaseClient.getInstance().getSession();
 		RopTestCaseClient.getInstance().buildClientRequest().get(request, CommonRopResponse.class, "account.delete.sys.msg", "1.0");
+	}
+	
+	@Test
+	public void testAddEquipment(){
+		AddEquipmentRequest request=new AddEquipmentRequest("xiegc@carit.com.cn", "123456", "4697DA4F");
+		RopTestCaseClient.getInstance().getSession();
+		RopTestCaseClient.getInstance().buildClientRequest().get(request, CommonRopResponse.class, "account.equipment.add", "1.0");
+	}
+	
+	@Test
+	public void testQueryEquipments(){
+		AccountRequest request=new AccountRequest("xiegc@carit.com.cn", "123456");
+		RopTestCaseClient.getInstance().getSession();
+		RopTestCaseClient.getInstance().buildClientRequest().get(request, List.class, "account.equipment.query", "1.0");
 	}
 }

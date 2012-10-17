@@ -2,6 +2,7 @@ package cn.com.carit.platform;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.util.ArrayList;
@@ -108,9 +109,13 @@ public class ClientUtils {
      */
     public static String buildRequestUrl(String serverUrl, Map<String, String> paramValues){
     	StringBuilder url=new StringBuilder(serverUrl);
-    	for (Entry<String, String> e: paramValues.entrySet()) {
-			url.append(e.getKey()).append("=").append(e.getValue()).append("&");
-		}
+    	try {
+	    	for (Entry<String, String> e: paramValues.entrySet()) {
+				url.append(e.getKey()).append("=").append(URLEncoder.encode(e.getValue(), "UTF-8")).append("&");
+			}
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
     	return url.toString();
     }
 

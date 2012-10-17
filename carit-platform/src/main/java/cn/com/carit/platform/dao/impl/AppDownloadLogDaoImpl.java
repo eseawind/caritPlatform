@@ -191,7 +191,9 @@ public class AppDownloadLogDaoImpl extends DaoImpl implements AppDownloadLogDao<
 		String sql="select download_time date, count(1) count" 
 				+ " from t_app_download_log where app_id=? and download_time>?"
 				+ " group by date_format(download_time,'%Y-%c-%d')";
-		log.debug(String.format("\n%1$s\n", sql));
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
 		return jdbcTemplate.query(sql, new Object[]{appId, startDate}
 		, new int[]{Types.INTEGER, Types.TIMESTAMP}, new RowMapper<AppDownStat>() {
 			@Override

@@ -16,7 +16,9 @@ import cn.com.carit.platform.action.AccountAction;
 import cn.com.carit.platform.action.AppCommentAction;
 import cn.com.carit.platform.action.AppDownloadLogAction;
 import cn.com.carit.platform.action.ApplicationAction;
+import cn.com.carit.platform.action.EquipmentAction;
 import cn.com.carit.platform.action.SystemMessageAction;
+import cn.com.carit.platform.bean.Equipment;
 import cn.com.carit.platform.bean.account.Account;
 import cn.com.carit.platform.bean.account.SystemMessage;
 import cn.com.carit.platform.bean.market.AppComment;
@@ -24,6 +26,7 @@ import cn.com.carit.platform.bean.market.AppDownloadLog;
 import cn.com.carit.platform.bean.market.Application;
 import cn.com.carit.platform.cache.CacheManager;
 import cn.com.carit.platform.request.account.AccountRequest;
+import cn.com.carit.platform.request.account.AddEquipmentRequest;
 import cn.com.carit.platform.request.account.ApplicationRequest;
 import cn.com.carit.platform.request.account.CheckEmailRequest;
 import cn.com.carit.platform.request.account.CheckNicknameRequest;
@@ -72,6 +75,8 @@ public class AccountService {
 	private AppCommentAction<AppComment> appCommentAction;
 	@Resource
 	private SystemMessageAction<SystemMessage> systemMessageAction;
+	@Resource
+	private EquipmentAction<Equipment> equipmentAction;
 	
 	/**
 	 * <p>
@@ -488,7 +493,6 @@ public class AccountService {
 	 *  <tr><td>rows</td><td>每页显示记录数（默认10）</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>sort</td><td>排序字段</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>order</td><td>排序规则（desc/asc）</td><td>是</td><td>否</td></tr>
-	 *  <tr><td>accountId</td><td> @NotNull @Min(value=1) @Max(value=Integer.MAX_VALUE)</td><td>是</td><td>是</td></tr>
 	 * </table>
 	 * @return
 	 */
@@ -526,7 +530,6 @@ public class AccountService {
 	 *  <tr><td>rows</td><td>每页显示记录数（默认10）</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>sort</td><td>排序字段</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>order</td><td>排序规则（desc/asc）</td><td>是</td><td>否</td></tr>
-	 *  <tr><td>accountId</td><td> @NotNull @Min(value=1) @Max(value=Integer.MAX_VALUE)</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>msgType</td><td>0:系统推送消息；1：应用更新消息</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>status</td><td>0：未读；1：已读</td><td>是</td><td>否</td></tr>
 	 * </table>
@@ -634,4 +637,62 @@ public class AccountService {
 		systemMessageAction.delete(msg.getId());
 		return CommonRopResponse.SUCCESSFUL_RESPONSE;
 	}
+	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>查询账号绑定的设备列表
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>account.equipment.query</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>email</td><td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}</td><td>是</td><td>是</td></tr>
+	 *	<tr><td>password</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
+	 * </table>
+	 * @return
+	 */
+	@ServiceMethod(method = "account.equipment.query",version = "1.0",httpAction=HttpAction.GET)
+	public Object queryEquipments(AccountRequest request){
+		//查询账号
+		Account account=CacheManager.getInstance().getAccount(request.getEmail());
+		return equipmentAction.queryByAccount(account.getId());
+	}
+	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>绑定设备
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>account.equipment.add</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>email</td><td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}</td><td>是</td><td>是</td></tr>
+	 *	<tr><td>password</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
+	 *	<tr><td>deviceId</td><td>@NotEmpty</td><td>是</td><td>是</td></tr>
+	 * </table>
+	 * @return
+	 */
+	@ServiceMethod(method = "account.equipment.add",version = "1.0",httpAction=HttpAction.GET)
+	public Object addEquipment(AddEquipmentRequest request){
+		//查询账号
+		Account account=CacheManager.getInstance().getAccount(request.getEmail());
+		Equipment t=new Equipment();
+		t.setAccountId(account.getId());
+		t.setDeviceId(request.getDeviceId());
+		equipmentAction.add(t);
+		return CommonRopResponse.SUCCESSFUL_RESPONSE;
+	}
+	
 }

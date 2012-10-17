@@ -146,7 +146,9 @@ public class AppVersionDaoImpl extends DaoImpl implements AppVersionDao<AppVersi
 		String whereSql=buildWhere(args, argTypes, t);
 		sql.append(whereSql);
 		String countSql="select count(1) from t_app_version_file where 1=1"+whereSql;
-		log.debug(String.format("\n%1$s\n", countSql));
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", countSql));
+		}
 		int totalRow = queryForInt(countSql, args, argTypes);
 		// 更新
 		jsonPage.setTotal(totalRow);

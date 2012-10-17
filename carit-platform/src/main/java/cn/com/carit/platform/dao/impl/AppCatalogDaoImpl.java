@@ -138,7 +138,9 @@ public class AppCatalogDaoImpl extends DaoImpl implements AppCatalogDao<AppCatal
 		String whereSql=buildWhere(args, argTypes, t);
 		sql.append(whereSql);
 		String countSql="select count(1) from t_catalog where 1=1"+whereSql;
-		log.debug(String.format("\n%1$s\n", countSql));
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", countSql));
+		}
 		int totalRow = queryForInt(countSql, args, argTypes);
 		// 更新
 		jsonPage.setTotal(totalRow);

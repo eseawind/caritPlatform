@@ -11,25 +11,24 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import cn.com.carit.DaoImpl;
+import cn.com.carit.common.Constants;
 import cn.com.carit.common.utils.CaritUtils;
 import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonPage;
-import cn.com.carit.platform.bean.account.SystemMessage;
-import cn.com.carit.platform.dao.SystemMessageDao;
+import cn.com.carit.platform.bean.Equipment;
+import cn.com.carit.platform.dao.EquipmentDao;
+import cn.com.carit.platform.response.EquipmentResponse;
 
 @Repository
-public class SystemMessageDaoImpl extends DaoImpl implements SystemMessageDao<SystemMessage> {
+public class EquipmentDaoImpl extends DaoImpl implements EquipmentDao<Equipment> {
 
-	private final RowMapper<SystemMessage> rowMapper = new RowMapper<SystemMessage>() {
+	private final RowMapper<Equipment> rowMapper = new RowMapper<Equipment>() {
 
 		@Override
-		public SystemMessage mapRow(ResultSet rs, int rowNum) throws SQLException {
-			SystemMessage t = new SystemMessage();
-			t.setId(rs.getInt("id"));
+		public Equipment mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Equipment t = new Equipment();
+			t.setDeviceId(rs.getString("device_id"));
 			t.setAccountId(rs.getInt("account_id"));
-			t.setCatalog(rs.getInt("catalog"));
-			t.setTitle(rs.getString("title"));
-			t.setContent(rs.getString("content"));
 			t.setStatus(rs.getInt("status"));
 			t.setCreateTime(rs.getTimestamp("create_time"));
 			t.setUpdateTime(rs.getTimestamp("update_time"));
@@ -38,46 +37,33 @@ public class SystemMessageDaoImpl extends DaoImpl implements SystemMessageDao<Sy
 	};
 	
 	@Override
-	public int add(final SystemMessage t) {
-		String sql="insert into t_sys_message(account_id, catalog,title, content, create_time, update_time)"
-				+" values (?, ?,?, ?, now(), now())";
+	public int add(final Equipment t) {
+		String sql="insert into t_equipment(device_id, account_id, status, create_time, update_time)"
+				+" values (?, ?, ?, now(), now())";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
 		return jdbcTemplate.update(sql
+				, t.getDeviceId()
 				, t.getAccountId()
-				, t.getCatalog()
-				, t.getTitle()
-				, t.getContent());
+				, Constants.STATUS_VALID);
 	}
 
 	@Override
-	public int update(SystemMessage t) {
+	public int update(Equipment t) {
 		StringBuilder sql = new StringBuilder(
-				"update t_sys_message set update_time=now()");
+				"update t_equipment set update_time=now()");
 		List<Object> args = new ArrayList<Object>();
 		if (t.getAccountId()!=null) {
 			sql.append(", account_id=?");
 			args.add(t.getAccountId());
 		}
-		if (t.getCatalog()!=null) {
-			sql.append(", catalog=?");
-			args.add(t.getCatalog());
-		}
-		if (StringUtils.hasText(t.getTitle())) {
-			sql.append(", title=?");
-			args.add(t.getTitle());
-		}
 		if (t.getStatus()!=null) {
 			sql.append(", status=?");
 			args.add(t.getStatus());
 		}
-		if (StringUtils.hasText(t.getContent())) {
-			sql.append(", content=?");
-			args.add(t.getContent());
-		}
-		sql.append(" where id=?");
-		args.add(t.getId());
+		sql.append(" where device_id=?");
+		args.add(t.getDeviceId());
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
@@ -86,7 +72,7 @@ public class SystemMessageDaoImpl extends DaoImpl implements SystemMessageDao<Sy
 
 	@Override
 	public int delete(int id) {
-		String sql = "delete from t_sys_message where id=?";
+		String sql = "delete from t_equipment where device_id=?";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
@@ -94,8 +80,8 @@ public class SystemMessageDaoImpl extends DaoImpl implements SystemMessageDao<Sy
 	}
 
 	@Override
-	public SystemMessage queryById(int id) {
-		String sql = "select * from t_sys_message where id=?";
+	public Equipment queryById(int id) {
+		String sql = "select * from t_equipment where device_id=?";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
@@ -103,15 +89,15 @@ public class SystemMessageDaoImpl extends DaoImpl implements SystemMessageDao<Sy
 	}
 
 	@Override
-	public JsonPage<SystemMessage> queryByExemple(SystemMessage t, DataGridModel dgm) {
-		JsonPage<SystemMessage> jsonPage = new JsonPage<SystemMessage>(dgm.getPage(), dgm.getRows());
+	public JsonPage<Equipment> queryByExemple(Equipment t, DataGridModel dgm) {
+		JsonPage<Equipment> jsonPage = new JsonPage<Equipment>(dgm.getPage(), dgm.getRows());
 		StringBuilder sql = new StringBuilder(
-				"select * from t_sys_message where 1=1");
+				"select * from t_equipment where 1=1");
 		List<Object> args = new ArrayList<Object>();
 		List<Integer> argTypes = new ArrayList<Integer>();
 		String whereSql = buildWhere(args, argTypes, t);
 		sql.append(whereSql);
-		String countSql = "select count(1) from t_sys_message where 1=1"
+		String countSql = "select count(1) from t_equipment where 1=1"
 				+ whereSql;
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", countSql));
@@ -142,9 +128,9 @@ public class SystemMessageDaoImpl extends DaoImpl implements SystemMessageDao<Sy
 	}
 
 	@Override
-	public List<SystemMessage> queryByExemple(SystemMessage t) {
+	public List<Equipment> queryByExemple(Equipment t) {
 		StringBuilder sql = new StringBuilder(
-				"select * from t_sys_message where 1=1");
+				"select * from t_equipment where 1=1");
 		List<Object> args = new ArrayList<Object>();
 		List<Integer> argTypes = new ArrayList<Integer>();
 		sql.append(buildWhere(args, argTypes, t));
@@ -155,8 +141,8 @@ public class SystemMessageDaoImpl extends DaoImpl implements SystemMessageDao<Sy
 	}
 
 	@Override
-	public List<SystemMessage> queryAll() {
-		String sql="select * from t_sys_message";
+	public List<Equipment> queryAll() {
+		String sql="select * from t_equipment";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
@@ -165,34 +151,40 @@ public class SystemMessageDaoImpl extends DaoImpl implements SystemMessageDao<Sy
 
 	@Override
 	public String buildWhere(List<Object> args, List<Integer> argTypes,
-			SystemMessage t) {
+			Equipment t) {
 		StringBuilder sql=new StringBuilder();
 		if (t.getAccountId()!=null) {
 			sql.append(" and account_id=?");
 			args.add(t.getAccountId());
 			argTypes.add(Types.INTEGER);
 		}
-		if (t.getCatalog()!=null) {
-			sql.append(" and catalog=?");
-			args.add(t.getCatalog());
-			argTypes.add(Types.INTEGER);
-		}
-		if (StringUtils.hasText(t.getTitle())) {
-			sql.append(" and title like CONCAT('%',?,'%')");
-			args.add(t.getTitle());
-			argTypes.add(Types.VARCHAR);
-		}
 		if (t.getStatus()!=null) {
 			sql.append(" and status=?");
 			args.add(t.getStatus());
 			argTypes.add(Types.INTEGER);
 		}
-		if (StringUtils.hasText(t.getContent())) {
-			sql.append(" and content like CONCAT('%',?,'%')");
-			args.add(t.getContent());
-			argTypes.add(Types.VARCHAR);
-		}
 		return sql.toString();
+	}
+
+	private final RowMapper<EquipmentResponse> responseRowMapper=new RowMapper<EquipmentResponse>() {
+		
+		@Override
+		public EquipmentResponse mapRow(ResultSet rs, int rowNum)
+				throws SQLException {
+			EquipmentResponse t=new EquipmentResponse();
+			t.setDeviceId(rs.getString("device_id"));
+			t.setAccountId(rs.getInt("account_id"));
+			return t;
+		}
+	};
+	
+	@Override
+	public List<EquipmentResponse> queryByAccount(final int accountId) {
+		String sql = "select device_id, account_id from t_equipment where account_id=?";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		return jdbcTemplate.query(sql, new Object[]{accountId}, responseRowMapper);
 	}
 
 }
