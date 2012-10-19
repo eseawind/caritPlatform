@@ -1,8 +1,10 @@
-package cn.com.carit.platform.request.account;
+package cn.com.carit.platform.request.account.v2;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-public class AddEquipmentRequest extends LogonRequest {
+import cn.com.carit.platform.request.account.AccountRequest;
+
+public class AddEquipmentRequest extends AccountRequest {
 	
 
 	public AddEquipmentRequest() {
@@ -10,11 +12,11 @@ public class AddEquipmentRequest extends LogonRequest {
 	}
 
 	public AddEquipmentRequest(String email, String password) {
-		super(email, password);
+		super(email);
 	}
 
 	public AddEquipmentRequest(String email, String password, String deviceId) {
-		super(email, password);
+		super(email);
 		this.deviceId = deviceId;
 	}
 

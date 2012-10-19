@@ -6,8 +6,11 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import cn.com.carit.common.Constants;
 
-public class UpdatePasswordRequest extends AccountRequest {
+import com.rop.annotation.IgnoreSign;
 
+public class UpdatePasswordRequest extends LogonRequest {
+	
+	@IgnoreSign
 	@NotEmpty
 	@Pattern(regexp = Constants.REGEXP_PASSWORD)
 	private String newPassword;

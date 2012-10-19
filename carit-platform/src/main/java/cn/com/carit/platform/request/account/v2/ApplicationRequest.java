@@ -1,7 +1,9 @@
-package cn.com.carit.platform.request.account;
+package cn.com.carit.platform.request.account.v2;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+
+import cn.com.carit.platform.request.account.AccountRequest;
 
 
 /**
@@ -11,7 +13,7 @@ import javax.validation.constraints.Min;
  * @author <a href="mailto:xiegengcai@gmail.com">Gengcai Xie</a>
  * 2012-9-22
  */
-public class ApplicationRequest extends LogonRequest {
+public class ApplicationRequest extends AccountRequest {
 
 	@Min(value=1)
 	@Max(value=Integer.MAX_VALUE)
@@ -22,12 +24,12 @@ public class ApplicationRequest extends LogonRequest {
 		super();
 	}
 
-	public ApplicationRequest(String email, String password) {
-		super(email, password);
+	public ApplicationRequest(String email) {
+		super(email);
 	}
 
-	public ApplicationRequest(String email, String password, int appId) {
-		super(email, password);
+	public ApplicationRequest(String email, int appId) {
+		super(email);
 		this.appId = appId;
 	}
 

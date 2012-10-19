@@ -12,6 +12,8 @@ import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import cn.com.carit.platform.response.AccountResponse;
+import cn.com.carit.platform.response.ErrorResponse;
 import cn.com.carit.platform.response.LogonResponse;
 
 /**
@@ -258,41 +260,26 @@ public class CaritClient {
 	}
 	
 	public static void main(String[] args) throws Exception {
-//		getInstance().getSession();
-//		// 登录
-//		Map<String, String> paramValues=getInstance().buildParamValues("account.logon", "1.0", getInstance().getSessionId());
-//		paramValues.put("email", "xiegc@carit.com.cn");
-//		
-//		String sign=ClientUtils.sign(paramValues, ClientHolder.INSTANCE.appSecret);
-//		// 不需要签名的参数放后面
-//		paramValues.put("sign", sign);
-//		paramValues.put("password", "123456");
-//		String resonse=getHttpResponse(ClientUtils.buildRequestUrl(getInstance().serverUrl, paramValues), HTTP_METHOD_POST);
-//		try {
-//			AccountResponse account=(AccountResponse) JsonUtil.jsonToObject(resonse, AccountResponse.class);
-//			System.out.println(account);
-//		} catch (Exception e) {
-//			try {
-//				ErrorResponse error=(ErrorResponse) JsonUtil.jsonToObject(resonse, ErrorResponse.class);
-//				System.out.println(error);
-//			} catch (Exception e2) {
-//				e.printStackTrace();
-//			}
-//		}
-//		Map<String, String> paramValues=getInstance().buildParamValues("market.all.application.catalog", "1.0");
-//		paramValues.put("language", "cn");
-//		String sign=ClientUtils.sign(paramValues, ClientHolder.INSTANCE.appSecret);
-//		// 不需要签名的参数放后面
-//		paramValues.put("sign", sign);
-//		System.out.println(getHttpResponse(ClientUtils.buildRequestUrl(getInstance().getServerUrl(), paramValues)));
+		getInstance().getSession();
+		// 登录
+		Map<String, String> paramValues=getInstance().buildParamValues("account.logon", "1.0", getInstance().getSessionId());
+		paramValues.put("email", "xiegc@carit.com.cn");
 		
-		Map<String, String> paramValues=getInstance().buildParamValues("platform.location.search", "1.0");
-		paramValues.put("deviceId", "4697DA4F");
-//		paramValues.put("type", "1");
 		String sign=ClientUtils.sign(paramValues, ClientHolder.INSTANCE.appSecret);
-//		// 不需要签名的参数放后面
+		// 不需要签名的参数放后面
 		paramValues.put("sign", sign);
-		
-		System.out.println(getHttpResponse(ClientUtils.buildRequestUrl(getInstance().getServerUrl(), paramValues)));
+		paramValues.put("password", "123456");
+		String resonse=getHttpResponse(ClientUtils.buildRequestUrl(getInstance().serverUrl, paramValues), HTTP_METHOD_POST);
+		try {
+			AccountResponse account=(AccountResponse) JsonUtil.jsonToObject(resonse, AccountResponse.class);
+			System.out.println(account);
+		} catch (Exception e) {
+			try {
+				ErrorResponse error=(ErrorResponse) JsonUtil.jsonToObject(resonse, ErrorResponse.class);
+				System.out.println(error);
+			} catch (Exception e2) {
+				e.printStackTrace();
+			}
+		}
 	}
 }

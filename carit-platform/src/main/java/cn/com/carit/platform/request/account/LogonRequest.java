@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import cn.com.carit.common.Constants;
 
 import com.rop.AbstractRopRequest;
+import com.rop.annotation.IgnoreSign;
 
 /**
  * <pre>
@@ -15,17 +16,23 @@ import com.rop.AbstractRopRequest;
  * @author <a href="mailto:xiegengcai@gmail.com">Gengcai Xie</a>
  * 2012-9-22
  */
-public class AccountRequest extends AbstractRopRequest {
+public class LogonRequest extends AbstractRopRequest {
 	
 	@NotEmpty
     @Pattern(regexp = Constants.REGEXP_EMAIL)
 	protected String email;
 
-	public AccountRequest() {
+    @IgnoreSign
+    @NotEmpty
+    @Pattern(regexp = Constants.REGEXP_PASSWORD)
+    protected String password;
+    
+	public LogonRequest() {
 	}
 
-	public AccountRequest(String email) {
+	public LogonRequest(String email, String password) {
 		this.email = email;
+		this.password = password;
 	}
 
 	public String getEmail() {
@@ -34,6 +41,14 @@ public class AccountRequest extends AbstractRopRequest {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
     
 }

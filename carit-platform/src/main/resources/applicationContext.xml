@@ -119,7 +119,9 @@
     <!--注册拦截器，可配置多个-->
     <rop:interceptors>
         <bean class="cn.com.carit.platform.interceptor.RequestInterceptor"/>
+        <bean class="cn.com.carit.platform.interceptor.ServiceVersion2Interceptor"/>
         <bean class="cn.com.carit.platform.interceptor.EffectiveAccountInterceptor"/>
+        <bean class="cn.com.carit.platform.interceptor.EffectiveAccountV2Interceptor"/>
         <bean class="cn.com.carit.platform.interceptor.RegisterAccountInterceptor"/>
         <bean class="cn.com.carit.platform.interceptor.ChangeNicknameInterceptor"/>
         <bean class="cn.com.carit.platform.interceptor.ApplicationInterceptor"/>

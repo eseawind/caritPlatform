@@ -1,4 +1,4 @@
-package cn.com.carit.platform.request.account;
+package cn.com.carit.platform.request.account.v2;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
@@ -10,6 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 import cn.com.carit.common.Constants;
+import cn.com.carit.platform.request.account.AccountRequest;
 
 /**
  * <pre>
@@ -18,8 +19,8 @@ import cn.com.carit.common.Constants;
  * @author <a href="mailto:xiegengcai@gmail.com">Gengcai Xie</a>
  * 2012-9-21
  */
-public class UpdateAccountRequest extends LogonRequest {
-
+public class UpdateAccountRequest extends AccountRequest {
+	
 	@Length(min=3, max=50)
 	private String nickName;
 	 
@@ -50,12 +51,12 @@ public class UpdateAccountRequest extends LogonRequest {
 	public UpdateAccountRequest() {
 		
 	}
-
-	public UpdateAccountRequest(String email, String password){
-		super(email, password);
+	
+	public UpdateAccountRequest(String email) {
+		super(email);
 	}
-	
-	
+
+
 	public String getNickName() {
 		return nickName;
 	}

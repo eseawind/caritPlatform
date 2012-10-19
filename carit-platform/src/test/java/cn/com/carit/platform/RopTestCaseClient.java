@@ -1,10 +1,11 @@
 package cn.com.carit.platform;
 
-import cn.com.carit.platform.request.account.AccountRequest;
+import cn.com.carit.platform.request.account.LogonRequest;
 import cn.com.carit.platform.request.account.RegisterAccountRequest;
 import cn.com.carit.platform.request.account.UpdatePasswordRequest;
 import cn.com.carit.platform.response.AccountResponse;
 import cn.com.carit.platform.response.LogonResponse;
+import cn.com.carit.platform.response.SessionResponse;
 
 import com.rop.MessageFormat;
 import com.rop.client.ClientRequest;
@@ -14,10 +15,10 @@ import com.rop.client.RopClient;
 import com.rop.response.CommonRopResponse;
 
 public class RopTestCaseClient {
-	private String serverUrl;
-	private String appKey;
-	private String appSecret;
-	private DefaultRopClient ropClient;
+	private final String serverUrl;
+	private final String appKey;
+	private final String appSecret;
+	private final DefaultRopClient ropClient;
 
 	private static class ClientHolder {
 		private static final RopTestCaseClient INSTANCE = new RopTestCaseClient();
@@ -53,7 +54,7 @@ public class RopTestCaseClient {
 	}
 	
     public Object logon(String email, String password) {
-    	AccountRequest request = new AccountRequest();
+    	LogonRequest request = new LogonRequest();
         request.setEmail(email);
         request.setPassword(password);
         CompositeResponse response=buildClientRequest().post(request, AccountResponse.class, "account.logon", "1.0");
@@ -64,6 +65,21 @@ public class RopTestCaseClient {
         return response.getErrorResponse();
     }
 
+    public Object logon_v2(String email, String password) {
+    	LogonRequest request = new LogonRequest();
+        request.setEmail(email);
+        request.setPassword(password);
+        CompositeResponse response=buildClientRequest().post(request, SessionResponse.class, "account.logon", "2.0");
+        if (response.isSuccessful()) {
+        	SessionResponse sessionResponse=(SessionResponse) response.getSuccessResponse();
+        	ropClient.setSessionId(sessionResponse.getSessionId());
+        	return response.getSuccessResponse();
+		}
+        // 处理错误响应
+        return response.getErrorResponse();
+    }
+
+    
     public void logout() {
     	buildClientRequest().get(CommonRopResponse.class, "account.logout", "1.0");
     }
@@ -80,6 +96,14 @@ public class RopTestCaseClient {
     	buildClientRequest().post(request, CommonRopResponse.class, "account.register", "1.0");
     }
     
+    public void register_v2(String email, String password, String nickName) {
+    	RegisterAccountRequest request = new RegisterAccountRequest();
+    	request.setEmail(email);
+    	request.setPassword(password);
+    	request.setNickName(nickName);
+    	buildClientRequest().post(request, CommonRopResponse.class, "account.register", "2.0");
+    }
+    
     public void updatePwd(String email, String oldPassword, String newPassword){
     	UpdatePasswordRequest request = new UpdatePasswordRequest();
     	request.setEmail(email);
@@ -87,5 +111,6 @@ public class RopTestCaseClient {
     	request.setNewPassword(newPassword);
     	buildClientRequest().post(request, CommonRopResponse.class, "account.update.password", "1.0");
     }
+    
     
 }

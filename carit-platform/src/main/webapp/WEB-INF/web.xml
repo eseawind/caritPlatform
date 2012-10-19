@@ -11,6 +11,11 @@
         </param-value>
     </context-param>
 
+	<!-- session 一个小时超时 -->
+	<session-config>
+		<session-timeout>60</session-timeout>
+	</session-config>
+	
     <filter>
         <filter-name>characterEncodingFilter</filter-name>
         <filter-class>

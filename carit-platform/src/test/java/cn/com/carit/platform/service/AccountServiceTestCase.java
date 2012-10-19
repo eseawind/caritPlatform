@@ -6,17 +6,17 @@ import java.util.List;
 import org.testng.annotations.Test;
 
 import cn.com.carit.platform.RopTestCaseClient;
-import cn.com.carit.platform.request.account.AccountRequest;
+import cn.com.carit.platform.request.account.LogonRequest;
 import cn.com.carit.platform.request.account.AddEquipmentRequest;
 import cn.com.carit.platform.request.account.ApplicationRequest;
 import cn.com.carit.platform.request.account.CheckEmailRequest;
 import cn.com.carit.platform.request.account.CheckNicknameRequest;
 import cn.com.carit.platform.request.account.CommentRequest;
+import cn.com.carit.platform.request.account.ReadSystemMessageRequest;
 import cn.com.carit.platform.request.account.SearchByAccountRequest;
+import cn.com.carit.platform.request.account.SearchSystemMessageRequest;
 import cn.com.carit.platform.request.account.UpdateAccountRequest;
 import cn.com.carit.platform.request.account.UploadUserPhotoRequest;
-import cn.com.carit.platform.request.market.ReadSystemMessageRequest;
-import cn.com.carit.platform.request.market.SearchSystemMessageRequest;
 import cn.com.carit.platform.response.AccountResponse;
 import cn.com.carit.platform.response.DownloadResponse;
 import cn.com.carit.platform.response.PageResponse;
@@ -148,7 +148,7 @@ public class AccountServiceTestCase {
 	
 	@Test
 	public void testQueryEquipments(){
-		AccountRequest request=new AccountRequest("xiegc@carit.com.cn", "123456");
+		LogonRequest request=new LogonRequest("xiegc@carit.com.cn", "123456");
 		RopTestCaseClient.getInstance().getSession();
 		RopTestCaseClient.getInstance().buildClientRequest().get(request, List.class, "account.equipment.query", "1.0");
 	}

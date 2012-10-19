@@ -1,18 +1,18 @@
-package cn.com.carit.platform.request.account;
+package cn.com.carit.platform.request.account.v2;
+
+import cn.com.carit.platform.request.account.AccountRequest;
 
 import com.rop.request.UploadFile;
 
-public class UploadUserPhotoRequest extends LogonRequest {
+public class UploadUserPhotoRequest extends AccountRequest {
 
     private UploadFile photo;
     
-    
-
 	public UploadUserPhotoRequest() {
 	}
 
-	public UploadUserPhotoRequest(String email, String password) {
-		super(email, password);
+	public UploadUserPhotoRequest(String email) {
+		super(email);
 	}
 
 	public UploadFile getPhoto() {

@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.NotEmpty;
  * @author <a href="mailto:xiegengcai@gmail.com">Gengcai Xie</a>
  * 2012-9-20
  */
-public class RegisterAccountRequest extends AccountRequest {
+public class RegisterAccountRequest extends LogonRequest {
 	
     @NotEmpty
     @Length(min=3, max=50)

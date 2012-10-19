@@ -1,7 +1,6 @@
 package cn.com.carit.platform.interceptor;
 
 import cn.com.carit.common.Constants;
-import cn.com.carit.common.utils.MD5Util;
 import cn.com.carit.platform.bean.account.Account;
 import cn.com.carit.platform.cache.CacheManager;
 
@@ -10,7 +9,7 @@ import com.rop.RopRequestContext;
 import com.rop.response.BusinessServiceErrorResponse;
 import com.rop.response.NotExistErrorResponse;
 
-public class EffectiveAccountInterceptor extends AbstractInterceptor {
+public class EffectiveAccountV2Interceptor extends AbstractInterceptor {
 
 	@Override
 	public void beforeService(RopRequestContext ropRequestContext) {
@@ -20,18 +19,6 @@ public class EffectiveAccountInterceptor extends AbstractInterceptor {
 			Account t = CacheManager.getInstance().getAccount(email);
 			if (t==null) {// 账号不存在
 				ropRequestContext.setRopResponse(new NotExistErrorResponse("account","email",email,ropRequestContext.getLocale()));
-				return;
-			}
-			String password=ropRequestContext.getParamValue("password");
-			// 密码加密
-			password=MD5Util.md5Hex(password);
-			// 二次加密
-			password=MD5Util.md5Hex(email+password+MD5Util.DISTURBSTR);
-			if (!password.equalsIgnoreCase(t.getPassword())) {
-				//密码错误
-				ropRequestContext.setRopResponse(new BusinessServiceErrorResponse(
-						ropRequestContext.getMethod(), Constants.PASSWORD_ERROR,
-						ropRequestContext.getLocale(), email));
 				return;
 			}
 			if(t.getStatus()!=Constants.STATUS_VALID){
@@ -46,10 +33,7 @@ public class EffectiveAccountInterceptor extends AbstractInterceptor {
 	@Override
 	public boolean isMatch(RopRequestContext ropRequestContext) {
 		String method=ropRequestContext.getMethod();
-		if ("2.0".equals(ropRequestContext.getVersion())) {
-			return false;
-		}
-		if (method.startsWith("account.")) {
+		if (method.startsWith("account.") && "2.0".equals(ropRequestContext.getVersion())) {
 			if ("account.logout".equals(method) 
 					|| "account.register".equals(method)
 					|| "account.check.email".equals(method)
@@ -63,7 +47,7 @@ public class EffectiveAccountInterceptor extends AbstractInterceptor {
 
 	@Override
 	public int getOrder() {
-		return 0;
+		return 1;
 	}
 
 }

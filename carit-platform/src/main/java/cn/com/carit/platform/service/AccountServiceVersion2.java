@@ -1,5 +1,7 @@
 package cn.com.carit.platform.service;
 
+import java.util.Calendar;
+
 import javax.annotation.Resource;
 
 import org.springframework.beans.BeanUtils;
@@ -25,27 +27,28 @@ import cn.com.carit.platform.bean.market.AppComment;
 import cn.com.carit.platform.bean.market.AppDownloadLog;
 import cn.com.carit.platform.bean.market.Application;
 import cn.com.carit.platform.cache.CacheManager;
-import cn.com.carit.platform.request.account.AddEquipmentRequest;
-import cn.com.carit.platform.request.account.ApplicationRequest;
+import cn.com.carit.platform.request.account.AccountRequest;
 import cn.com.carit.platform.request.account.CheckEmailRequest;
 import cn.com.carit.platform.request.account.CheckNicknameRequest;
-import cn.com.carit.platform.request.account.CommentRequest;
 import cn.com.carit.platform.request.account.LogonRequest;
-import cn.com.carit.platform.request.account.ReadSystemMessageRequest;
 import cn.com.carit.platform.request.account.RegisterAccountRequest;
-import cn.com.carit.platform.request.account.SearchByAccountRequest;
-import cn.com.carit.platform.request.account.SearchSystemMessageRequest;
-import cn.com.carit.platform.request.account.UpdateAccountRequest;
-import cn.com.carit.platform.request.account.UpdatePasswordRequest;
-import cn.com.carit.platform.request.account.UploadUserPhotoRequest;
+import cn.com.carit.platform.request.account.v2.AddEquipmentRequest;
+import cn.com.carit.platform.request.account.v2.ApplicationRequest;
+import cn.com.carit.platform.request.account.v2.CommentRequest;
+import cn.com.carit.platform.request.account.v2.ReadSystemMessageRequest;
+import cn.com.carit.platform.request.account.v2.SearchByAccountRequest;
+import cn.com.carit.platform.request.account.v2.SearchSystemMessageRequest;
+import cn.com.carit.platform.request.account.v2.UpdateAccountRequest;
+import cn.com.carit.platform.request.account.v2.UploadUserPhotoRequest;
 import cn.com.carit.platform.response.AccountResponse;
 import cn.com.carit.platform.response.DownloadResponse;
 import cn.com.carit.platform.response.PageResponse;
+import cn.com.carit.platform.response.SessionResponse;
 import cn.com.carit.platform.response.SystemMessageResponse;
 import cn.com.carit.platform.response.UploadUserPhotoResponse;
 import cn.com.carit.platform.response.market.ApplicationResponse;
+import cn.com.carit.session.CaritPlatformSession;
 
-import com.rop.RopRequest;
 import com.rop.annotation.HttpAction;
 import com.rop.annotation.NeedInSessionType;
 import com.rop.annotation.ServiceMethod;
@@ -54,15 +57,16 @@ import com.rop.response.BusinessServiceErrorResponse;
 import com.rop.response.CommonRopResponse;
 import com.rop.response.NotExistErrorResponse;
 
+
 /**
  * <p>
- * <b>功能说明：</b>账号相关服务接口
+ * <b>功能说明：</b>账号相关服务接口 2.0 版本
  * </p>
  * @author <a href="mailto:xiegengcai@gmail.com">Gengcai Xie</a>
  * 2012-9-21
  */
-@ServiceMethodBean(version = "1.0")
-public class AccountService {
+@ServiceMethodBean(version = "2.0")
+public class AccountServiceVersion2 {
 	
 	@Resource
 	private AccountAction<Account> action;
@@ -80,25 +84,24 @@ public class AccountService {
 	
 	/**
 	 * <p>
-	 * <b>功能说明：</b>账号登录
+	 * <b>功能说明：</b>账号登录接口 2.0 版本
 	 * </p>
 	 * @param request
 	 * <table border='1'>
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>method</td><td>account.logon</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>2.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>email</td><td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>password</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
 	 * </table>
-	 * @return
+	 * @return {@link SessionResponse}
 	 * @throws Exception
 	 */
-	@ServiceMethod(method = "account.logon",version = "1.0", httpAction=HttpAction.POST)
+	@ServiceMethod(method = "account.logon", httpAction=HttpAction.POST, needInSession=NeedInSessionType.NO)
     public Object logon(LogonRequest request) throws Exception {
 		// 查询缓存
 		Account t = CacheManager.getInstance().getAccount(request.getEmail());
@@ -107,32 +110,17 @@ public class AccountService {
 		
         AccountResponse accountResponse=new AccountResponse();
         BeanUtils.copyProperties(t, accountResponse);
-        
+        // 创建session
+ 		CaritPlatformSession session = new CaritPlatformSession(Calendar.getInstance());
+ 		// 生成sessionId
+ 		String sessionId=String.valueOf(MD5Util.getMD5String(t.getId()+t.getEmail()+t.getPassword()));
+ 		// 保存session
+ 		request.getRopRequestContext().addSession(sessionId, session);
+ 		
         //返回响应
-        return  accountResponse;
+        return  new SessionResponse(sessionId, accountResponse);
     }
 	
-	/**
-	 * <p>
-	 * <b>功能说明：</b>账号登出
-	 * </p>
-	 * @param request
-	 * <table border='1'>
-	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
-	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>method</td><td>account.logout</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>否</td></tr>
-	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
-	 * </table>
-	 * @return
-	 */
-	@ServiceMethod(method = "account.logout",version = "1.0", httpAction=HttpAction.GET)
-	public Object logout(RopRequest request){
-		return CommonRopResponse.SUCCESSFUL_RESPONSE;
-	}
 	
 	/**
 	 * <p>
@@ -143,8 +131,7 @@ public class AccountService {
 	 * 	<tr><th>参数名</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>method</td><td>platform.heartbeat</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>2.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
@@ -153,7 +140,7 @@ public class AccountService {
 	 * @param request
 	 * @return
 	 */
-	@ServiceMethod(method = "account.check.email",version = "1.0", httpAction=HttpAction.GET)
+	@ServiceMethod(method = "account.check.email", httpAction=HttpAction.GET, needInSession=NeedInSessionType.NO)
 	public Object checkEmail(CheckEmailRequest request){
 		return CommonRopResponse.SUCCESSFUL_RESPONSE;
 	}
@@ -167,8 +154,7 @@ public class AccountService {
 	 * 	<tr><th>参数名</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>method</td><td>platform.heartbeat</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>2.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
@@ -177,7 +163,7 @@ public class AccountService {
 	 * @param request
 	 * @return
 	 */
-	@ServiceMethod(method = "account.check.nickname",version = "1.0", httpAction=HttpAction.GET)
+	@ServiceMethod(method = "account.check.nickname", httpAction=HttpAction.GET, needInSession=NeedInSessionType.NO)
 	public Object checkNickname(CheckNicknameRequest request){
 		return CommonRopResponse.SUCCESSFUL_RESPONSE;
 	}
@@ -192,8 +178,7 @@ public class AccountService {
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>method</td><td>account.register</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>2.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>email</td><td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}</td><td>是</td><td>是</td></tr>
@@ -204,7 +189,7 @@ public class AccountService {
 	 * @return
 	 * @throws Exception
 	 */
-	@ServiceMethod(method = "account.register",version = "1.0", httpAction=HttpAction.POST)
+	@ServiceMethod(method = "account.register", httpAction=HttpAction.POST, needInSession=NeedInSessionType.NO)
 	public Object register(RegisterAccountRequest request) throws Exception{
 		String email=request.getEmail();
 		String password=request.getPassword();
@@ -226,12 +211,11 @@ public class AccountService {
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>method</td><td>account.update</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>sessionId</td><td>{@link AccountServiceVersion2#logon(LogonRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>2.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>email</td><td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>password</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>nickName</td><td>字符长度3~50</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>gender</td><td>数字0~2</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>birthday</td><td>yyyy-MM-dd 格式字符串</td><td>是</td><td>否</td></tr>
@@ -245,7 +229,7 @@ public class AccountService {
 	 * @return
 	 * @throws Exception
 	 */
-	@ServiceMethod(method = "account.update",version = "1.0",needInSession = NeedInSessionType.YES, httpAction=HttpAction.POST)
+	@ServiceMethod(method = "account.update",  httpAction=HttpAction.POST)
 	public Object update(UpdateAccountRequest request) throws Exception{
 		// 查询缓存
 		Account t = CacheManager.getInstance().getAccount(request.getEmail());
@@ -298,69 +282,28 @@ public class AccountService {
         //返回响应
         return  accountResponse;
 	}
-	/**
-	 * <p>
-	 * <b>功能说明：</b>修改账号密码
-	 * </p>
-	 * @param request
-	 * <table border='1'>
-	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
-	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>method</td><td>account.update.password</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>否</td></tr>
-	 *  <tr><td>email</td><td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>password</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
-	 *  <tr><td>newPassword</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
-	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
-	 * </table>
-	 * @return
-	 * @throws Exception
-	 */
-	@ServiceMethod(method = "account.update.password",version = "1.0",needInSession = NeedInSessionType.YES, httpAction=HttpAction.POST)
-	public Object updatePwd(UpdatePasswordRequest request) throws Exception{
-		String email=request.getEmail();
-		// 查询缓存
-		Account t = CacheManager.getInstance().getAccount(email);
-		String newPassword=request.getNewPassword();
-		// 密码加密
-		newPassword=MD5Util.md5Hex(newPassword);
-		// 二次加密
-		newPassword=MD5Util.md5Hex(email+newPassword+MD5Util.DISTURBSTR);
-		
-		// 更新密码
-		action.updatePwd(email, newPassword);
-		
-		// 更新缓存
-		t.setPassword(newPassword);
-		
-		return CommonRopResponse.SUCCESSFUL_RESPONSE;
-	}
 	
 	/**
 	 * <p>
-	 * <b>功能说明：</b>修改账号资料
+	 * <b>功能说明：</b>修改头像
 	 * </p>
 	 * @param request
 	 * <table border='1'>
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>method</td><td>account.upload.photo</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>sessionId</td><td>{@link AccountServiceVersion2#logon(LogonRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>2.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>email</td><td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>password</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>photo</td><td>文件类型后缀（如png|jpg|gif）@文件二进制字节流串</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
 	 * </table>
 	 * @return
 	 * @throws Throwable
 	 */
-	@ServiceMethod(method = "account.upload.photo",version = "1.0",needInSession = NeedInSessionType.YES, httpAction=HttpAction.POST)
+	@ServiceMethod(method = "account.upload.photo", httpAction=HttpAction.POST)
 	public Object updatePhoto(UploadUserPhotoRequest request) throws Throwable {
 		// 查询缓存
 		Account t = CacheManager.getInstance().getAccount(request.getEmail());
@@ -397,19 +340,18 @@ public class AccountService {
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>method</td><td>account.upload.photo</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>sessionId</td><td>{@link AccountServiceVersion2#logon(LogonRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>2.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>email</td><td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>password</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>appId</td><td>应用Id</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
 	 * </table>
 	 * @return
 	 * @throws Throwable
 	 */
-	@ServiceMethod(method = "account.download.application",version = "1.0",needInSession = NeedInSessionType.YES, httpAction=HttpAction.POST)
+	@ServiceMethod(method = "account.download.application", httpAction=HttpAction.POST)
 	public Object downloadApplicaton(ApplicationRequest request){
 		// 查询缓存
 		Account t = CacheManager.getInstance().getAccount(request.getEmail());
@@ -438,12 +380,11 @@ public class AccountService {
 	 * 	<tr><th>参数名</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>method</td><td>account.application.addComment</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>sessionId</td><td>{@link AccountServiceVersion2#logon(LogonRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>2.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>email</td><td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>password</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>appId</td><td>应用Id</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>grade</td><td>应用评价(0~10)</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>comment</td><td>200字符内</td><td>是</td><td>否</td></tr>
@@ -452,7 +393,7 @@ public class AccountService {
 	 * @return
 	 * @throws Throwable
 	 */
-	@ServiceMethod(method = "account.application.addComment",version = "1.0",needInSession = NeedInSessionType.YES, httpAction=HttpAction.POST)
+	@ServiceMethod(method = "account.application.addComment", httpAction=HttpAction.POST)
 	public Object addComment(CommentRequest request){
 		// 查询缓存
 		Account t = CacheManager.getInstance().getAccount(request.getEmail());
@@ -486,13 +427,12 @@ public class AccountService {
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>method</td><td>account.downloaded.application</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>sessionId</td><td>{@link AccountServiceVersion2#logon(LogonRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>2.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>email</td><td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>password</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>language</td><td>语言(cn/en)</td><td>是</td><td>否（默认cn）</td></tr>
 	 *  <tr><td>page</td><td>起始页（默认1）</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>rows</td><td>每页显示记录数（默认10）</td><td>是</td><td>否</td></tr>
@@ -501,7 +441,7 @@ public class AccountService {
 	 * </table>
 	 * @return
 	 */
-	@ServiceMethod(method = "account.downloaded.application",version = "1.0",httpAction=HttpAction.GET)
+	@ServiceMethod(method = "account.downloaded.application",httpAction=HttpAction.GET)
 	public Object queryAccountDownloadedApp(SearchByAccountRequest request) {
 		DataGridModel dgm = new DataGridModel();
 		dgm.setSort(request.getSort());
@@ -524,13 +464,12 @@ public class AccountService {
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>method</td><td>account.query.sys.msg</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>sessionId</td><td>{@link AccountServiceVersion2#logon(LogonRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>2.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>email</td><td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}</td><td>是</td><td>是</td></tr>
-	 *	<tr><td>password</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>page</td><td>起始页（默认1）</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>rows</td><td>每页显示记录数（默认10）</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>sort</td><td>排序字段</td><td>是</td><td>否</td></tr>
@@ -540,7 +479,7 @@ public class AccountService {
 	 * </table>
 	 * @return
 	 */
-	@ServiceMethod(method = "account.query.sys.msg",version = "1.0",httpAction=HttpAction.GET)
+	@ServiceMethod(method = "account.query.sys.msg",httpAction=HttpAction.GET)
 	public Object queryAccountSystemMessage(SearchSystemMessageRequest request){
 		DataGridModel dgm = new DataGridModel();
 		dgm.setSort(request.getSort());
@@ -567,18 +506,17 @@ public class AccountService {
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>method</td><td>account.read.sys.msg</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>sessionId</td><td>{@link AccountServiceVersion2#logon(LogonRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>2.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>email</td><td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}</td><td>是</td><td>是</td></tr>
-	 *	<tr><td>password</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>msgId</td><td>@NotNull @Min(value=1) @Max(value=Integer.MAX_VALUE)</td><td>是</td><td>是</td></tr>
 	 * </table>
 	 * @return
 	 */
-	@ServiceMethod(method = "account.read.sys.msg",version = "1.0",httpAction=HttpAction.GET)
+	@ServiceMethod(method = "account.read.sys.msg",httpAction=HttpAction.GET)
 	public Object readAccountSystemMessage(ReadSystemMessageRequest request){
 		//查询账号
 		Account account=CacheManager.getInstance().getAccount(request.getEmail());
@@ -612,18 +550,17 @@ public class AccountService {
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>method</td><td>account.delete.sys.msg</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>sessionId</td><td>{@link AccountServiceVersion2#logon(LogonRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>2.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>email</td><td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}</td><td>是</td><td>是</td></tr>
-	 *	<tr><td>password</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>msgId</td><td>@NotNull @Min(value=1) @Max(value=Integer.MAX_VALUE)</td><td>是</td><td>是</td></tr>
 	 * </table>
 	 * @return
 	 */
-	@ServiceMethod(method = "account.delete.sys.msg",version = "1.0",httpAction=HttpAction.GET)
+	@ServiceMethod(method = "account.delete.sys.msg",httpAction=HttpAction.GET)
 	public Object deleteAccountSystemMessage(ReadSystemMessageRequest request){
 		//查询账号
 		Account account=CacheManager.getInstance().getAccount(request.getEmail());
@@ -652,18 +589,17 @@ public class AccountService {
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>method</td><td>account.equipment.query</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>sessionId</td><td>{@link AccountServiceVersion2#logon(LogonRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>2.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>email</td><td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}</td><td>是</td><td>是</td></tr>
-	 *	<tr><td>password</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
 	 * </table>
 	 * @return
 	 */
-	@ServiceMethod(method = "account.equipment.query",version = "1.0",httpAction=HttpAction.GET)
-	public Object queryEquipments(LogonRequest request){
+	@ServiceMethod(method = "account.equipment.query",httpAction=HttpAction.GET)
+	public Object queryEquipments(AccountRequest request){
 		//查询账号
 		Account account=CacheManager.getInstance().getAccount(request.getEmail());
 		return equipmentAction.queryByAccount(account.getId());
@@ -678,18 +614,17 @@ public class AccountService {
 	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
 	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>method</td><td>account.equipment.add</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>sessionId</td><td>{@link PlatformService#getSession(RopRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
-	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>sessionId</td><td>{@link AccountServiceVersion2#logon(LogonRequest)}获取到的sessionId</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>2.0</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>email</td><td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}</td><td>是</td><td>是</td></tr>
-	 *	<tr><td>password</td><td>\\w{6,30}</td><td>否</td><td>是</td></tr>
 	 *	<tr><td>deviceId</td><td>@NotEmpty</td><td>是</td><td>是</td></tr>
 	 * </table>
 	 * @return
 	 */
-	@ServiceMethod(method = "account.equipment.add",version = "1.0",httpAction=HttpAction.GET)
+	@ServiceMethod(method = "account.equipment.add",httpAction=HttpAction.GET)
 	public Object addEquipment(AddEquipmentRequest request){
 		//查询账号
 		Account account=CacheManager.getInstance().getAccount(request.getEmail());
