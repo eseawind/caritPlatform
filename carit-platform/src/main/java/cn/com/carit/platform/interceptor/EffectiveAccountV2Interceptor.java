@@ -7,7 +7,6 @@ import cn.com.carit.platform.cache.CacheManager;
 import com.rop.AbstractInterceptor;
 import com.rop.RopRequestContext;
 import com.rop.response.BusinessServiceErrorResponse;
-import com.rop.response.NotExistErrorResponse;
 
 public class EffectiveAccountV2Interceptor extends AbstractInterceptor {
 
@@ -18,7 +17,10 @@ public class EffectiveAccountV2Interceptor extends AbstractInterceptor {
 			// 查询缓存
 			Account t = CacheManager.getInstance().getAccount(email);
 			if (t==null) {// 账号不存在
-				ropRequestContext.setRopResponse(new NotExistErrorResponse("account","email",email,ropRequestContext.getLocale()));
+				ropRequestContext.setRopResponse(
+						new BusinessServiceErrorResponse(
+								ropRequestContext.getMethod(), Constants.NO_THIS_ACCOUNT,
+								ropRequestContext.getLocale(), email));
 				return;
 			}
 			if(t.getStatus()!=Constants.STATUS_VALID){
@@ -33,8 +35,10 @@ public class EffectiveAccountV2Interceptor extends AbstractInterceptor {
 	@Override
 	public boolean isMatch(RopRequestContext ropRequestContext) {
 		String method=ropRequestContext.getMethod();
+		
 		if (method.startsWith("account.") && "2.0".equals(ropRequestContext.getVersion())) {
-			if ("account.logout".equals(method) 
+			if ("account.logout".equals(method)
+					|| "account.logon".equals(method)
 					|| "account.register".equals(method)
 					|| "account.check.email".equals(method)
 					|| "account.check.nickname".equals(method)) {

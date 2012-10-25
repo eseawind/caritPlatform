@@ -130,7 +130,7 @@ public class MD5Util {
 	 * 
 	 * @throws UnsupportedEncodingException
 	 */
-	public static void main(String[] args) throws UnsupportedEncodingException {
+	public static void main(String[] args) throws Exception {
 		// 字符'a'的MD5码是0cc175b9c0f1b6a831c399e269772661,如果是，则成功。
 		try {
 			System.out.println(MD5Util.md5Hex("a"));
@@ -141,6 +141,7 @@ public class MD5Util {
 			e.printStackTrace();
 		}
 		System.out.println(Locale.SIMPLIFIED_CHINESE.toString());
-		
+		System.out.println("2012-12-12 20:20:20".replace("-|:", ""));
 	}
+	
 }

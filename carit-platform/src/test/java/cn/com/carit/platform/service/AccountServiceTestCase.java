@@ -6,12 +6,12 @@ import java.util.List;
 import org.testng.annotations.Test;
 
 import cn.com.carit.platform.RopTestCaseClient;
-import cn.com.carit.platform.request.account.LogonRequest;
 import cn.com.carit.platform.request.account.AddEquipmentRequest;
 import cn.com.carit.platform.request.account.ApplicationRequest;
 import cn.com.carit.platform.request.account.CheckEmailRequest;
 import cn.com.carit.platform.request.account.CheckNicknameRequest;
 import cn.com.carit.platform.request.account.CommentRequest;
+import cn.com.carit.platform.request.account.LogonRequest;
 import cn.com.carit.platform.request.account.ReadSystemMessageRequest;
 import cn.com.carit.platform.request.account.SearchByAccountRequest;
 import cn.com.carit.platform.request.account.SearchSystemMessageRequest;

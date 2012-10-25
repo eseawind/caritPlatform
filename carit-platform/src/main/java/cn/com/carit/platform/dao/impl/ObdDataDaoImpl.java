@@ -280,7 +280,7 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 
 	@Override
 	public void deleteDuplicateData() {
-		String sql="delete from a using t_upload_location a,t_upload_location b where a.device_id=b.device_id and a.create_time=b.create_time and a.id<b.id";
+		String sql="delete from a using t_obd_data a,t_obd_data b where a.device_id=b.device_id and a.date=b.date and a.id<b.id";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
@@ -314,13 +314,13 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 		}
 		if (request.getEndTime()!=null) {
 			sql.append(" and date<=?");
-			sql.append(" and date<=?");
+			countSql.append(" and date<=?");
 			args.add(new Date(request.getEndTime()));
 			argTypes.add(Types.DATE);
 		}
 		if (StringUtils.hasText(request.getLocation())) {
 			sql.append(" and location like CONCAT('%',?,'%')");
-			sql.append(" and location like CONCAT('%',?,'%')");
+			countSql.append(" and location like CONCAT('%',?,'%')");
 			args.add(request.getLocation());
 			argTypes.add(Types.VARCHAR);
 		}
@@ -339,7 +339,7 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 					.append(" ").append(dgm.getOrder());
 
 		} else {
-			sql.append(" order by update_time desc");
+			sql.append(" order by date desc");
 		}
 		sql.append(" limit ?, ?");
 		args.add(jsonPage.getStartRow());

@@ -12,9 +12,9 @@ import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import cn.com.carit.platform.response.AccountResponse;
 import cn.com.carit.platform.response.ErrorResponse;
 import cn.com.carit.platform.response.LogonResponse;
+import cn.com.carit.platform.response.SessionResponse;
 
 /**
  * <p>
@@ -260,9 +260,8 @@ public class CaritClient {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		getInstance().getSession();
 		// 登录
-		Map<String, String> paramValues=getInstance().buildParamValues("account.logon", "1.0", getInstance().getSessionId());
+		Map<String, String> paramValues=getInstance().buildParamValues("account.logon", "2.0");
 		paramValues.put("email", "xiegc@carit.com.cn");
 		
 		String sign=ClientUtils.sign(paramValues, ClientHolder.INSTANCE.appSecret);
@@ -271,8 +270,8 @@ public class CaritClient {
 		paramValues.put("password", "123456");
 		String resonse=getHttpResponse(ClientUtils.buildRequestUrl(getInstance().serverUrl, paramValues), HTTP_METHOD_POST);
 		try {
-			AccountResponse account=(AccountResponse) JsonUtil.jsonToObject(resonse, AccountResponse.class);
-			System.out.println(account);
+			SessionResponse session=(SessionResponse) JsonUtil.jsonToObject(resonse, SessionResponse.class);
+			System.out.println(session);
 		} catch (Exception e) {
 			try {
 				ErrorResponse error=(ErrorResponse) JsonUtil.jsonToObject(resonse, ErrorResponse.class);

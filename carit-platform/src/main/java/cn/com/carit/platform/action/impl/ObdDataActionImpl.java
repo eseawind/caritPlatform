@@ -25,7 +25,11 @@ public class ObdDataActionImpl implements ObdDataAction<ObdData> {
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
 	@Override
 	public int add(ObdData t) {
-		return dao.add(t);
+		int rows = dao.add(t);
+		if (rows>0) {
+			dao.deleteDuplicateData();
+		}
+		return rows;
 	}
 
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
@@ -67,7 +71,7 @@ public class ObdDataActionImpl implements ObdDataAction<ObdData> {
 		if (locationList!=null && locationList.size()>0) {
 			insertRows = dao.batchAdd(locationList);
 			// 删除重复数据
-//			dao.deleteDuplicateData();
+			dao.deleteDuplicateData();
 		}
 		return insertRows;
 	}
