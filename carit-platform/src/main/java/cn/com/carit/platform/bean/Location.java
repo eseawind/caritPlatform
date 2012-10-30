@@ -7,6 +7,8 @@ public class Location {
 	
 	private String deviceId;
 	
+	private Integer accountId;
+	
 	private Double lat;
 
 	private Double lng;
@@ -18,9 +20,10 @@ public class Location {
 	public Location() {
 	}
 	
-	public Location(String deviceId, Double lat, Double lng, Long createTime) {
+	public Location(String deviceId, Integer accountId, Double lat, Double lng, Long createTime) {
 		super();
 		this.deviceId = deviceId;
+		this.accountId = accountId;
 		this.lat = lat;
 		this.lng = lng;
 		this.createTime = createTime;
@@ -68,13 +71,13 @@ public class Location {
 	public void setCreateTime(Long createTime) {
 		this.createTime = createTime;
 	}
-/*
-	public Date getUpdateTime() {
-		return updateTime;
+
+	public Integer getAccountId() {
+		return accountId;
 	}
 
-	public void setUpdateTime(Date updateTime) {
-		this.updateTime = updateTime;
+	public void setAccountId(Integer accountId) {
+		this.accountId = accountId;
 	}
-*/
+
 }

@@ -10,6 +10,8 @@ public class Equipment implements Serializable {
 	 */
 	private static final long serialVersionUID = -5401439223731511903L;
 	
+	public static final int MAX_BOUND_ACCOUNT_COUNT=3;
+	
 	private String deviceId;
 	private Integer accountId;
 	private Integer status;

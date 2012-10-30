@@ -12,4 +12,20 @@ public interface EquipmentAction<Equipment> extends Action<Equipment> {
 	 * @return
 	 */
 	List<EquipmentResponse> queryByAccount(final int accountId);
+	
+
+	/**
+	 * 绑定检测
+	 * @param accountId
+	 * @param deviceId
+	 * @return
+	 */
+	int checkBounding(final int accountId, final  String deviceId);
+	
+	/**
+	 * 按设备Id查询已绑定账号数量
+	 * @param deviceId
+	 * @return
+	 */
+	int queryAccountCountByDeviceId(final String deviceId);
 }

@@ -13,9 +13,10 @@ public interface ObdDataDao<ObdData> extends Dao<ObdData> {
 	/**
 	 * 按照设备Id查询最新记录
 	 * @param deviceId
+	 * @param accountId
 	 * @return
 	 */
-	ObdData queryLastByDeviceId(String deviceId);
+	ObdData queryNewestData(String deviceId, int accountId);
 	
 	/**
 	 * 删除同一设备同一上传时间的重复数据（保留最后上传的）

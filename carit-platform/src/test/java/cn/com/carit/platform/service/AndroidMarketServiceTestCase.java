@@ -87,11 +87,12 @@ public class AndroidMarketServiceTestCase {
 		RopTestCaseClient.getInstance().buildClientRequest().get(request, PageResponse.class, "market.developer.query", "1.0");
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testQueryTopApps(){
 		TopRequest request=new TopRequest();
 		request.setLimit(15);
-		List<Map<String, Object>> list=(List) RopTestCaseClient.getInstance().buildClientRequest().get(request, List.class, "market.query.top.application", "1.0").getSuccessResponse();
+		List<Map<String, Object>> list=(List<Map<String, Object>>) RopTestCaseClient.getInstance().buildClientRequest().get(request, List.class, "market.query.top.application", "1.0").getSuccessResponse();
 		for (Map<String, Object> map : list) {
 			System.out.println(map.get("id")+"/t"+map.get("mainPic"));
 		}

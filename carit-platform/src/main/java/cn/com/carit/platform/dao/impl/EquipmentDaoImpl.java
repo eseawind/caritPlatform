@@ -28,7 +28,7 @@ public class EquipmentDaoImpl extends DaoImpl implements EquipmentDao<Equipment>
 		public Equipment mapRow(ResultSet rs, int rowNum) throws SQLException {
 			Equipment t = new Equipment();
 			t.setDeviceId(rs.getString("device_id"));
-			t.setAccountId(rs.getInt("account_id"));
+//			t.setAccountId(rs.getInt("account_id"));
 			t.setStatus(rs.getInt("status"));
 			t.setCreateTime(rs.getTimestamp("create_time"));
 			t.setUpdateTime(rs.getTimestamp("update_time"));
@@ -38,14 +38,13 @@ public class EquipmentDaoImpl extends DaoImpl implements EquipmentDao<Equipment>
 	
 	@Override
 	public int add(final Equipment t) {
-		String sql="insert into t_equipment(device_id, account_id, status, create_time, update_time)"
-				+" values (?, ?, ?, now(), now())";
+		String sql="insert into t_equipment(device_id, status, create_time, update_time)"
+				+" values (?, ?, now(), now())";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
 		return jdbcTemplate.update(sql
 				, t.getDeviceId()
-				, t.getAccountId()
 				, Constants.STATUS_VALID);
 	}
 
@@ -54,10 +53,6 @@ public class EquipmentDaoImpl extends DaoImpl implements EquipmentDao<Equipment>
 		StringBuilder sql = new StringBuilder(
 				"update t_equipment set update_time=now()");
 		List<Object> args = new ArrayList<Object>();
-		if (t.getAccountId()!=null) {
-			sql.append(", account_id=?");
-			args.add(t.getAccountId());
-		}
 		if (t.getStatus()!=null) {
 			sql.append(", status=?");
 			args.add(t.getStatus());
@@ -91,18 +86,26 @@ public class EquipmentDaoImpl extends DaoImpl implements EquipmentDao<Equipment>
 	@Override
 	public JsonPage<Equipment> queryByExemple(Equipment t, DataGridModel dgm) {
 		JsonPage<Equipment> jsonPage = new JsonPage<Equipment>(dgm.getPage(), dgm.getRows());
-		StringBuilder sql = new StringBuilder(
-				"select * from t_equipment where 1=1");
 		List<Object> args = new ArrayList<Object>();
 		List<Integer> argTypes = new ArrayList<Integer>();
+		StringBuilder sql = null;
+		StringBuilder countSql = null;
+		if (t.getAccountId()!=null) {
+			sql = new StringBuilder("select a.* from t_equipment a, t_account_equipment b where a.device_id=b.device_id and b.account_id=?");
+			countSql = new StringBuilder("select count(1) from t_equipment a, t_account_equipment b where a.device_id=b.device_id and b.account_id=?");
+			args.add(t.getAccountId());
+			argTypes.add(Types.INTEGER);
+		} else {
+			sql = new StringBuilder("select a.* from t_equipment a where 1=1");
+			countSql = new StringBuilder("select count(1) from t_equipment a where 1=1");
+		}
 		String whereSql = buildWhere(args, argTypes, t);
 		sql.append(whereSql);
-		String countSql = "select count(1) from t_equipment where 1=1"
-				+ whereSql;
+		countSql.append(whereSql);
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", countSql));
 		}
-		int totalRow = queryForInt(countSql, args, argTypes);
+		int totalRow = queryForInt(countSql.toString(), args, argTypes);
 		// 更新
 		jsonPage.setTotal(totalRow);
 		// 排序
@@ -113,7 +116,7 @@ public class EquipmentDaoImpl extends DaoImpl implements EquipmentDao<Equipment>
 					.append(" ").append(dgm.getOrder());
 
 		} else {
-			sql.append(" order by update_time desc");
+			sql.append(" order by a.update_time desc");
 		}
 		sql.append(" limit ?, ?");
 		args.add(jsonPage.getStartRow());
@@ -153,13 +156,8 @@ public class EquipmentDaoImpl extends DaoImpl implements EquipmentDao<Equipment>
 	public String buildWhere(List<Object> args, List<Integer> argTypes,
 			Equipment t) {
 		StringBuilder sql=new StringBuilder();
-		if (t.getAccountId()!=null) {
-			sql.append(" and account_id=?");
-			args.add(t.getAccountId());
-			argTypes.add(Types.INTEGER);
-		}
 		if (t.getStatus()!=null) {
-			sql.append(" and status=?");
+			sql.append(" and a.status=?");
 			args.add(t.getStatus());
 			argTypes.add(Types.INTEGER);
 		}
@@ -173,18 +171,45 @@ public class EquipmentDaoImpl extends DaoImpl implements EquipmentDao<Equipment>
 				throws SQLException {
 			EquipmentResponse t=new EquipmentResponse();
 			t.setDeviceId(rs.getString("device_id"));
-			t.setAccountId(rs.getInt("account_id"));
 			return t;
 		}
 	};
 	
 	@Override
 	public List<EquipmentResponse> queryByAccount(final int accountId) {
-		String sql = "select device_id, account_id from t_equipment where account_id=?";
+		String sql = "select a.* from t_equipment a, t_account_equipment b where a.device_id=b.device_id and b.account_id=?";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
 		return jdbcTemplate.query(sql, new Object[]{accountId}, responseRowMapper);
 	}
 
+	@Override
+	public int checkBounding(final int accountId, final  String deviceId) {
+		String sql="select count(1) from t_account_equipment a, t_account_info b where a.account_id=b.id and b.id=? and a.device_id=?";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		return jdbcTemplate.queryForInt(sql, new Object []{accountId, deviceId}, new int []{Types.INTEGER, Types.VARCHAR});
+	}
+
+	@Override
+	public int queryAccountCountByDeviceId(String deviceId) {
+		String sql="select count(1) from t_account_equipment a, t_equipment b where a.device_id=b.device_id and a.device_id=?";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		return jdbcTemplate.queryForInt(sql, new Object []{deviceId}, new int []{Types.VARCHAR});
+	}
+
+	@Override
+	public void addReference(int accountId, String deviceId) {
+		String sql = "insert into t_account_equipment(account_id,device_id) values(?,?)";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		jdbcTemplate.update(sql, accountId, deviceId);
+	}
+
+	
 }

@@ -9,7 +9,7 @@ public interface AccountDao<Account> extends Dao<Account> {
 	 * @param t
 	 * @return
 	 */
-	void register(String email, String password, String nickName);
+	int register(final String email, final String password, final String nickName);
 	
 	/**
 	 * 按邮箱or昵称检测是否存在

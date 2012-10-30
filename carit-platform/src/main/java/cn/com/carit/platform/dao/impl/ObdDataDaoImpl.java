@@ -44,13 +44,14 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 				t.getValues()[i]=rs.getInt("value_"+(i+1));
 			}
 			t.setError(rs.getString("error"));
+			t.setAccountId(rs.getInt("account_id"));
 			return t;
 		}
 	};
 	
 	@Override
 	public int add(final ObdData t) {
-		final String sql="insert into t_obd_data(date,device_id,location,create_time,error"
+		final String sql="insert into t_obd_data(date,device_id,account_id,location,create_time,error"
 				+",value_1"
 				+",value_2"
 				+",value_3"
@@ -70,7 +71,7 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 				+",value_17"
 				+",value_18"
 				+",value_19"
-				+") values(?,?,?,now(),?"
+				+") values(?,?,?,?,now(),?"
 				+",?"
 				+",?"
 				+",?"
@@ -104,6 +105,7 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 				int i=1;
 				ps.setTimestamp(i++, new Timestamp(t.getDate().getTime()));
 				ps.setString(i++, t.getDeviceId());
+				ps.setInt(i++, t.getAccountId());
 				ps.setString(i++, t.getLocation());
 				ps.setString(i++, t.getError());
 				for (int j = 0; j < t.getValues().length; j++) {
@@ -122,6 +124,10 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 		if (StringUtils.hasText(t.getDeviceId())) {
 			sql.append(", device_id=?");
 			args.add(t.getDeviceId());
+		}
+		if (t.getAccountId()!=null) {
+			sql.append(",account_id=?");
+			args.add(t.getAccountId());
 		}
 		if (StringUtils.hasText(t.getLocation())) {
 			sql.append(", location=?");
@@ -223,6 +229,11 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 			args.add(t.getDeviceId());
 			argTypes.add(Types.VARCHAR);
 		}
+		if (t.getAccountId()!=null){
+			sql.append(" and account_id=?");
+			args.add(t.getAccountId());
+			argTypes.add(Types.INTEGER);
+		}
 //		if (t.getStartDate()!=null) {
 //			sql.append(" and date>=?");
 //			args.add(t.getStartDate());
@@ -243,8 +254,8 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 
 	@Override
 	public int batchAdd(final List<ObdData> dataList) {
-		final String sql = "insert into t_obd_data (device_id, lat, lng, create_time) " 
-				+ "values (?, ?, ?, ?)";
+		final String sql = "insert into t_obd_data (device_id,account_id, lat, lng, create_time) " 
+				+ "values (?, ?, ?, ?, ?)";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
@@ -255,6 +266,7 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 				int index=1;
 				ps.setTimestamp(index++, new Timestamp(dataList.get(i).getDate().getTime()));
 				ps.setString(index++, dataList.get(i).getDeviceId());
+				ps.setInt(index++, dataList.get(i).getAccountId());
 				ps.setString(index++, dataList.get(i).getLocation());
 				ps.setString(index++, dataList.get(i).getError());
 				for (int j = 0; j < dataList.get(i).getValues().length; j++) {
@@ -270,12 +282,17 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 	}
 
 	@Override
-	public ObdData queryLastByDeviceId(String deviceId) {
-		String sql="select * from t_obd_data where device_id=? order by create_time desc limit 1";
+	public ObdData queryNewestData(String deviceId, int accountId) {
+		String sql="select * from t_obd_data where device_id=? and account_id=? order by create_time desc limit 1";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
-		return query(sql, deviceId, rowMapper);
+		try {
+			return jdbcTemplate.queryForObject(sql, new Object[]{deviceId, accountId}, rowMapper);
+		} catch (Exception e) {
+			log.warn(e.getMessage(), e);
+		}
+		return null;
 	}
 
 	@Override
@@ -305,6 +322,12 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 			countSql.append(" and device_id=?");
 			args.add(request.getDeviceId());
 			argTypes.add(Types.VARCHAR);
+		}
+		if (request.getAccountId()!=null){
+			sql.append(" and account_id=?");
+			countSql.append(" and account_id=?");
+			args.add(request.getAccountId());
+			argTypes.add(Types.INTEGER);
 		}
 		if (request.getStartTime()!=null) {
 			sql.append(" and date>=?");

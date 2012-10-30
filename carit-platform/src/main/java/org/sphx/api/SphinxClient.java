@@ -150,8 +150,8 @@ public class SphinxClient
 	private int			_ranker;
 	private int			_maxQueryTime;
 	private Map			_fieldWeights;
-	private Map			_overrideTypes;
-	private Map			_overrideValues;
+	private final Map			_overrideTypes;
+	private final Map			_overrideValues;
 	private String		_select;
 	private String		_rankexpr;
 
@@ -284,7 +284,7 @@ public class SphinxClient
 	/** Internal method. Unsigned int IO helper. */
 	private static long readDword ( DataInputStream istream ) throws IOException
 	{
-		long v = (long) istream.readInt ();
+		long v = istream.readInt ();
 		if ( v<0 )
 			v += 4294967296L;
 		return v;
@@ -302,6 +302,7 @@ public class SphinxClient
 		{
 			sock = new Socket ();
 			sock.setSoTimeout ( _timeout );
+			System.err.println("hostname--------------"+_host);
 			InetSocketAddress addr = new InetSocketAddress ( _host, _port );
 			sock.connect ( addr, _timeout );
 			

@@ -16,6 +16,10 @@ public class SearchLoactionRequest extends AbstractRopRequest {
 	@NotEmpty
     private String deviceId;
 	
+	@Min(value=1)
+	@Max(value=Integer.MAX_VALUE)
+	private Integer accountId;
+	
 	/**
 	 * 查询数据类型：0 所有；1 当天；2 自定义
 	 */
@@ -58,6 +62,14 @@ public class SearchLoactionRequest extends AbstractRopRequest {
 
 	public void setEndTime(long endTime) {
 		this.endTime = endTime;
+	}
+
+	public Integer getAccountId() {
+		return accountId;
+	}
+
+	public void setAccountId(Integer accountId) {
+		this.accountId = accountId;
 	}
 	
 }

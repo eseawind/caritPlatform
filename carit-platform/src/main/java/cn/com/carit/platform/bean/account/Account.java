@@ -71,6 +71,20 @@ public class Account extends BaseBean {
 	 * lastLoginTime
 	 */
 	private Date lastLoginTime;
+	
+	public Account() {
+		
+	}
+	
+	
+	public Account(int id, String email, String password, String nickName) {
+		this.id=id;
+		this.email = email;
+		this.password = password;
+		this.nickName = nickName;
+	}
+
+
 	public String getEmail() {
 		return email;
 	}

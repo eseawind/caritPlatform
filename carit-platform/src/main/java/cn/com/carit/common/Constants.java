@@ -41,6 +41,8 @@ public class Constants {
 	public static final String DEVICE_ID_IS_EMPTY="DEVICE_ID_IS_EMPTY";
 	public static final String MESSAGE_ACCOUNT_ID_NOT_MATCH="MESSAGE_ACCOUNT_ID_NOT_MATCH";
 	public static final String NO_THIS_ACCOUNT="NO_THIS_ACCOUNT";
+	public static final String EQUIPMENT_BINDING_ACCOUNT_TO_UPPER_LIMIT="EQUIPMENT_BINDING_ACCOUNT_TO_UPPER_LIMIT";
+	public static final String EQUIPMENT_NOT_BINDING_WHIT_ACCOUNT="EQUIPMENT_NOT_BINDING_WHIT_ACCOUNT";
 	
 	// 正则模式
 	public static final String REGEXP_EMAIL="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";

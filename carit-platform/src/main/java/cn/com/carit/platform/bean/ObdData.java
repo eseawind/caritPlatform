@@ -14,9 +14,24 @@ public class ObdData {
 
 	private Date date;
 	private String deviceId;
+	private Integer accountId;
 	private String location;
 	private String error;
 	private Date createTime;
+	
+	public ObdData() {
+	}
+	
+	public ObdData(Date date, String deviceId, Integer accountId,
+			String location, String error) {
+		this.date = date;
+		this.deviceId = deviceId;
+		this.accountId = accountId;
+		this.location = location;
+		this.error = error;
+	}
+
+
 	private int [] values=new int[19];
 	public int getId() {
 		return id;
@@ -60,11 +75,18 @@ public class ObdData {
 	public void setError(String error) {
 		this.error = error;
 	}
+	public Integer getAccountId() {
+		return accountId;
+	}
+	public void setAccountId(Integer accountId) {
+		this.accountId = accountId;
+	}
 	@Override
 	public String toString() {
 		return "ObdData [id=" + id + ", date=" + date + ", deviceId="
-				+ deviceId + ", location=" + location + ", error=" + error
-				+ ", createTime=" + createTime + ", values="
-				+ Arrays.toString(values) + "]";
+				+ deviceId + ", accountId=" + accountId + ", location="
+				+ location + ", error=" + error + ", createTime=" + createTime
+				+ ", values=" + Arrays.toString(values) + "]";
 	}
+	
 }

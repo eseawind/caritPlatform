@@ -25,6 +25,7 @@ public class EquipmentActionImpl implements EquipmentAction<Equipment> {
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
 	@Override
 	public int add(Equipment t) {
+		dao.addReference(t.getAccountId(), t.getDeviceId());
 		return dao.add(t);
 	}
 
@@ -64,6 +65,15 @@ public class EquipmentActionImpl implements EquipmentAction<Equipment> {
 	public List<EquipmentResponse> queryByAccount(int accountId) {
 		return dao.queryByAccount(accountId);
 	}
-	
 
+	@Override
+	public int checkBounding(final int accountId, final  String deviceId) {
+		return dao.checkBounding(accountId, deviceId);
+	}
+
+	@Override
+	public int queryAccountCountByDeviceId(String deviceId) {
+		return dao.queryAccountCountByDeviceId(deviceId);
+	}
+	
 }

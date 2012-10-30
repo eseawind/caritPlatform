@@ -125,6 +125,7 @@
         <bean class="cn.com.carit.platform.interceptor.RegisterAccountInterceptor"/>
         <bean class="cn.com.carit.platform.interceptor.ChangeNicknameInterceptor"/>
         <bean class="cn.com.carit.platform.interceptor.ApplicationInterceptor"/>
+        <bean class="cn.com.carit.platform.interceptor.EquipmentInterceptor"/>
     </rop:interceptors>
 
     <!--注册监听器，可配置多具-->
@@ -180,5 +181,5 @@
 			</list>
 		</property>
 	</bean>
-
+	
 </beans>

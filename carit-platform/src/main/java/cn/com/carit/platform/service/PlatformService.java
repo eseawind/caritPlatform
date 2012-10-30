@@ -27,6 +27,7 @@ import cn.com.carit.platform.bean.Location;
 import cn.com.carit.platform.bean.ObdData;
 import cn.com.carit.platform.request.LocationRequest;
 import cn.com.carit.platform.request.LocationUploadRequest;
+import cn.com.carit.platform.request.NewestObdDataRequest;
 import cn.com.carit.platform.request.ObdDataUploadRequest;
 import cn.com.carit.platform.request.SearchLoactionRequest;
 import cn.com.carit.platform.request.SearchObdDataRequest;
@@ -154,6 +155,7 @@ public class PlatformService {
 	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>deviceId</td><td>NotEmpty</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>accountId</td><td>账号ID</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>lists</td><td>json数据格式</td><td>是</td><td>是</td></tr>
 	 * </table>
 	 * @return
@@ -167,7 +169,7 @@ public class PlatformService {
 		List<Location> locationList=new ArrayList<Location>();
 		List<LocationRequest> lists=JsonUtil.MAPPER.readValue(request.getLists(), new TypeReference<List<LocationRequest>>() {});
 		for (LocationRequest location : lists) {
-			locationList.add(new Location(request.getDeviceId(), location.getLat(), location.getLng(), location.getTime()));
+			locationList.add(new Location(request.getDeviceId(),request.getAccountId(), location.getLat(), location.getLng(), location.getTime()));
 		}
 		locationAction.batchAdd(locationList);
 		return CommonRopResponse.SUCCESSFUL_RESPONSE;
@@ -187,6 +189,7 @@ public class PlatformService {
 	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>deviceId</td><td>NotEmpty</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>accountId</td><td>账号ID</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>type</td><td>查询类型（0：所有；1：当天；2：自定义）</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>startTime</td><td>起始时间</td><td>是</td><td>否（type=2时必传）</td></tr>
 	 *  <tr><td>endTime</td><td>结束时间</td><td>是</td><td>否（type=2时必传）</td></tr>
@@ -216,6 +219,7 @@ public class PlatformService {
 	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>deviceId</td><td>NotEmpty</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>accountId</td><td>账号ID</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>data</td><td>数据，格式如：{"08":"23","09":"24","04":"152047890","05":"19","15":"36","06":"20","16":"37","07":"5653","13":"34","14":"35","01":"5","11":"32","02":"6","12":"33","03":"1800","10":"25"}</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>location</td><td>坐标，格式如：22.543099,114.057868</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>date</td><td>数据产生时间（时间截毫秒值）</td><td>是</td><td>是</td></tr>
@@ -228,11 +232,9 @@ public class PlatformService {
 	public Object postObdData(ObdDataUploadRequest request) {
 		try {
 			// 构造Data
-			ObdData t=new ObdData();
-			t.setDate(new Date(request.getDate()));
-			t.setDeviceId(request.getDeviceID());
-			t.setLocation(request.getLocation());
-			t.setError(request.getError());
+			ObdData t = new ObdData(new Date(request.getDate()),
+					request.getDeviceId(), request.getAccountId(),
+					request.getLocation(), request.getError());
 			int index=1;
 			Map<String, String> data=JsonUtil.jsonToMap(request.getData());
 			for (Entry<String, String> e: data.entrySet()) {
@@ -265,6 +267,7 @@ public class PlatformService {
 	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>deviceId</td><td>设备ID</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>accountId</td><td>账号ID</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>startTime</td><td>起始时间（long型时间截）</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>endTime</td><td>结束时间（long型时间截）</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>page</td><td>起始页（默认1）</td><td>是</td><td>否</td></tr>
@@ -296,17 +299,18 @@ public class PlatformService {
 	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>deviceId</td><td>设备ID</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>accountId</td><td>账号ID</td><td>是</td><td>是</td></tr>
 	 * </table>
 	 * @param request
 	 * @return
 	 */
 	@ServiceMethod(method = "platform.obd.newestData",version = "1.0", needInSession=NeedInSessionType.NO, httpAction=HttpAction.GET)
-	public Object newestDbdData(RopRequest request) throws Exception{
-		String deviceId=request.getRopRequestContext().getParamValue("deviceId");
+	public Object newestDbdData(NewestObdDataRequest request) throws Exception{
+		String deviceId=request.getDeviceId();
 		if (StringUtils.hasText(deviceId)) {
-			ObdDataResponse res=new ObdDataResponse();
-			ObdData data=obdDataAction.queryLastByDeviceId(deviceId);
+			ObdData data=obdDataAction.queryNewestData(request.getDeviceId(), request.getAccountId());
 			if (data!=null) {
+				ObdDataResponse res=new ObdDataResponse();
 				res.setDeviceId(data.getDeviceId());
 				res.setLocation(data.getLocation());
 				res.setDate(data.getDate());
@@ -318,8 +322,9 @@ public class PlatformService {
 				}
 				res.setData(map);
 				res.setError(JsonUtil.jsonToStrArray(data.getError()));
+				return res;
 			}
-			return res;
+			return null;
 		} else {
 			return new BusinessServiceErrorResponse(request.getRopRequestContext().getMethod()
 					, Constants.DEVICE_ID_IS_EMPTY

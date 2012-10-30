@@ -213,7 +213,6 @@ public class AccountService {
 		// 二次加密
 		password=MD5Util.md5Hex(email+password+MD5Util.DISTURBSTR);
 		action.register(email, password, request.getNickName());
-		CacheManager.getInstance().refreshAccounts();
 		return CommonRopResponse.SUCCESSFUL_RESPONSE;
 	}
 	
@@ -384,7 +383,6 @@ public class AccountService {
 				+ Constants.BASE_PATH_PHOTOS +thumbPhoto;
         // 保存图片
 		action.uploadPhoto(t, hostPhotoPath, hostThumbPhoto);
-		
 		return new UploadUserPhotoResponse(hostPhotoPath, hostThumbPhoto);
 	}
 	
@@ -693,6 +691,18 @@ public class AccountService {
 	public Object addEquipment(AddEquipmentRequest request){
 		//查询账号
 		Account account=CacheManager.getInstance().getAccount(request.getEmail());
+		int count=equipmentAction.queryAccountCountByDeviceId(request.getDeviceId());
+		// 绑定的账号达到上限
+		if (count>=Equipment.MAX_BOUND_ACCOUNT_COUNT) {
+			return new BusinessServiceErrorResponse(request.getRopRequestContext().getMethod()
+					, Constants.MESSAGE_ACCOUNT_ID_NOT_MATCH
+					, request.getRopRequestContext().getLocale()
+					, Equipment.MAX_BOUND_ACCOUNT_COUNT);
+		}
+		// 已经绑定过
+		if (equipmentAction.checkBounding(account.getId(), request.getDeviceId())>0) {
+			return CommonRopResponse.SUCCESSFUL_RESPONSE;
+		}
 		Equipment t=new Equipment();
 		t.setAccountId(account.getId());
 		t.setDeviceId(request.getDeviceId());

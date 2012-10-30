@@ -77,8 +77,8 @@ public class ObdDataActionImpl implements ObdDataAction<ObdData> {
 	}
 
 	@Override
-	public ObdData queryLastByDeviceId(String deviceId) {
-		return dao.queryLastByDeviceId(deviceId);
+	public ObdData queryNewestData(String deviceId, int accountId) {
+		return dao.queryNewestData(deviceId, accountId);
 	}
 
 	@Override

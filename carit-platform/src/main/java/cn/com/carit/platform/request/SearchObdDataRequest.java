@@ -1,5 +1,8 @@
 package cn.com.carit.platform.request;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 
 public class SearchObdDataRequest extends SearchRequest {
 	
@@ -10,7 +13,10 @@ public class SearchObdDataRequest extends SearchRequest {
 	private Long endTime;
 	
 	private String location;
-
+	
+	@Min(value=1)
+	@Max(value=Integer.MAX_VALUE)
+	private Integer accountId;
 	
 	public String getDeviceId() {
 		return deviceId;
@@ -42,6 +48,14 @@ public class SearchObdDataRequest extends SearchRequest {
 
 	public void setLocation(String location) {
 		this.location = location;
+	}
+
+	public Integer getAccountId() {
+		return accountId;
+	}
+
+	public void setAccountId(Integer accountId) {
+		this.accountId = accountId;
 	}
 
 }

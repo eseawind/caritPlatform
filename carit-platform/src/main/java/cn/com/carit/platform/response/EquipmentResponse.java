@@ -10,19 +10,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class EquipmentResponse {
 	@XmlAttribute
 	private String deviceId;
-	@XmlAttribute
-	private Integer accountId;
 	public String getDeviceId() {
 		return deviceId;
 	}
 	public void setDeviceId(String deviceId) {
 		this.deviceId = deviceId;
-	}
-	public Integer getAccountId() {
-		return accountId;
-	}
-	public void setAccountId(Integer accountId) {
-		this.accountId = accountId;
 	}
 	
 }

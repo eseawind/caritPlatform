@@ -42,6 +42,7 @@ public class LocationDaoImpl extends DaoImpl implements LocationDao<Location> {
 			t.setLat(rs.getDouble("lat"));
 			t.setLng(rs.getDouble("lng"));
 			t.setCreateTime(rs.getTimestamp("create_time").getTime());
+			t.setAccountId(rs.getInt("account_id"));
 //			t.setUpdateTime(rs.getDate("update_time"));
 			return t;
 		}
@@ -49,8 +50,8 @@ public class LocationDaoImpl extends DaoImpl implements LocationDao<Location> {
 	
 	@Override
 	public int add(final Location t) {
-		final String sql = "insert into t_upload_location (device_id, lat, lng, create_time) " 
-				+ "values (?, ?, ?, ?)";
+		final String sql = "insert into t_upload_location (device_id,account_id, lat, lng, create_time) " 
+				+ "values (?, ?, ?, ?, ?)";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
@@ -63,6 +64,7 @@ public class LocationDaoImpl extends DaoImpl implements LocationDao<Location> {
 						Statement.RETURN_GENERATED_KEYS);
 				int index=1;
 				ps.setString(index++, t.getDeviceId());
+				ps.setInt(index++, t.getAccountId());
 				ps.setDouble(index++, t.getLat());
 				ps.setDouble(index++, t.getLng());
 				ps.setTimestamp(index++, new Timestamp(t.getCreateTime()));
@@ -81,6 +83,10 @@ public class LocationDaoImpl extends DaoImpl implements LocationDao<Location> {
 		if (StringUtils.hasText(t.getDeviceId())) {
 			sql.append(", device_id=?");
 			val.add(t.getDeviceId());
+		}
+		if (t.getAccountId()!=null) {
+			sql.append(",account_id=?");
+			val.add(t.getAccountId());
 		}
 		if (t.getLat() != null) {
 			sql.append(", lat");
@@ -182,9 +188,14 @@ public class LocationDaoImpl extends DaoImpl implements LocationDao<Location> {
 			Location t) {
 		StringBuilder sql=new StringBuilder();
 		if (StringUtils.hasText(t.getDeviceId())) {
-			sql.append(" and device_id CONCAT('%',?,'%')");
+			sql.append(" and device_id=?");
 			args.add(t.getDeviceId());
 			argTypes.add(12);// java.sql.Types type
+		}
+		if (t.getAccountId()!=null){
+			sql.append(" and account_id=?");
+			args.add(t.getAccountId());
+			argTypes.add(Types.INTEGER);
 		}
 		if (t.getLat() != null) {
 			sql.append(" and lat=?");
@@ -207,8 +218,8 @@ public class LocationDaoImpl extends DaoImpl implements LocationDao<Location> {
 
 	@Override
 	public int batchAdd(final List<Location> locationList) {
-		final String sql = "insert into t_upload_location (device_id, lat, lng, create_time) " 
-				+ "values (?, ?, ?, ?)";
+		final String sql = "insert into t_upload_location (device_id, account_id, lat, lng, create_time) " 
+				+ "values (?, ?, ?, ?, ?)";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
@@ -218,6 +229,7 @@ public class LocationDaoImpl extends DaoImpl implements LocationDao<Location> {
 			public void setValues(PreparedStatement ps, int i) throws SQLException {
 				int index=1;
 				ps.setString(index++, locationList.get(i).getDeviceId());
+				ps.setInt(index++, locationList.get(i).getAccountId());
 				ps.setDouble(index++, locationList.get(i).getLat());
 				ps.setDouble(index++, locationList.get(i).getLng());
 				ps.setTimestamp(index++, new Timestamp(locationList.get(i).getCreateTime()));
@@ -233,12 +245,14 @@ public class LocationDaoImpl extends DaoImpl implements LocationDao<Location> {
 	@Override
 	public List<LocationResponse> query(SearchLoactionRequest request) {
 		StringBuilder sql = new StringBuilder(
-				"select lat, lng, create_time from t_upload_location where 1=1");
+				"select lat, lng, create_time from t_upload_location where device_id=? and account_id=?");
 		List<Object> args = new ArrayList<Object>();
 		List<Integer> argTypes = new ArrayList<Integer>();
-		sql.append(" and device_id=?");
 		args.add(request.getDeviceId());
 		argTypes.add(Types.VARCHAR);
+		
+		args.add(request.getAccountId());
+		argTypes.add(Types.INTEGER);
 		if (request.getType()==SearchLoactionRequest.TYPE_TODAY) {
 			Calendar today=Calendar.getInstance();
 			// 清除时分秒

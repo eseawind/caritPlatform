@@ -13,9 +13,10 @@ public interface ObdDataAction<ObdData> extends Action<ObdData> {
 	/**
 	 * 按照设备Id查询最新记录
 	 * @param deviceId
+	 * @param accountId
 	 * @return
 	 */
-	ObdData queryLastByDeviceId(String deviceId);
+	ObdData queryNewestData(String deviceId, int accountId);
 	
 	JsonPage<ObdData> query(SearchObdDataRequest request);
 }

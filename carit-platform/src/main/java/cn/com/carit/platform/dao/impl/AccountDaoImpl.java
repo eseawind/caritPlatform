@@ -1,12 +1,18 @@
 package cn.com.carit.platform.dao.impl;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -49,14 +55,30 @@ public class AccountDaoImpl extends DaoImpl implements AccountDao<Account> {
 	};
 	
 	@Override
-	public void register(String email, String password, String nickName) {
-		String sql = "insert into t_account_info (email, password, nick_name"
+	public int register(final String email, final String password, final String nickName) {
+		final String sql = "insert into t_account_info (email, password, nick_name"
 				+ ", update_time, create_time) " 
 				+ "values (?, ?, ?, now(), now())";
+		
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
-		jdbcTemplate.update(sql, email, password, nickName);
+		KeyHolder gkHolder = new GeneratedKeyHolder();
+		jdbcTemplate.update(new PreparedStatementCreator() {
+			
+			@Override
+			public PreparedStatement createPreparedStatement(Connection con)
+					throws SQLException {
+				PreparedStatement ps = con.prepareStatement(sql,
+						Statement.RETURN_GENERATED_KEYS);
+				int index=1;
+				ps.setString(index++, email);
+				ps.setString(index++, password);
+				ps.setString(index++, nickName);
+				return ps;
+			}
+		}, gkHolder);
+		return gkHolder.getKey().intValue();
 	}
 
 	@Override

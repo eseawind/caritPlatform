@@ -12,24 +12,31 @@ import org.sphx.api.SphinxMatch;
 import org.sphx.api.SphinxResult;
 import org.sphx.api.SphinxWordInfo;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.ContextLoader;
 
 public class SphinxUtil {
-	protected final static Logger logger = Logger.getLogger(SphinxUtil.class);
+	private final static Logger logger = Logger.getLogger(SphinxUtil.class);
 
 	private static SphinxClient sphinxClient;
 	private static String SPHINX_INDEX;
 	private static Properties properties = new Properties();
-	
-	public static class SphinxUtilHolder{
-		public static SphinxUtil INSTANCE=new SphinxUtil();
-	}
 
+	private static class Holder{
+		private static final SphinxUtil INSTANCE = new SphinxUtil();
+	}
+	
 	private SphinxUtil() {
 		try {
 			logger.info("init SphinxUtil INSTANCE start...");
-			properties.load(ClassLoader.getSystemResourceAsStream("dataSource.properties"));
-			sphinxClient = new SphinxClient((String) properties.get("sphinx.host"), Integer.parseInt((String) properties.get("sphinx.port")));
-			 SPHINX_INDEX = (String) properties.get("sphinx.index");
+			properties.load(ContextLoader.getCurrentWebApplicationContext()
+					.getClassLoader()
+					.getResourceAsStream("dataSource.properties"));
+			sphinxClient = new SphinxClient(
+					(String) properties.get("sphinx.host"),
+					Integer.parseInt((String) properties.get("sphinx.port")));
+			// sphinxClient = new SphinxClient("192.168.0.241", 9312);
+			SPHINX_INDEX = (String) properties.get("sphinx.index");
+			// SPHINX_INDEX = "application_cn_idx";
 			sphinxClient.SetWeights(new int[] { 100, 1 });
 			sphinxClient.SetLimits(0, Integer.MAX_VALUE);
 			sphinxClient.SetMatchMode(SphinxClient.SPH_MATCH_EXTENDED2);
@@ -43,39 +50,37 @@ public class SphinxUtil {
 		}
 	}
 	
-	public static SphinxUtil getInstance(){
-		return SphinxUtilHolder.INSTANCE;
+	public static SphinxUtil getInstance() {
+		return Holder.INSTANCE;
 	}
-	
-	public String getValue(String key) {
-		return (String) properties.get(key);
-	}
+
 	public SphinxMatch[] getMatchs(String keywords)
 			throws SphinxException {
 		if (!StringUtils.hasText(keywords)) {
 			logger.error("criteria is null");
 			return null;
 		}
-		SphinxResult result = sphinxClient.Query(buildSearchQuery(keywords), SPHINX_INDEX);
+		SphinxResult result = sphinxClient.Query(buildSearchQuery(keywords),
+				SPHINX_INDEX);
 		if (result == null) {
 			logger.error(sphinxClient.GetLastError());
 			return null;
 		}
 		if (sphinxClient.GetLastWarning() != null
-				&& sphinxClient.GetLastWarning().length() > 0){
+				&& sphinxClient.GetLastWarning().length() > 0) {
 			logger.error(sphinxClient.GetLastError());
-			logger.warn(sphinxClient.GetLastWarning()+"\r\n");
+			logger.warn(sphinxClient.GetLastWarning() + "\r\n");
 		}
 		// Debug msg
 		if (logger.isDebugEnabled()) {
-			logger.debug("Query '" + keywords + "' retrieved " + result.total + " of "
-				+ result.totalFound + " matches in " + result.time + " sec.");
+			logger.debug("Query '" + keywords + "' retrieved " + result.total
+					+ " of " + result.totalFound + " matches in " + result.time
+					+ " sec.");
 			logger.debug("Query stats:");
 			for (int i = 0; i < result.words.length; i++) {
 				SphinxWordInfo wordInfo = result.words[i];
-				logger.debug("\t'" + wordInfo.word + "' found "
-						+ wordInfo.hits + " times in " + wordInfo.docs
-						+ " documents");
+				logger.debug("\t'" + wordInfo.word + "' found " + wordInfo.hits
+						+ " times in " + wordInfo.docs + " documents");
 			}
 			logger.debug("\nMatches:");
 			for (int i = 0; i < result.matches.length; i++) {
@@ -131,32 +136,31 @@ public class SphinxUtil {
 				}
 			}
 		}
-		if (searchFor.lastIndexOf("|*")!=-1) {
+		if (searchFor.lastIndexOf("|*") != -1) {
 			searchFor.delete(searchFor.lastIndexOf("|*"), searchFor.length());
 		}
-//		StringBuilder queryBuilder = new StringBuilder();
-//		String query = searchFor.toString();
-//		queryBuilder.append("@app_name *" + query + "  | ");
-//		queryBuilder.append("@en_name *" + query + "  | ");
-//		queryBuilder.append("@developer *" + query + "  | ");
-//		queryBuilder.append("@catalog_name *" + query + "  | ");
-//		queryBuilder.append("@en_catalog_en_name *" + query + " | ");
-//		queryBuilder.append("@platform *" + query + " | ");
-//		queryBuilder.append("@support_languages *" + query + " | ");
-//		queryBuilder.append("@description *" + query + " | ");
-//		queryBuilder.append("@en_description *" + query + " | ");
-//		queryBuilder.append("@permission_desc *" + query + " | ");
-//		queryBuilder.append("@en_permission_des *" + query + " | ");
-//		queryBuilder.append("@features *" + query + " | ");
-//		queryBuilder.append("@en_features *" + query + " | ");
+		// StringBuilder queryBuilder = new StringBuilder();
+		// String query = searchFor.toString();
+		// queryBuilder.append("@app_name *" + query + "  | ");
+		// queryBuilder.append("@en_name *" + query + "  | ");
+		// queryBuilder.append("@developer *" + query + "  | ");
+		// queryBuilder.append("@catalog_name *" + query + "  | ");
+		// queryBuilder.append("@en_catalog_en_name *" + query + " | ");
+		// queryBuilder.append("@platform *" + query + " | ");
+		// queryBuilder.append("@support_languages *" + query + " | ");
+		// queryBuilder.append("@description *" + query + " | ");
+		// queryBuilder.append("@en_description *" + query + " | ");
+		// queryBuilder.append("@permission_desc *" + query + " | ");
+		// queryBuilder.append("@en_permission_des *" + query + " | ");
+		// queryBuilder.append("@features *" + query + " | ");
+		// queryBuilder.append("@en_features *" + query + " | ");
 
-//		logger.info("Sphinx Query: " + queryBuilder.toString());
-//		return queryBuilder.toString();
+		// logger.info("Sphinx Query: " + queryBuilder.toString());
+		// return queryBuilder.toString();
 		return searchFor.toString();
 	}
 
 	public static void main(String[] args) throws SphinxException {
-		SphinxUtil util=SphinxUtil.getInstance();
-		System.out.println(util.getApplicationIdsAsStr("Android 新浪"));
+		System.out.println(getInstance().getApplicationIdsAsStr("Android 新浪"));
 	}
 }

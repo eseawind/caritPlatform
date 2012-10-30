@@ -261,7 +261,7 @@ public class CaritClient {
 	
 	public static void main(String[] args) throws Exception {
 		// 登录
-		Map<String, String> paramValues=getInstance().buildParamValues("account.logon", "2.0");
+		Map<String, String> paramValues=getInstance().buildParamValues("market.full.text.search.application", "2.0");
 		paramValues.put("email", "xiegc@carit.com.cn");
 		
 		String sign=ClientUtils.sign(paramValues, ClientHolder.INSTANCE.appSecret);

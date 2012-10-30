@@ -14,9 +14,11 @@ import cn.com.carit.common.utils.AttachmentUtil;
 import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonPage;
 import cn.com.carit.platform.action.AccountAction;
+import cn.com.carit.platform.bean.Equipment;
 import cn.com.carit.platform.bean.account.Account;
 import cn.com.carit.platform.cache.CacheManager;
 import cn.com.carit.platform.dao.AccountDao;
+import cn.com.carit.platform.dao.EquipmentDao;
 
 @Service
 @Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
@@ -25,6 +27,9 @@ public class AccountActionImpl implements AccountAction<Account> {
 	@Resource
 	private AccountDao<Account> dao;
 
+	@Resource
+	private EquipmentDao<Equipment> equipmentDao;
+	
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
 	@Override
 	public int add(Account t) {
@@ -66,7 +71,27 @@ public class AccountActionImpl implements AccountAction<Account> {
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
 	@Override
 	public void register(String email, String password, String nickName) {
-		dao.register(email, password, nickName);
+		int id=dao.register(email, password, nickName);
+		CacheManager.getInstance().getAccountCache().put(email
+				, new Account(id, email, password, nickName));
+	}
+
+	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Override
+	public void register(String email, String password, String nickName,
+			String deviceId, boolean flag) {
+		int id=dao.register(email, password, nickName);
+		CacheManager.getInstance().getAccountCache().put(email
+				, new Account(id, email, password, nickName));
+		// 设备还不存在
+		if (flag) {
+			Equipment t=new Equipment();
+			t.setAccountId(id);
+			t.setDeviceId(deviceId);
+			equipmentDao.add(t);
+		}
+		// 插入关联关系
+		equipmentDao.addReference(id, deviceId);
 	}
 
 	@Override
@@ -108,6 +133,7 @@ public class AccountActionImpl implements AccountAction<Account> {
 					AttachmentUtil.getInstance().getHost() + Constants.BASE_PATH_PHOTOS, ""));
 			AttachmentUtil.getInstance().deletePhoto(t.getThumbPhoto().replaceFirst(
 					AttachmentUtil.getInstance().getHost() + Constants.BASE_PATH_PHOTOS, ""));
+			
 			return dao.uploadPhoto(t.getId(), photoPath, thumbPhotoPath);
 		}
 		return 0;

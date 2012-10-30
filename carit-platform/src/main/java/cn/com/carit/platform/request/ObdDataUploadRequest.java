@@ -1,5 +1,7 @@
 package cn.com.carit.platform.request;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -8,12 +10,16 @@ import com.rop.AbstractRopRequest;
 
 public class ObdDataUploadRequest extends AbstractRopRequest {
 
+	@Min(value=1)
+	@Max(value=Integer.MAX_VALUE)
+	private int accountId;
+
 	@NotEmpty
 	private String data;
 	@NotEmpty
 	private String location;
 	@NotEmpty
-	private String deviceID;
+	private String deviceId;
 	@NotNull
 	private long date;
 	
@@ -31,11 +37,11 @@ public class ObdDataUploadRequest extends AbstractRopRequest {
 	public void setLocation(String location) {
 		this.location = location;
 	}
-	public String getDeviceID() {
-		return deviceID;
+	public String getDeviceId() {
+		return deviceId;
 	}
-	public void setDeviceID(String deviceID) {
-		this.deviceID = deviceID;
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
 	}
 	public long getDate() {
 		return date;
@@ -48,6 +54,12 @@ public class ObdDataUploadRequest extends AbstractRopRequest {
 	}
 	public void setError(String error) {
 		this.error = error;
+	}
+	public int getAccountId() {
+		return accountId;
+	}
+	public void setAccountId(int accountId) {
+		this.accountId = accountId;
 	}
 	
 }
