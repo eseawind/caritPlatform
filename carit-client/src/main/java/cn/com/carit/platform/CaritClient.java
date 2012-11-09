@@ -302,15 +302,15 @@ public class CaritClient {
 		paramValues.put("sign", sign);
 		paramValues.put("password", "123456");
 		
-		System.out.println(ClientHolder.INSTANCE.postHttpResponse(paramValues));
+//		System.out.println(ClientHolder.INSTANCE.postHttpResponse(paramValues));
 		
-		Map<String, String> login=getInstance().buildParamValues("account.logon", "2.0");
+		Map<String, String> login=getInstance().buildParamValues("account.getback.password", "1.0");
 		login.put("email", "ttagdg@tttc.com");
 		String sign2=ClientUtils.sign(login, ClientHolder.INSTANCE.appSecret);
 //		// 不需要签名的参数放后面
 		login.put("sign", sign2);
-		login.put("password", "123456");
+//		login.put("password", "123456");
 		
-		System.out.println(ClientHolder.INSTANCE.postHttpResponse(login));
+		System.out.println(ClientHolder.INSTANCE.getHttpResponse(login));
 	}
 }
