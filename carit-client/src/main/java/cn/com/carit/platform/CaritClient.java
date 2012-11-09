@@ -12,9 +12,7 @@ import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import cn.com.carit.platform.response.ErrorResponse;
 import cn.com.carit.platform.response.LogonResponse;
-import cn.com.carit.platform.response.SessionResponse;
 
 /**
  * <p>
@@ -181,7 +179,7 @@ public class CaritClient {
 						// 不需要签名的参数放后面
 						paramValues.put(SYSTEM_PARAM_SIGN, sign);
 						// 获取响应
-						getHttpResponse(ClientUtils.buildRequestUrl(getInstance().serverUrl, paramValues));
+						getHttpResponse(paramValues);
 					}
 				}, 5*60*1000, 5*60*1000);
 			} catch (Exception e) {
@@ -255,12 +253,16 @@ public class CaritClient {
 		return response;
 	}
 
-	public static String getHttpResponse(String url) {
-		return getHttpResponse(url, HTTP_METHOD_GET);
+	public String getHttpResponse(Map<String, String> paramValues){
+		return getHttpResponse(ClientUtils.buildRequestUrl(serverUrl, paramValues), HTTP_METHOD_GET);
+	}
+	
+	public String postHttpResponse(Map<String, String> paramValues){
+		return getHttpResponse(ClientUtils.buildRequestUrl(serverUrl, paramValues), HTTP_METHOD_POST);
 	}
 	
 	public static void main(String[] args) throws Exception {
-		// 登录
+		/*// 登录
 		Map<String, String> paramValues=getInstance().buildParamValues("market.full.text.search.application", "2.0");
 		paramValues.put("email", "xiegc@carit.com.cn");
 		
@@ -279,6 +281,36 @@ public class CaritClient {
 			} catch (Exception e2) {
 				e.printStackTrace();
 			}
-		}
+		}*/
+//		Map<String, String> paramValues=getInstance().buildParamValues("platform.obd.newestData", "1.0");
+//		paramValues.put("accountId", "21");
+//		paramValues.put("deviceId", "4697DA4F");
+//		
+//		String sign=ClientUtils.sign(paramValues, ClientHolder.INSTANCE.appSecret);
+//		// 不需要签名的参数放后面
+//		paramValues.put("sign", sign);
+//		System.out.println(getHttpResponse(ClientUtils.buildRequestUrl(getInstance().serverUrl, paramValues)));
+		
+		
+		
+		Map<String, String> paramValues=getInstance().buildParamValues("account.register", "3.0");
+		paramValues.put("email", "ttagdg@tttc.com");
+		paramValues.put("nickName", "ttagdgdd");
+		paramValues.put("deviceId", "69A61F9F");
+		String sign=ClientUtils.sign(paramValues, ClientHolder.INSTANCE.appSecret);
+//		// 不需要签名的参数放后面
+		paramValues.put("sign", sign);
+		paramValues.put("password", "123456");
+		
+		System.out.println(ClientHolder.INSTANCE.postHttpResponse(paramValues));
+		
+		Map<String, String> login=getInstance().buildParamValues("account.logon", "2.0");
+		login.put("email", "ttagdg@tttc.com");
+		String sign2=ClientUtils.sign(login, ClientHolder.INSTANCE.appSecret);
+//		// 不需要签名的参数放后面
+		login.put("sign", sign2);
+		login.put("password", "123456");
+		
+		System.out.println(ClientHolder.INSTANCE.postHttpResponse(login));
 	}
 }

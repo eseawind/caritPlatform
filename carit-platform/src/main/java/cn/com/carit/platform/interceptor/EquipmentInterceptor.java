@@ -2,6 +2,9 @@ package cn.com.carit.platform.interceptor;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cn.com.carit.common.Constants;
 import cn.com.carit.platform.action.EquipmentAction;
 import cn.com.carit.platform.bean.Equipment;
@@ -18,7 +21,7 @@ import com.rop.response.BusinessServiceErrorResponse;
  * @date 2012-10-30
  */
 public class EquipmentInterceptor extends AbstractInterceptor {
-
+	private final Logger logger=LoggerFactory.getLogger(getClass());
 	@Resource
 	private EquipmentAction<Equipment> equipmentAction;
 	@Override
@@ -27,6 +30,7 @@ public class EquipmentInterceptor extends AbstractInterceptor {
 			int accountId=Integer.valueOf(ropRequestContext.getParamValue("accountId"));
 			String deviceId=ropRequestContext.getParamValue("deviceId");
 			if (equipmentAction.checkBounding(accountId, deviceId)<1) {
+				logger.info("账号【"+accountId+"】没有与设备【"+deviceId+"】绑定。。。");
 				// 没有绑定设备
 				ropRequestContext
 						.setRopResponse(new BusinessServiceErrorResponse(

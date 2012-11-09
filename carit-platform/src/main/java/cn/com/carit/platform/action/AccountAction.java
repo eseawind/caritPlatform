@@ -17,9 +17,8 @@ public interface AccountAction<Account> extends Action<Account> {
 	 * @param password
 	 * @param nickName
 	 * @param deviceId
-	 * @param flag 设备是否存在，不存在需要新增
 	 */
-	void register(String email, String password, String nickName, String deviceId, boolean flag);
+	void register(String email, String password, String nickName, String deviceId);
 	
 	/**
 	 * 按邮箱or昵称检测是否存在
@@ -53,4 +52,13 @@ public interface AccountAction<Account> extends Action<Account> {
 	 * @param thumbPhotoPath
 	 */
 	int uploadPhoto(Account t, String photoPath, String thumbPhotoPath);
+	
+	/**
+	 * 找回密码
+	 * @param email
+	 * @param newPassword
+	 * @param subject
+	 * @param content
+	 */
+	void getBackPassword(String email, String newPassword, String subject, String content);
 }

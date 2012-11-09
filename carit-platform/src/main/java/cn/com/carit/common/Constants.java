@@ -24,11 +24,7 @@ public class Constants {
 	
 	public static final int MAX_BANNER_AD_COUNT=5;
 	
-//	public static final String BASE_PATH_VIDEO="/video/";
-//	public static final String BASE_PATH_IMAGE="/images/";
-//	public static final String BASE_PATH_FLASH="/flash/";
 	public static final String BASE_PATH_PHOTOS="/photos/";
-	public static final String BASE_PATH_APKS="/apks/";
 	
 	public static final String DEAFULD_LANGUAGE="cn";
 	
@@ -44,8 +40,11 @@ public class Constants {
 	public static final String EQUIPMENT_BINDING_ACCOUNT_TO_UPPER_LIMIT="EQUIPMENT_BINDING_ACCOUNT_TO_UPPER_LIMIT";
 	public static final String EQUIPMENT_NOT_BINDING_WHIT_ACCOUNT="EQUIPMENT_NOT_BINDING_WHIT_ACCOUNT";
 	
+	public static final String FORGET_PASSWORD_MAIL_SUBJECT="FORGET_PASSWORD_MAIL_SUBJECT";
+	public static final String FORGET_PASSWORD_MAIL_CONTENT="FORGET_PASSWORD_MAIL_CONTENT";
+	
 	// 正则模式
 	public static final String REGEXP_EMAIL="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
-	public static final String REGEXP_PASSWORD="\\w{6,30}";
+	public static final String REGEXP_PASSWORD="[\\w!@#$%^&**()]{6,30}";
 	public static final String REGEXT_MOBILE="[1][3,5,8][0-9]{9}";
 }

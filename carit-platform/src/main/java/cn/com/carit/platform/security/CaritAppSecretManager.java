@@ -24,7 +24,7 @@ public class CaritAppSecretManager implements AppSecretManager {
     @Override
     public String getSecret(String appKey) {
         logger.info("use CaritAppSecretManager!");
-        return CacheManager.getInstance().getAppKeySecretCache().get(appKey);
+        return CacheManager.getInstance().getAppSecret(appKey);
     }
 
     @Override

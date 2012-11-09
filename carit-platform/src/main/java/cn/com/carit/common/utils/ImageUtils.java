@@ -11,12 +11,17 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 按比例缩放图片帮助类
  * @author <a href="mailto:xiegengcai@gmail.com">Xie Gengcai</a>
  * 2012-7-11
  */
 public class ImageUtils {
+	
+	private final static Logger logger=LoggerFactory.getLogger(ImageUtils.class);
 	/**
 	 * 功能描述：缩放图像（按高度和宽度缩放）
 	 * 
@@ -34,6 +39,10 @@ public class ImageUtils {
 	 */
 	public static void scale(String srcImageFile, String result, int height,
 			int width, boolean flag) throws Exception {
+		if (logger.isDebugEnabled()) {
+			logger.debug("src:"+srcImageFile);
+			logger.debug("result:"+result);
+		}
 		String imageType = srcImageFile
 				.substring(srcImageFile.lastIndexOf(".") + 1);
 		if (imageType.equalsIgnoreCase("png")) {
@@ -77,7 +86,7 @@ public class ImageUtils {
 			g.dispose();
 			ImageIO.write(bufImg, imageType, new File(result));
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			throw e;
 		}
 	}

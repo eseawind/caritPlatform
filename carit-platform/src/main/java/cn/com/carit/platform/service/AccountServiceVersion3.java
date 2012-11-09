@@ -60,7 +60,7 @@ public class AccountServiceVersion3 {
 		int count=equipmentAction.queryAccountCountByDeviceId(request.getDeviceId());
 		if (count>=Equipment.MAX_BOUND_ACCOUNT_COUNT) {
 			return new BusinessServiceErrorResponse(request.getRopRequestContext().getMethod()
-					, Constants.MESSAGE_ACCOUNT_ID_NOT_MATCH
+					, Constants.EQUIPMENT_BINDING_ACCOUNT_TO_UPPER_LIMIT
 					, request.getRopRequestContext().getLocale()
 					, Equipment.MAX_BOUND_ACCOUNT_COUNT);
 		}
@@ -70,7 +70,7 @@ public class AccountServiceVersion3 {
 		password=MD5Util.md5Hex(password);
 		// 二次加密
 		password=MD5Util.md5Hex(email+password+MD5Util.DISTURBSTR);
-		action.register(email, password, request.getNickName(), request.getDeviceId(), count==0);
+		action.register(email, password, request.getNickName(), request.getDeviceId());
 		return CommonRopResponse.SUCCESSFUL_RESPONSE;
 	}
 	

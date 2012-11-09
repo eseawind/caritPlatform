@@ -12,6 +12,7 @@ import cn.com.carit.common.utils.CaritUtils;
 import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.ImageUtils;
 import cn.com.carit.common.utils.MD5Util;
+import cn.com.carit.common.utils.RandomUtils;
 import cn.com.carit.platform.action.AccountAction;
 import cn.com.carit.platform.action.AppCommentAction;
 import cn.com.carit.platform.action.AppDownloadLogAction;
@@ -25,6 +26,7 @@ import cn.com.carit.platform.bean.market.AppComment;
 import cn.com.carit.platform.bean.market.AppDownloadLog;
 import cn.com.carit.platform.bean.market.Application;
 import cn.com.carit.platform.cache.CacheManager;
+import cn.com.carit.platform.request.account.AccountRequest;
 import cn.com.carit.platform.request.account.AddEquipmentRequest;
 import cn.com.carit.platform.request.account.ApplicationRequest;
 import cn.com.carit.platform.request.account.CheckEmailRequest;
@@ -53,6 +55,7 @@ import com.rop.annotation.ServiceMethodBean;
 import com.rop.response.BusinessServiceErrorResponse;
 import com.rop.response.CommonRopResponse;
 import com.rop.response.NotExistErrorResponse;
+import com.rop.security.SubErrors;
 
 /**
  * <p>
@@ -255,7 +258,7 @@ public class AccountService {
 			update.setAddress(request.getAddress());
 			needToUpdate=true;
 		}
-		if (request.getGender()!=null && request.getGender().equals(t.getGender())) {
+		if (request.getGender()!=null && request.getGender().byteValue()!=t.getGender().byteValue()) {
 			update.setGender(request.getGender());
 			needToUpdate=true;
 		}
@@ -365,14 +368,16 @@ public class AccountService {
 		Account t = CacheManager.getInstance().getAccount(request.getEmail());
 		String fileType = request.getPhoto().getFileType();
         long nanoTime=System.nanoTime();
+        // 随机文件名
+    	String prefix =  "user_"+t.getId()+"_"+nanoTime;// 构建文件名称
         // 头像文件名
-        String photo=nanoTime+"."+fileType;
+        String photo=prefix+"."+fileType;
         
         FileCopyUtils.copy(request.getPhoto().getContent()
         		, AttachmentUtil.getInstance().getPhotoFile(photo));
         
         // 缩略图文件名
-        String thumbPhoto=nanoTime+"_thumb."+fileType;
+        String thumbPhoto=prefix+"_thumb."+fileType;
         // 生成缩略图
         ImageUtils.scale(AttachmentUtil.getInstance().getPhotoPath(photo)
         		, AttachmentUtil.getInstance().getPhotoPath(thumbPhoto)
@@ -692,16 +697,16 @@ public class AccountService {
 		//查询账号
 		Account account=CacheManager.getInstance().getAccount(request.getEmail());
 		int count=equipmentAction.queryAccountCountByDeviceId(request.getDeviceId());
-		// 绑定的账号达到上限
-		if (count>=Equipment.MAX_BOUND_ACCOUNT_COUNT) {
-			return new BusinessServiceErrorResponse(request.getRopRequestContext().getMethod()
-					, Constants.MESSAGE_ACCOUNT_ID_NOT_MATCH
-					, request.getRopRequestContext().getLocale()
-					, Equipment.MAX_BOUND_ACCOUNT_COUNT);
-		}
 		// 已经绑定过
 		if (equipmentAction.checkBounding(account.getId(), request.getDeviceId())>0) {
 			return CommonRopResponse.SUCCESSFUL_RESPONSE;
+		}
+		// 没绑定过，而且设备绑定的账号数达到上限
+		if (count>=Equipment.MAX_BOUND_ACCOUNT_COUNT) {
+			return new BusinessServiceErrorResponse(request.getRopRequestContext().getMethod()
+					, Constants.EQUIPMENT_BINDING_ACCOUNT_TO_UPPER_LIMIT
+					, request.getRopRequestContext().getLocale()
+					, Equipment.MAX_BOUND_ACCOUNT_COUNT);
 		}
 		Equipment t=new Equipment();
 		t.setAccountId(account.getId());
@@ -710,4 +715,50 @@ public class AccountService {
 		return CommonRopResponse.SUCCESSFUL_RESPONSE;
 	}
 	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>找回密码
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>account.getback.password</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>email</td><td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 * </table>
+	 * @return
+	 */
+	@ServiceMethod(method = "account.getback.password",version = "1.0",httpAction=HttpAction.GET, needInSession=NeedInSessionType.NO)
+	public Object getBackPassword(AccountRequest request){
+		//查询账号
+		Account account=CacheManager.getInstance().getAccount(request.getEmail());
+		// 随机密码
+		String password = RandomUtils.randomPassword();
+		// 获取邮件内容
+		String content = SubErrors.getSubError(Constants.FORGET_PASSWORD_MAIL_CONTENT,
+				Constants.FORGET_PASSWORD_MAIL_CONTENT,
+				request.getRopRequestContext().getLocale(), account.getNickName(), password)
+				.getMessage();
+		
+		// 密码加密
+		password=MD5Util.md5Hex(password);
+		// 二次加密
+		password=MD5Util.md5Hex(request.getEmail()+password+MD5Util.DISTURBSTR);
+		
+		// 更新密码并发送邮件
+		action.getBackPassword(
+				request.getEmail(),
+				password,
+				SubErrors.getSubError(Constants.FORGET_PASSWORD_MAIL_SUBJECT,
+						Constants.FORGET_PASSWORD_MAIL_SUBJECT,
+						request.getRopRequestContext().getLocale(),
+						account.getNickName(), password).getMessage()
+				, content);
+		
+		return CommonRopResponse.SUCCESSFUL_RESPONSE;
+	}
 }

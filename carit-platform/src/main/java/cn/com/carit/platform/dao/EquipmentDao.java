@@ -35,4 +35,11 @@ public interface EquipmentDao<Equipment> extends Dao<Equipment> {
 	 * @param deviceId
 	 */
 	void addReference(final int accountId, final String deviceId);
+	
+	/**
+	 * 按Id查询
+	 * @param id
+	 * @return
+	 */
+	Equipment queryById(final String id);
 }

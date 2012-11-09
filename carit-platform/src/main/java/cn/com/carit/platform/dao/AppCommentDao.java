@@ -29,4 +29,11 @@ public interface AppCommentDao<AppCommnet> extends Dao<AppCommnet> {
 	 * @return
 	 */
 	Map<String,Object> statComment(int appId);
+	
+	/**
+	 * 获取应用平均评价
+	 * @param appId
+	 * @return
+	 */
+	double queryAvgGrade(int appId);
 }

@@ -12,10 +12,10 @@ public class AccountServiceV3TestCase {
 	@Test
 	public void testRegister(){
 		RegisterAccountRequest request = new RegisterAccountRequest();
-    	request.setEmail("1111114@gg.com");
+    	request.setEmail("test@test.com");
     	request.setPassword("123456");
-    	request.setNickName("dfgagagd14");
-    	request.setDeviceId("4697DA4FFF");
+    	request.setNickName("afagdfgg");
+    	request.setDeviceId("69A61F9F");
     	RopTestCaseClient.getInstance().buildClientRequest().post(request, CommonRopResponse.class, "account.register", "3.0");
 	}
 }

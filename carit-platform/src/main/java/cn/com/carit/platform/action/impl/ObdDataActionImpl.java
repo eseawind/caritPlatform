@@ -86,4 +86,9 @@ public class ObdDataActionImpl implements ObdDataAction<ObdData> {
 		return dao.query(request);
 	}
 
+	@Override
+	public List<ObdData> queryCurrentDataByAccount(int accountId) {
+		return dao.queryCurrentDataByAccount(accountId);
+	}
+
 }

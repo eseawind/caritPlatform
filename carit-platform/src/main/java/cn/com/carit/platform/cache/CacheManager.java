@@ -82,11 +82,6 @@ public class CacheManager {
 	public void refreshAccounts(){
 		accountCache.clear();
 		nickNameCache.clear();
-		List<Account> allAccountList=accountAction.queryAll();
-		for (Account t : allAccountList) {
-			accountCache.put(t.getEmail(), t);
-			nickNameCache.put(t.getNickName(), t.getEmail());
-		}
 	}
 	
 	/**
@@ -96,7 +91,7 @@ public class CacheManager {
 	 */
 	public void refreshAccount(String email, Account t){
 		accountCache.put(email, t);
-		nickNameCache.put(t.getNickName(), email);
+		nickNameCache.put(t.getNickName(), t.getNickName());
 	}
 	
 	/**
@@ -106,17 +101,9 @@ public class CacheManager {
 	 */
 	public void refreshNickName(String oldNickName, String newNickName){
 		if (nickNameCache.get(oldNickName)!=null) {
-			nickNameCache.put(newNickName, nickNameCache.get(oldNickName));
+			nickNameCache.put(newNickName, newNickName);
 			nickNameCache.remove(oldNickName);
 		}
-	}
-
-	public Map<String, Account> getAccountCache() {
-		return accountCache;
-	}
-	
-	public Map<String, String> getNickNameCache() {
-		return nickNameCache;
 	}
 
 	/**
@@ -162,20 +149,20 @@ public class CacheManager {
 		}
 	}
 
-	public Map<String, String> getAppKeySecretCache() {
-		return appKeySecretCache;
+	public String getAppSecret(String appKey){
+		return appKeySecretCache.get(appKey);
 	}
 	
 	public Account getAccount(String email){
-		return getAccountCache().get(email);
-	}
-	
-	public Map<Integer, Application> getApplicationCache() {
-		return applicationCache;
+		Account t=accountCache.get(email);
+		if(t==null){
+			t=accountAction.queryByEmail(email);
+		}
+		return t;
 	}
 	
 	public Application getApplication(int appId) {
-		Application t=getApplicationCache().get(appId);
+		Application t=applicationCache.get(appId);
 		if (t==null) {
 			t=applicationAction.queryById(appId);
 			if (t!=null) {
@@ -183,5 +170,16 @@ public class CacheManager {
 			}
 		}
 		return t;
+	}
+	
+	public boolean checkNickname(String nickname){
+		if (nickNameCache.containsKey(nickname)) {
+			return true;
+		}
+		if(accountAction.checkAccount(null, nickname)>0){
+			nickNameCache.put(nickname, nickname);
+			return true;
+		}
+		return false;
 	}
 }

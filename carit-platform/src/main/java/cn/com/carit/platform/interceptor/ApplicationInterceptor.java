@@ -1,5 +1,7 @@
 package cn.com.carit.platform.interceptor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import cn.com.carit.platform.cache.CacheManager;
@@ -16,13 +18,16 @@ import com.rop.response.NotExistErrorResponse;
  * 2012-9-22
  */
 public class ApplicationInterceptor extends AbstractInterceptor {
-
+	
+	private final Logger logger=LoggerFactory.getLogger(getClass());
+	
 	@Override
 	public void beforeService(RopRequestContext ropRequestContext) {
 		if (isMatch(ropRequestContext)) {
 			String appId=ropRequestContext.getParamValue("appId");
 			if (StringUtils.hasText(appId)) {
 				if (CacheManager.getInstance().getApplication(Integer.valueOf(appId))==null) {
+					logger.info("应用【"+appId+"】不存在。。。");
 					ropRequestContext.setRopResponse(new NotExistErrorResponse("appllication","appId",appId,ropRequestContext.getLocale()));
 				}
 			}

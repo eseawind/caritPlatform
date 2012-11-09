@@ -376,4 +376,14 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 		return jsonPage;
 	}
 
+	@Override
+	public List<ObdData> queryCurrentDataByAccount(
+			int accountId) {
+		String sql="SELECT * FROM (SELECT * FROM t_obd_data WHERE account_id=? ORDER BY create_time DESC) t GROUP BY device_id, account_id";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		return jdbcTemplate.query(sql, new Object[]{accountId}, rowMapper);
+	}
+
 }

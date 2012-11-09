@@ -6,6 +6,7 @@ import java.util.List;
 import org.testng.annotations.Test;
 
 import cn.com.carit.platform.RopTestCaseClient;
+import cn.com.carit.platform.request.account.AccountRequest;
 import cn.com.carit.platform.request.account.AddEquipmentRequest;
 import cn.com.carit.platform.request.account.ApplicationRequest;
 import cn.com.carit.platform.request.account.CheckEmailRequest;
@@ -31,7 +32,7 @@ public class AccountServiceTestCase {
 	@Test
 	public void testLogon(){
 		RopTestCaseClient.getInstance().getSession();
-		RopTestCaseClient.getInstance().logon("xiegc@carit.com.cn", "123456");
+		RopTestCaseClient.getInstance().logon("xiegc@carit.com.cn", "GC44(W^J");
 	}
 	
 	@Test
@@ -57,13 +58,14 @@ public class AccountServiceTestCase {
 		UpdateAccountRequest request=new UpdateAccountRequest("xiegc@carit.com.cn","123456");
 //		request.setNickName("風一樣的男子");
 		request.setBirthday("1986-06-08");
+		request.setGender((byte)0);
 		RopTestCaseClient.getInstance().getSession();
 		RopTestCaseClient.getInstance().buildClientRequest().post(request, AccountResponse.class, "account.update", "1.0");
 	}
 	
 	@Test
 	public void testUploadPhoto(){
-		UploadUserPhotoRequest request=new UploadUserPhotoRequest("xiegc@carit.com.cn","123456");
+		UploadUserPhotoRequest request=new UploadUserPhotoRequest("xiegc@carit.com.cn","GC44(W^J");
 		request.setPhoto(new UploadFile(new File("D:/market/Sina Weibo.png")));
 		RopTestCaseClient.getInstance().getSession();
 		RopTestCaseClient.getInstance().buildClientRequest().post(request, UploadUserPhotoResponse.class, "account.upload.photo", "1.0");
@@ -151,5 +153,11 @@ public class AccountServiceTestCase {
 		LogonRequest request=new LogonRequest("xiegc@carit.com.cn", "123456");
 		RopTestCaseClient.getInstance().getSession();
 		RopTestCaseClient.getInstance().buildClientRequest().get(request, List.class, "account.equipment.query", "1.0");
+	}
+	
+	@Test
+	public void testGetBackPassword(){
+		AccountRequest request=new AccountRequest("xiegc@carit.com.cn");
+		RopTestCaseClient.getInstance().buildClientRequest().get(request, CommonRopResponse.class, "account.getback.password", "1.0");
 	}
 }

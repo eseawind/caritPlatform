@@ -1,5 +1,8 @@
 package cn.com.carit.platform.interceptor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cn.com.carit.common.Constants;
 import cn.com.carit.common.utils.MD5Util;
 import cn.com.carit.platform.bean.account.Account;
@@ -11,17 +14,24 @@ import com.rop.response.BusinessServiceErrorResponse;
 
 public class EffectiveAccountInterceptor extends AbstractInterceptor {
 
+	private final Logger logger=LoggerFactory.getLogger(getClass());
+	
 	@Override
 	public void beforeService(RopRequestContext ropRequestContext) {
 		if (isMatch(ropRequestContext)) {
 			String email=ropRequestContext.getParamValue("email");
 			// 查询缓存
 			Account t = CacheManager.getInstance().getAccount(email);
+			logger.error("t==null"+(t==null));
 			if (t==null) {// 账号不存在
+				logger.info("账号【"+email+"】不存在");
 				ropRequestContext.setRopResponse(
 						new BusinessServiceErrorResponse(
 								ropRequestContext.getMethod(), Constants.NO_THIS_ACCOUNT,
 								ropRequestContext.getLocale(), email));
+				return;
+			}
+			if ("account.getback.password".equals(ropRequestContext.getMethod())) {
 				return;
 			}
 			String password=ropRequestContext.getParamValue("password");
@@ -30,12 +40,14 @@ public class EffectiveAccountInterceptor extends AbstractInterceptor {
 			// 二次加密
 			password=MD5Util.md5Hex(email+password+MD5Util.DISTURBSTR);
 			if (!password.equalsIgnoreCase(t.getPassword())) {
+				logger.info("密码错误...");
 				//密码错误
 				ropRequestContext.setRopResponse(new BusinessServiceErrorResponse(
 						ropRequestContext.getMethod(), Constants.PASSWORD_ERROR,
 						ropRequestContext.getLocale(), email));
 			}
 			if(t.getStatus()!=Constants.STATUS_VALID){
+				logger.info("帐号没启用...");
 				// 帐号没启用
 				ropRequestContext.setRopResponse(new BusinessServiceErrorResponse(
 						ropRequestContext.getMethod(), Constants.ACCOUNT_LOCKED,

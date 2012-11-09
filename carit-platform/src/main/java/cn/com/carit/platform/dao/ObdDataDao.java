@@ -24,4 +24,6 @@ public interface ObdDataDao<ObdData> extends Dao<ObdData> {
 	void deleteDuplicateData();
 	
 	JsonPage<ObdData> query(SearchObdDataRequest request);
+	
+	List<ObdData> queryCurrentDataByAccount(int accountId);
 }

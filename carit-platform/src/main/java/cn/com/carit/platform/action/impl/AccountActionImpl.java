@@ -9,14 +9,13 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import cn.com.carit.common.Constants;
 import cn.com.carit.common.utils.AttachmentUtil;
 import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonPage;
+import cn.com.carit.platform.JavaMailSenderService;
 import cn.com.carit.platform.action.AccountAction;
 import cn.com.carit.platform.bean.Equipment;
 import cn.com.carit.platform.bean.account.Account;
-import cn.com.carit.platform.cache.CacheManager;
 import cn.com.carit.platform.dao.AccountDao;
 import cn.com.carit.platform.dao.EquipmentDao;
 
@@ -29,6 +28,9 @@ public class AccountActionImpl implements AccountAction<Account> {
 
 	@Resource
 	private EquipmentDao<Equipment> equipmentDao;
+	
+	@Resource
+	private JavaMailSenderService mailSenderService;
 	
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
 	@Override
@@ -71,20 +73,17 @@ public class AccountActionImpl implements AccountAction<Account> {
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
 	@Override
 	public void register(String email, String password, String nickName) {
-		int id=dao.register(email, password, nickName);
-		CacheManager.getInstance().getAccountCache().put(email
-				, new Account(id, email, password, nickName));
+		dao.register(email, password, nickName);
 	}
 
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
 	@Override
 	public void register(String email, String password, String nickName,
-			String deviceId, boolean flag) {
+			String deviceId) {
 		int id=dao.register(email, password, nickName);
-		CacheManager.getInstance().getAccountCache().put(email
-				, new Account(id, email, password, nickName));
 		// 设备还不存在
-		if (flag) {
+		Equipment e=equipmentDao.queryById(deviceId);
+		if (e==null) {
 			Equipment t=new Equipment();
 			t.setAccountId(id);
 			t.setDeviceId(deviceId);
@@ -101,15 +100,7 @@ public class AccountActionImpl implements AccountAction<Account> {
 
 	@Override
 	public Account queryByEmail(String email) {
-		// 查询缓存
-		Account t = CacheManager.getInstance().getAccountCache().get(email);
-		if (t==null) { // 缓存中没找到，查询DB
-			t=dao.queryByEmail(email);
-			if (t!=null) {
-				CacheManager.getInstance().getAccountCache().put(email, t);
-			}
-		}
-		return t;
+		return dao.queryByEmail(email);
 	}
 
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
@@ -130,13 +121,21 @@ public class AccountActionImpl implements AccountAction<Account> {
 		if (StringUtils.hasText(photoPath)&&StringUtils.hasText(thumbPhotoPath)) {
 			// 删除原来的图片
 			AttachmentUtil.getInstance().deletePhoto(t.getPhoto().replaceFirst(
-					AttachmentUtil.getInstance().getHost() + Constants.BASE_PATH_PHOTOS, ""));
+					AttachmentUtil.getInstance().getHost() + "/", ""));
 			AttachmentUtil.getInstance().deletePhoto(t.getThumbPhoto().replaceFirst(
-					AttachmentUtil.getInstance().getHost() + Constants.BASE_PATH_PHOTOS, ""));
+					AttachmentUtil.getInstance().getHost() + "/", ""));
 			
 			return dao.uploadPhoto(t.getId(), photoPath, thumbPhotoPath);
 		}
 		return 0;
+	}
+	
+	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Override
+	public void getBackPassword(String email, String newPassword,
+			String subject, String content) {
+		dao.updatePwd(email, newPassword);
+		mailSenderService.sendHtmlMail(email, subject, content);
 	}
 	
 }

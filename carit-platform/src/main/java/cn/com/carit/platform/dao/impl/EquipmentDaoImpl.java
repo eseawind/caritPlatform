@@ -83,6 +83,16 @@ public class EquipmentDaoImpl extends DaoImpl implements EquipmentDao<Equipment>
 		return query(sql, id, rowMapper);
 	}
 
+	
+	@Override
+	public Equipment queryById(String id) {
+		String sql = "select * from t_equipment where device_id=?";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		return query(sql, id, rowMapper);
+	}
+
 	@Override
 	public JsonPage<Equipment> queryByExemple(Equipment t, DataGridModel dgm) {
 		JsonPage<Equipment> jsonPage = new JsonPage<Equipment>(dgm.getPage(), dgm.getRows());

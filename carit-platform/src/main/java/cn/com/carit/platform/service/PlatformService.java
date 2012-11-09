@@ -331,4 +331,28 @@ public class PlatformService {
 					, request.getRopRequestContext().getLocale(), deviceId);
 		}
 	}
+	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>按账号查询所有绑定设备的最新数据
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数名</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>platform.obd.currentData</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>accountId</td><td>账号ID</td><td>是</td><td>是</td></tr>
+	 * </table>
+	 * @param request
+	 * @return
+	 */
+	@ServiceMethod(method = "platform.obd.currentData",version = "1.0", needInSession=NeedInSessionType.NO, httpAction=HttpAction.GET)
+	public Object currentData(RopRequest request){
+		return obdDataAction.queryCurrentDataByAccount(Integer.valueOf(request
+				.getRopRequestContext().getParamValue("accountId")));
+	}
 }

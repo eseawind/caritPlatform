@@ -292,4 +292,20 @@ public class AppCommentDaoImpl extends DaoImpl implements AppCommentDao<AppComme
 		}
 		return null;
 	}
+
+	@Override
+	public double queryAvgGrade(int appId) {
+		String sql="select avg(grade) from t_app_comment where app_id=?";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		try {
+			return jdbcTemplate.queryForObject(sql, Double.class, appId);
+		} catch (Exception e) {
+			log.warn("no comment of app["+appId+"]...");
+			log.warn(e.getMessage());
+		}
+		return 0;
+	}
+	
 }

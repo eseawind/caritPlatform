@@ -13,7 +13,9 @@ import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonPage;
 import cn.com.carit.platform.action.AppCommentAction;
 import cn.com.carit.platform.bean.market.AppComment;
+import cn.com.carit.platform.bean.market.Application;
 import cn.com.carit.platform.dao.AppCommentDao;
+import cn.com.carit.platform.dao.ApplicationDao;
 import cn.com.carit.platform.response.market.AppCommentResponse;
 
 @Service
@@ -22,17 +24,31 @@ public class AppCommentActionImpl implements AppCommentAction<AppComment> {
 	
 	@Resource
 	private AppCommentDao<AppComment> dao;
+	@Resource
+	private ApplicationDao<Application> appDao;
 
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
 	@Override
 	public int add(AppComment t) {
-		return dao.add(t);
+		int row=dao.add(t);
+		double avg=dao.queryAvgGrade(t.getAppId());
+		Application application=new Application();
+		application.setId(t.getAppId());
+		application.setAppLevel((int) Math.rint(avg));
+		appDao.update(application);
+		return row;
 	}
 
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
 	@Override
 	public int update(AppComment t) {
-		return dao.update(t);
+		int row=dao.update(t);
+		double avg=dao.queryAvgGrade(t.getAppId());
+		Application application=new Application();
+		application.setId(t.getAppId());
+		application.setAppLevel((int) Math.rint(avg));
+		appDao.update(application);
+		return row;
 	}
 
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)

@@ -19,4 +19,6 @@ public interface ObdDataAction<ObdData> extends Action<ObdData> {
 	ObdData queryNewestData(String deviceId, int accountId);
 	
 	JsonPage<ObdData> query(SearchObdDataRequest request);
+	
+	List<ObdData> queryCurrentDataByAccount(int accountId);
 }

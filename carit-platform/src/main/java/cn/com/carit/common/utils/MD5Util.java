@@ -141,7 +141,6 @@ public class MD5Util {
 			e.printStackTrace();
 		}
 		System.out.println(Locale.SIMPLIFIED_CHINESE.toString());
-		System.out.println("2012-12-12 20:20:20".replace("-|:", ""));
 	}
 	
 }

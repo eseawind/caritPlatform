@@ -2,6 +2,8 @@ package cn.com.carit.platform.interceptor;
 
 import java.util.Calendar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import cn.com.carit.platform.service.AccountServiceVersion2;
@@ -18,10 +20,13 @@ import com.rop.RopRequestContext;
  * 2012-9-22
  */
 public class ServiceVersion2Interceptor extends AbstractInterceptor {
-
+	
+	private final Logger logger=LoggerFactory.getLogger(getClass());
+	
 	@Override
 	public void beforeService(RopRequestContext ropRequestContext) {
 		if (isMatch(ropRequestContext)) {
+			logger.info("2.0接口session重建");
 	 		CaritPlatformSession session=(CaritPlatformSession) ropRequestContext.getSession();
 	 		// 重建session
 	 		if (session==null) {
