@@ -305,7 +305,7 @@ public class CaritClient {
 //		System.out.println(ClientHolder.INSTANCE.postHttpResponse(paramValues));
 		
 		Map<String, String> login=getInstance().buildParamValues("account.getback.password", "1.0");
-		login.put("email", "ttagdg@tttc.com");
+		login.put("email", "sdgdg@eddd.com");
 		String sign2=ClientUtils.sign(login, ClientHolder.INSTANCE.appSecret);
 //		// 不需要签名的参数放后面
 		login.put("sign", sign2);
