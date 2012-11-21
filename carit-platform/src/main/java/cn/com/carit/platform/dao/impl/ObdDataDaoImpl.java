@@ -264,13 +264,14 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 			@Override
 			public void setValues(PreparedStatement ps, int i) throws SQLException {
 				int index=1;
-				ps.setTimestamp(index++, new Timestamp(dataList.get(i).getDate().getTime()));
-				ps.setString(index++, dataList.get(i).getDeviceId());
-				ps.setInt(index++, dataList.get(i).getAccountId());
-				ps.setString(index++, dataList.get(i).getLocation());
-				ps.setString(index++, dataList.get(i).getError());
-				for (int j = 0; j < dataList.get(i).getValues().length; j++) {
-					ps.setInt(index++, dataList.get(i).getValues()[j]);
+				ObdData data=dataList.get(i);
+				ps.setTimestamp(index++, new Timestamp(data.getDate().getTime()));
+				ps.setString(index++, data.getDeviceId());
+				ps.setInt(index++, data.getAccountId());
+				ps.setString(index++, data.getLocation());
+				ps.setString(index++, data.getError());
+				for (int j = 0; j < data.getValues().length; j++) {
+					ps.setInt(index++, data.getValues()[j]);
 				}
 			}
 			

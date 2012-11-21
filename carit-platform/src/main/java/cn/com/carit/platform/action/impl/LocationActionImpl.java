@@ -1,6 +1,7 @@
 package cn.com.carit.platform.action.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -14,7 +15,6 @@ import cn.com.carit.platform.action.LocationAction;
 import cn.com.carit.platform.bean.Location;
 import cn.com.carit.platform.dao.LocationDao;
 import cn.com.carit.platform.request.SearchLoactionRequest;
-import cn.com.carit.platform.response.LocationResponse;
 
 @Service
 @Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
@@ -74,8 +74,14 @@ public class LocationActionImpl implements LocationAction<Location> {
 	}
 
 	@Override
-	public List<LocationResponse> query(SearchLoactionRequest request) {
+	public List<Map<String, Object>> query(SearchLoactionRequest request) {
 		return dao.query(request);
+	}
+
+	@Override
+	public JsonPage<Map<String, Object>> queryForPage(
+			SearchLoactionRequest request) {
+		return dao.queryForPage(request);
 	}
 
 }

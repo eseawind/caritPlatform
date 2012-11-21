@@ -1,7 +1,6 @@
 package cn.com.carit.common.utils;
 
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -10,8 +9,6 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
-
-import cn.com.carit.platform.request.LocationRequest;
 
 public class JsonUtil {
 
@@ -69,13 +66,6 @@ public class JsonUtil {
 			System.out.println(str);
 		}
 		System.out.println(arrayToStr(array));
-		long now=Calendar.getInstance().getTimeInMillis();
-		List<LocationRequest> l=MAPPER.readValue("[{\"lat\":22.543099,\"lng\":114.057868,\"time\":"+now+"}, {\"lat\":21.543099,\"lng\":114.057868,\"time\":"+now+"}]", new TypeReference<List<LocationRequest>>() {
-			
-		});
-		for (LocationRequest r : l) {
-			System.out.println(r);
-		}
 	}
 
 }

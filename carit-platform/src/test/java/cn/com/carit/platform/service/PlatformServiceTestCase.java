@@ -1,6 +1,7 @@
 package cn.com.carit.platform.service;
 
 import java.util.Calendar;
+import java.util.List;
 
 import org.testng.annotations.Test;
 
@@ -10,7 +11,8 @@ import cn.com.carit.platform.request.NewestObdDataRequest;
 import cn.com.carit.platform.request.ObdDataUploadRequest;
 import cn.com.carit.platform.request.SearchLoactionRequest;
 import cn.com.carit.platform.request.SearchObdDataRequest;
-import cn.com.carit.platform.response.LocationListResponse;
+import cn.com.carit.platform.request.account.AccountRequest;
+import cn.com.carit.platform.request.account.v2.SearchBluetoothContactRequest;
 import cn.com.carit.platform.response.ObdDataResponse;
 import cn.com.carit.platform.response.PageResponse;
 
@@ -42,8 +44,8 @@ public class PlatformServiceTestCase {
 	@Test
 	public void testSearchLocation(){
 		SearchLoactionRequest request=new SearchLoactionRequest();
-		request.setDeviceId("4697DA4F");
-		request.setAccountId(21);
+		request.setDeviceId("C9CA9F49");
+		request.setAccountId(112);
 		request.setType(1);
 		Calendar today=Calendar.getInstance();
 		// 清除时分秒
@@ -54,7 +56,25 @@ public class PlatformServiceTestCase {
 		request.setStartTime(today.getTimeInMillis());
 		today.add(Calendar.DATE, 1);
 		request.setEndTime(today.getTimeInMillis());
-		RopTestCaseClient.getRopClient().buildClientRequest().get(request, LocationListResponse.class, "platform.location.search", "1.0");
+		RopTestCaseClient.getRopClient().buildClientRequest().get(request, List.class, "platform.location.search", "1.0");
+	}
+	
+	@Test
+	public void testSearchLocationForPage(){
+		SearchLoactionRequest request=new SearchLoactionRequest();
+		request.setDeviceId("69A61F9F");
+		request.setAccountId(21);
+//		request.setType(1);
+		Calendar today=Calendar.getInstance();
+		// 清除时分秒
+		today.set(Calendar.HOUR_OF_DAY, 0);
+		today.set(Calendar.MINUTE, 0);
+		today.set(Calendar.SECOND, 0);
+		today.set(Calendar.MILLISECOND, 0);
+		request.setStartTime(today.getTimeInMillis());
+		today.add(Calendar.DATE, 1);
+		request.setEndTime(today.getTimeInMillis());
+		RopTestCaseClient.getRopClient().buildClientRequest().get(request, PageResponse.class, "platform.location.search", "2.0");
 	}
 	
 	@Test
@@ -95,4 +115,19 @@ public class PlatformServiceTestCase {
 		RopTestCaseClient.getRopClient().buildClientRequest().get(request, ObdDataResponse.class, "platform.obd.newestData", "1.0");
 	}
 	
+	@Test
+	public void testQueryBluetooth(){
+		AccountRequest request=new AccountRequest("xiegc@carit.com.cn");
+		RopTestCaseClient.getRopClient().buildClientRequest().get(request, List.class, "platform.bluetooth.contact.query", "1.0");
+	}
+	
+	@Test
+	public void testSyncBluetoothContact(){
+		SearchBluetoothContactRequest request=new SearchBluetoothContactRequest();
+		request.setDeviceId("123456");
+		request.setEmail("xiegc@carit.com.cn");
+		request.setRows(50);
+		RopTestCaseClient.getRopClient().buildClientRequest().get(request, PageResponse.class, "platform.bluetooth.contact.sync", "1.0");
+		
+	}
 }

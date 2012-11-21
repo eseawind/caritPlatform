@@ -6,9 +6,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import com.rop.AbstractRopRequest;
-
-public class SearchLoactionRequest extends AbstractRopRequest {
+public class SearchLoactionRequest extends SearchRequest {
 	
 	public static final int TYPE_TODAY=1;
 	public static final int TYPE_CUSTOMIZED=2;

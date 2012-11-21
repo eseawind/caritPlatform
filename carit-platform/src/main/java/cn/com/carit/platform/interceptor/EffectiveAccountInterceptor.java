@@ -22,7 +22,6 @@ public class EffectiveAccountInterceptor extends AbstractInterceptor {
 			String email=ropRequestContext.getParamValue("email");
 			// 查询缓存
 			Account t = CacheManager.getInstance().getAccount(email);
-			logger.error("t==null"+(t==null));
 			if (t==null) {// 账号不存在
 				logger.info("账号【"+email+"】不存在");
 				ropRequestContext.setRopResponse(
