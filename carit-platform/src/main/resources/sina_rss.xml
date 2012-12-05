@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<catalog id="1" title="新闻中心" text="新闻中心">
+		<subCatalog id="101" text="新闻要闻" title="新闻要闻"
+			xmlUrl="http://rss.sina.com.cn/news/marquee/ddt.xml" />
+		<subCatalog id="102" text="国内要闻" title="国内要闻"
+			xmlUrl="http://rss.sina.com.cn/news/china/focus15.xml" />
+		<subCatalog id="103" text="国际要闻" title="国际要闻"
+			xmlUrl="http://rss.sina.com.cn/news/world/focus15.xml" />
+		<subCatalog id="104" text="社会新闻" title="社会新闻"
+			xmlUrl="http://rss.sina.com.cn/news/society/focus15.xml" />
+		<subCatalog id="105" text="时政要闻" title="时政要闻"
+			xmlUrl="http://rss.sina.com.cn/news/china/politics15.xml" />
+		<subCatalog id="106" text="港澳台新闻" title="港澳台新闻"
+			xmlUrl="http://rss.sina.com.cn/news/china/hktaiwan15.xml" />
+		<subCatalog id="107" text="社会与法" title="社会与法"
+			xmlUrl="http://rss.sina.com.cn/news/society/law15.xml" />
+		<subCatalog id="108" text="社会万象" title="社会万象"
+			xmlUrl="http://rss.sina.com.cn/news/society/misc15.xml" />
+		<subCatalog id="109" text="真情时刻" title="真情时刻"
+			xmlUrl="http://rss.sina.com.cn/news/society/feeling15.xml" />
+		<subCatalog id="110" text="奇闻轶事" title="奇闻轶事"
+			xmlUrl="http://rss.sina.com.cn/news/society/wonder15.xml" />
+	</catalog>
+	<!--  
+	<catalog id="2" title="博客频道" text="博客频道">
+		<subCatalog id="201" text="文化" title="文化"
+			xmlUrl="http://rss.sina.com.cn/blog/index/cul.xml" />
+		<subCatalog id="202" text="独家" title="独家"
+			xmlUrl="http://rss.sina.com.cn/blog/index/exc.xml" />
+		<subCatalog id="203" text="情感" title="情感"
+			xmlUrl="http://rss.sina.com.cn/blog/index/feel.xml" />
+		<subCatalog id="204" text="八卦" title="八卦"
+			xmlUrl="http://rss.sina.com.cn/blog/index/ent.xml" />
+		<subCatalog id="205" text="生活纪录" title="生活纪录"
+			xmlUrl="http://rss.sina.com.cn/blog/index/enjoy.xml" />
+		<subCatalog id="206" text="观点" title="观点"
+			xmlUrl="http://rss.sina.com.cn/blog/index/other.xml" />
+		<subCatalog id="207" text="财经" title="财经"
+			xmlUrl="http://rss.sina.com.cn/blog/index/finance.xml" />
+		<subCatalog id="208" text="股票" title="股票"
+			xmlUrl="http://rss.sina.com.cn/blog/index/stocks.xml" />
+		<subCatalog id="209" text="娱乐" title="娱乐"
+			xmlUrl="http://rss.sina.com.cn/blog/ent/yl.xml" />
+		<subCatalog id="210" text="女性" title="女性"
+			xmlUrl="http://rss.sina.com.cn/blog/eladies/nx.xml" />
+		<subCatalog id="211" text="IT" title="IT"
+			xmlUrl="http://rss.sina.com.cn/blog/tech/kj.xml" />
+		<subCatalog id="212" text="房产" title="房产"
+			xmlUrl="http://rss.sina.com.cn/blog/house/fc.xml" />
+		<subCatalog id="213" text="教育" title="教育"
+			xmlUrl="http://rss.sina.com.cn/blog/edu/jy.xml" />
+		<subCatalog id="214" text="星座" title="星座"
+			xmlUrl="http://rss.sina.com.cn/blog/astro/xz.xml" />
+		<subCatalog id="215" text="汽车" title="汽车"
+			xmlUrl="http://rss.sina.com.cn/blog/auto/qc.xml" />
+		<subCatalog id="216" text="游戏" title="游戏"
+			xmlUrl="http://rss.sina.com.cn/blog/games/yx.xml" />
+		<subCatalog id="217" text="体育" title="体育"
+			xmlUrl="http://rss.sina.com.cn/blog/sports/ty.xml" />
+		<subCatalog id="218" text="美食" title="美食"
+			xmlUrl="http://rss.sina.com.cn/blog/food/ms.xml" />
+		<subCatalog id="219" text="家居" title="家居"
+			xmlUrl="http://rss.sina.com.cn/blog/decor/jiaju.xml" />
+		<subCatalog id="220" text="育儿" title="育儿"
+			xmlUrl="http://rss.sina.com.cn/blog/baby/ye.xml" />
+		<subCatalog id="221" text="健康" title="健康"
+			xmlUrl="http://rss.sina.com.cn/blog/news/jk.xml" />
+		<subCatalog id="222" text="军事" title="军事"
+			xmlUrl="http://rss.sina.com.cn/blog/mini/js.xml" />
+	</catalog>
+	-->
+	<catalog id="3" title="体育频道" text="体育频道">
+		<subCatalog id="301" text="体育要闻汇总" title="体育要闻汇总"
+			xmlUrl="http://rss.sina.com.cn/roll/sports/hot_roll.xml" />
+		<subCatalog id="302" text="焦点新闻" title="焦点新闻"
+			xmlUrl="http://rss.sina.com.cn/news/allnews/sports.xml" />
+		<subCatalog id="303" text="国际足坛" title="国际足坛"
+			xmlUrl="http://rss.sina.com.cn/sports/global/focus.xml" />
+		<!--
+		<subCatalog id="304" text="意甲" title="意甲"
+			xmlUrl="http://rss.sina.com.cn/sports/global/italy.xml" />
+		<subCatalog id="305" text="英超" title="英超"
+			xmlUrl="http://rss.sina.com.cn/sports/global/england.xml" />
+		<subCatalog id="306" text="西甲" title="西甲"
+			xmlUrl="http://rss.sina.com.cn/sports/global/spain.xml" />
+		<subCatalog id="307" text="德甲、法甲" title="德甲、法甲"
+			xmlUrl="http://rss.sina.com.cn/sports/global/germanyfrance.xml" />
+		<subCatalog id="308" text="五洲热报" title="五洲热报"
+			xmlUrl="http://rss.sina.com.cn/sports/global/others.xml" />
+		-->
+		<subCatalog id="309" text="精彩图片" title="精彩图片"
+			xmlUrl="http://rss.sina.com.cn/sports/global/photo.xml" />
+		<subCatalog id="310" text="国内足坛" title="国内足坛"
+			xmlUrl="http://rss.sina.com.cn/sports/china/focus.xml" />
+		<subCatalog id="311" text="中国之队" title="中国之队"
+			xmlUrl="http://rss.sina.com.cn/sports/china/team.xml" />
+		<subCatalog id="312" text="篮球新闻" title="篮球新闻"
+			xmlUrl="http://rss.sina.com.cn/sports/basketball/focus.xml" />
+		<subCatalog id="313" text="NBA新闻" title="NBA新闻"
+			xmlUrl="http://rss.sina.com.cn/sports/basketball/nba.xml" />
+		<subCatalog id="314" text="CBA新闻" title="CBA新闻"
+			xmlUrl="http://rss.sina.com.cn/sports/basketball/cba.xml" />
+		<subCatalog id="315" text="综合体育" title="综合体育"
+			xmlUrl="http://rss.sina.com.cn/sports/others/focus.xml" />
+		<!--
+		<subCatalog id="316" text="彩票新闻" title="彩票新闻"
+			xmlUrl="http://rss.sina.com.cn/sports/global/lottery.xml" />
+		<subCatalog id="317" text="高尔夫新闻" title="高尔夫新闻"
+			xmlUrl="http://rss.sina.com.cn/sports/global/golf.xml" />
+		<subCatalog id="318" text="F1赛车新闻" title="F1赛车新闻"
+			xmlUrl="http://rss.sina.com.cn/sports/global/f1.xml" />
+		<subCatalog id="319" text="棋牌新闻" title="棋牌新闻"
+			xmlUrl="http://rss.sina.com.cn/sports/global/chess.xml" />
+		-->
+	</catalog>
+	<catalog id="4" title="科技频道" text="科技频道">
+		<subCatalog id="401" text="科技要闻汇总" title="科技要闻汇总"
+			xmlUrl="http://rss.sina.com.cn/tech/rollnews.xml" />
+		<subCatalog id="402" text="焦点新闻" title="焦点新闻"
+			xmlUrl="http://rss.sina.com.cn/news/allnews/tech.xml" />
+		<subCatalog id="403" text="互联网新闻" title="互联网新闻"
+			xmlUrl="http://rss.sina.com.cn/tech/internet/home28.xml" />
+		<!--
+		<subCatalog id="404" text="手机资讯" title="手机资讯"
+			xmlUrl="http://rss.sina.com.cn/tech/mobile/mobile_6.xml" />
+		<subCatalog id="405" text="3G新闻" title="3G新闻"
+			xmlUrl="http://rss.sina.com.cn/tech/3G/guonei.xml" />
+		<subCatalog id="406" text="笔记本新闻" title="笔记本新闻"
+			xmlUrl="http://rss.sina.com.cn/tech/notebook/193_1.xml" />
+		<subCatalog id="407" text="电信新闻" title="电信新闻"
+			xmlUrl="http://rss.sina.com.cn/tech/tele/gn37.xml" />
+		-->
+		<subCatalog id="408" text="业界新闻" title="业界新闻"
+			xmlUrl="http://rss.sina.com.cn/tech/it/gn37.xml" />
+		<!-- <subCatalog id="409" text="科技下载" title="科技下载" xmlUrl="http://rss.sina.com.cn/tech/down/down20.xml" 
+			/> -->
+		<subCatalog id="410" text="科普要闻" title="科普要闻"
+			xmlUrl="http://rss.sina.com.cn/tech/discovery/discovery.xml" />
+		<subCatalog id="411" text="数码资讯" title="数码资讯"
+			xmlUrl="http://rss.sina.com.cn/tech/number/new_camera.xml" />
+		<subCatalog id="412" text="家电资讯" title="家电资讯"
+			xmlUrl="http://rss.sina.com.cn/tech/elec/buy_elec.xml" />
+	</catalog>
+	<catalog id="5" title="财经频道" text="财经频道">
+		<subCatalog id="501" text="财经要闻汇总" title="财经要闻汇总"
+			xmlUrl="http://rss.sina.com.cn/roll/finance/hot_roll.xml" />
+		<subCatalog id="502" text="焦点新闻" title="焦点新闻"
+			xmlUrl="http://rss.sina.com.cn/news/allnews/finance.xml" />
+		<subCatalog id="503" text="股市及时雨" title="股市及时雨"
+			xmlUrl="http://rss.sina.com.cn/finance/jsy.xml" />
+		<subCatalog id="504" text="股票要闻汇总" title="股票要闻汇总"
+			xmlUrl="http://rss.sina.com.cn/roll/stock/hot_roll.xml" />
+		<subCatalog id="505" text="基金要闻" title="基金要闻"
+			xmlUrl="http://rss.sina.com.cn/finance/fund.xml" />
+		<subCatalog id="506" text="理财要闻" title="理财要闻"
+			xmlUrl="http://rss.sina.com.cn/finance/financial.xml" />
+		<subCatalog id="507" text="美股快报" title="美股快报"
+			xmlUrl="http://rss.sina.com.cn/finance/usstock.xml" />
+		<subCatalog id="508" text="港股快讯" title="港股快讯"
+			xmlUrl="http://rss.sina.com.cn/finance/hkstock.xml" />
+		<subCatalog id="509" text="期货要闻" title="期货要闻"
+			xmlUrl="http://rss.sina.com.cn/finance/future.xml" />
+	</catalog>
+	<catalog id="6" title="影音娱乐" text="影音娱乐">
+		<subCatalog id="601" text="娱乐要闻汇总" title="娱乐要闻汇总"
+			xmlUrl="http://rss.sina.com.cn/ent/hot_roll.xml" />
+		<subCatalog id="602" text="焦点新闻" title="焦点新闻"
+			xmlUrl="http://rss.sina.com.cn/news/allnews/ent.xml" />
+		<!--
+		<subCatalog id="603" text="音乐" title="音乐"
+			xmlUrl="http://rss.sina.com.cn/ent/music/focus12.xml" />
+		<subCatalog id="604" text="电视前沿" title="电视前沿"
+			xmlUrl="http://rss.sina.com.cn/ent/tv/focus7.xml" />
+		<subCatalog id="605" text="电影宝库" title="电影宝库"
+			xmlUrl="http://rss.sina.com.cn/ent/film/focus7.xml" />
+		<subCatalog id="606" text="明星全接触" title="明星全接触"
+			xmlUrl="http://rss.sina.com.cn/ent/star/focus7.xml" />
+		-->
+		<subCatalog id="607" text="内地明星" title="内地明星"
+			xmlUrl="http://rss.sina.com.cn/ent/inner.xml" />
+		<subCatalog id="608" text="港台明星" title="港台明星"
+			xmlUrl="http://rss.sina.com.cn/ent/hongkong.xml" />
+		<subCatalog id="609" text="日韩明星" title="日韩明星"
+			xmlUrl="http://rss.sina.com.cn/ent/star/japan.xml" />
+		<subCatalog id="610" text="欧美明星" title="欧美明星"
+			xmlUrl="http://rss.sina.com.cn/ent/star/outer.xml" />
+	</catalog>
+	<catalog id="7" title="读书频道" text="读书频道">
+		<subCatalog id="701" text="读书要闻汇总" title="读书要闻汇总"
+			xmlUrl="http://rss.sina.com.cn/book/info.xml" />
+		<subCatalog id="702" text="最新连载" title="最新连载"
+			xmlUrl="http://rss.sina.com.cn/book/new_book.xml" />
+		<!--
+		<subCatalog id="703" text="图书总排行" title="图书总排行"
+			xmlUrl="http://rss.sina.com.cn/book/total_rank.xml" />
+		<subCatalog id="704" text="小说排行榜" title="小说排行榜"
+			xmlUrl="http://rss.sina.com.cn/book/story_rank.xml" />
+		<subCatalog id="705" text="人文历史排行榜" title="人文历史排行榜"
+			xmlUrl="http://rss.sina.com.cn/book/history_rank.xml" />
+		<subCatalog id="706" text="青春校园排行榜" title="青春校园排行榜"
+			xmlUrl="http://rss.sina.com.cn/book/school_rank.xml" />
+		<subCatalog id="707" text="生活娱乐排行榜" title="生活娱乐排行榜"
+			xmlUrl="http://rss.sina.com.cn/book/life_rank.xml" />
+		<subCatalog id="708" text="读书财经排行榜" title="读书财经排行榜"
+			xmlUrl="http://rss.sina.com.cn/book/finance_rank.xml" />
+		<subCatalog id="709" text="读书军事排行榜" title="读书军事排行榜"
+			xmlUrl="http://rss.sina.com.cn/book/military_rank.xml" />
+		-->
+	</catalog>
+	<catalog id="8" title="女性频道" text="女性频道">
+		<subCatalog id="801" text="女性要闻汇总" title="女性要闻汇总"
+			xmlUrl="http://rss.sina.com.cn/news/allnews/eladies.xml" />
+		<subCatalog id="802" text="美容美发" title="美容美发"
+			xmlUrl="http://rss.sina.com.cn/eladies/gnspxw.xml" />
+		<subCatalog id="803" text="服饰潮流" title="服饰潮流"
+			xmlUrl="http://rss.sina.com.cn/eladies/fashion.xml" />
+		<subCatalog id="804" text="美体瘦身" title="美体瘦身"
+			xmlUrl="http://rss.sina.com.cn/eladies/body.xml" />
+		<subCatalog id="805" text="情感婚姻" title="情感婚姻"
+			xmlUrl="http://rss.sina.com.cn/eladies/marry.xml" />
+		<subCatalog id="806" text="八卦" title="八卦"
+			xmlUrl="http://rss.sina.com.cn/eladies/gossip.xml" />
+		<subCatalog id="807" text="亲子" title="亲子"
+			xmlUrl="http://rss.sina.com.cn/eladies/son.xml" />
+	</catalog>
+	<catalog id="9" title="男性频道" text="男性频道">
+		<subCatalog id="901" text="焦点新闻" title="焦点新闻"
+			xmlUrl="http://rss.sina.com.cn/news/allnews/man.xml" />
+		<subCatalog id="902" text="男人情感" title="男人情感"
+			xmlUrl="http://rss.sina.com.cn/man/feeling.xml" />
+		<subCatalog id="903" text="男装潮流" title="男装潮流"
+			xmlUrl="http://rss.sina.com.cn/man/fashion.xml" />
+	</catalog>
+	<catalog id="10" title="军事频道" text="军事频道">
+		<subCatalog id="1001" text="军事要闻汇总" title="军事要闻汇总"
+			xmlUrl="http://rss.sina.com.cn/roll/mil/hot_roll.xml" />
+		<subCatalog id="1002" text="焦点新闻" title="焦点新闻"
+			xmlUrl="http://rss.sina.com.cn/jczs/focus.xml" />
+		<subCatalog id="1003" text="国际军情" title="国际军情"
+			xmlUrl="http://rss.sina.com.cn/jczs/taiwan20.xml" />
+		<subCatalog id="1004" text="中国军情" title="中国军情"
+			xmlUrl="http://rss.sina.com.cn/jczs/china15.xml" />
+	</catalog>
+	<catalog id="11" title="汽车新闻" text="汽车新闻">
+		<subCatalog id="1101" text="焦点新闻" title="焦点新闻"
+			xmlUrl="http://rss.sina.com.cn/news/allnews/auto.xml" />
+		<subCatalog id="1102" text="行业动态" title="行业动态"
+			xmlUrl="http://rss.sina.com.cn/auto/news/t/index.xml" />
+		<subCatalog id="1103" text="购车指导" title="购车指导"
+			xmlUrl="http://rss.sina.com.cn/auto/guide/index.xml" />
+		<subCatalog id="1104" text="新车上市" title="新车上市"
+			xmlUrl="http://rss.sina.com.cn/auto/newcar/index.xml" />
+		<subCatalog id="1105" text="车市·降价" title="车市·降价"
+			xmlUrl="http://rss.sina.com.cn/auto/sales/index.xml" />
+		<subCatalog id="1106" text="企业新闻" title="企业新闻"
+			xmlUrl="http://rss.sina.com.cn/auto/news/e/index.xml" />
+		<subCatalog id="1107" text="汽车养护" title="汽车养护"
+			xmlUrl="http://rss.sina.com.cn/auto/servicing/index.xml" />
+		<subCatalog id="1108" text="汽车召回" title="汽车召回"
+			xmlUrl="http://rss.sina.com.cn/auto/recalls/index.xml" />
+		<subCatalog id="1109" text="汽车保险" title="汽车保险"
+			xmlUrl="http://rss.sina.com.cn/auto/insurance/index.xml" />
+		<subCatalog id="1110" text="汽车配件" title="汽车配件"
+			xmlUrl="http://rss.sina.com.cn/auto/parts/news/index.xml" />
+		<subCatalog id="1111" text="汽车用品" title="汽车用品"
+			xmlUrl="http://rss.sina.com.cn/auto/automotive/index.xml" />
+		<subCatalog id="1112" text="改装" title="改装"
+			xmlUrl="http://rss.sina.com.cn/auto/ultratune/index.xml" />
+		<subCatalog id="1113" text="汽车轮胎" title="汽车轮胎"
+			xmlUrl="http://rss.sina.com.cn/auto/tire/index.xml" />
+		<subCatalog id="1114" text="交通" title="交通"
+			xmlUrl="http://rss.sina.com.cn/auto/traffic/index.xml" />
+	</catalog>
+	<!--
+	<catalog id="12" title="教育频道" text="教育频道">
+		<subCatalog id="1201" text="教育要闻汇总" title="教育要闻汇总"
+			xmlUrl="http://rss.sina.com.cn/roll/edu/hot_roll.xml" />
+		<subCatalog id="1202" text="焦点新闻" title="焦点新闻"
+			xmlUrl="http://rss.sina.com.cn/edu/focus19.xml" />
+		<subCatalog id="1203" text="考试频道" title="考试频道"
+			xmlUrl="http://rss.sina.com.cn/edu/exam.xml" />
+		<subCatalog id="1204" text="高考" title="高考"
+			xmlUrl="http://rss.sina.com.cn/edu/gaokao.xml" />
+		<subCatalog id="1205" text="外语频道" title="外语频道"
+			xmlUrl="http://rss.sina.com.cn/edu/en.xml" />
+		<subCatalog id="1206" text="考研" title="考研"
+			xmlUrl="http://rss.sina.com.cn/edu/kaoyan.xml" />
+		<subCatalog id="1207" text="自考" title="自考"
+			xmlUrl="http://rss.sina.com.cn/edu/zikao.xml" />
+		<subCatalog id="1208" text="成考" title="成考"
+			xmlUrl="http://rss.sina.com.cn/edu/chengkao.xml" />
+		<subCatalog id="1209" text="中考" title="中考"
+			xmlUrl="http://rss.sina.com.cn/edu/zhongkao.xml" />
+		<subCatalog id="1210" text="英语考试" title="英语考试"
+			xmlUrl="http://rss.sina.com.cn/edu/yyks.xml" />
+		<subCatalog id="1211" text="司法考试" title="司法考试"
+			xmlUrl="http://rss.sina.com.cn/edu/sifa.xml" />
+		<subCatalog id="1212" text="会计考试" title="会计考试"
+			xmlUrl="http://rss.sina.com.cn/edu/cpa.xml" />
+		<subCatalog id="1213" text="出国" title="出国"
+			xmlUrl="http://rss.sina.com.cn/edu/abroad5.xml" />
+	</catalog>
+	-->
+	<catalog id="13" title="家居" text="家居">
+		<!-- <subCatalog text="北京房产－楼市活动" title="北京房产－楼市活动" xmlUrl="http://rss.sina.com.cn/bjhouse/scan/huodong.xml" 
+			/> <subCatalog text="北京房产－新盘汇总" title="北京房产－新盘汇总" xmlUrl="http://rss.sina.com.cn/bjhouse/scan/xinpan.xml" 
+			/> <subCatalog text="北京房产－开盘信息" title="北京房产－开盘信息" xmlUrl="http://rss.sina.com.cn/bjhouse/scan/kaipan.xml" 
+			/> <subCatalog text="北京房产－打折优惠" title="北京房产－打折优惠" xmlUrl="http://rss.sina.com.cn/bjhouse/scan/dazhe.xml" 
+			/> <subCatalog text="北京房产－购房指导" title="北京房产－购房指导" xmlUrl="http://rss.sina.com.cn/bjhouse/scan/daogou.xml" 
+			/> <subCatalog text="北京房产－地产人物" title="北京房产－地产人物" xmlUrl="http://rss.sina.com.cn/bjhouse/dcrw.xml" 
+			/> <subCatalog text="北京房产－房产企业" title="北京房产－房产企业" xmlUrl="http://rss.sina.com.cn/bjhouse/fcqy.xml" 
+			/> <subCatalog text="北京房产－地产评论" title="北京房产－地产评论" xmlUrl="http://rss.sina.com.cn/bjhouse/dcpl.xml" 
+			/> <subCatalog text="北京房产－地产访谈" title="北京房产－地产访谈" xmlUrl="http://rss.sina.com.cn/bjhouse/dcft.xml" 
+			/> <subCatalog text="北京房产－地产新闻" title="北京房产－地产新闻" xmlUrl="http://rss.sina.com.cn/bjhouse/dcnews.xml" 
+			/> -->
+		<subCatalog id="1301" text="家居新闻" title="家居新闻"
+			xmlUrl="http://rss.sina.com.cn/jiaju/news.xml" />
+		<subCatalog id="1302" text="家饰生活" title="家饰生活"
+			xmlUrl="http://rss.sina.com.cn/jiaju/ornament.xml" />
+		<subCatalog id="1303" text="设计风尚" title="设计风尚"
+			xmlUrl="http://rss.sina.com.cn/jiaju/design.xml" />
+	</catalog>
+	<!--
+	<catalog id="14" title="游戏频道" text="游戏频道">
+		<subCatalog id="1401" text="焦点新闻" title="焦点新闻"
+			xmlUrl="http://rss.sina.com.cn/news/allnews/games.xml" />
+		<subCatalog id="1402" text="电子竞技" title="电子竞技"
+			xmlUrl="http://rss.sina.com.cn/games/dzjj.xml" />
+		<subCatalog id="1403" text="网络游戏新闻" title="网络游戏新闻"
+			xmlUrl="http://rss.sina.com.cn/games/wlyx.xml" />
+		<subCatalog id="1404" text="单机游戏新闻" title="单机游戏新闻"
+			xmlUrl="http://rss.sina.com.cn/games/djyx.xml" />
+		<subCatalog id="1405" text="游戏产业新闻" title="游戏产业新闻"
+			xmlUrl="http://rss.sina.com.cn/games/cyxw.xml" />
+		<subCatalog id="1406" text="电视游戏新闻" title="电视游戏新闻"
+			xmlUrl="http://rss.sina.com.cn/games/dsyx.xml" />
+		<subCatalog id="1407" text="手机游戏新闻" title="手机游戏新闻"
+			xmlUrl="http://rss.sina.com.cn/games/sjyx.xml" />
+		<subCatalog id="1408" text="迷你游戏" title="迷你游戏"
+			xmlUrl="http://rss.sina.com.cn/games/littlegame.xml" />
+	</catalog>
+	-->
+	<catalog id="15" title="星座频道" text="星座频道">
+		<subCatalog id="1501" text="焦点新闻" title="焦点新闻"
+			xmlUrl="http://rss.sina.com.cn/news/allnews/astro.xml" />
+		<subCatalog id="1502" text="星座时尚热点" title="星座时尚热点"
+			xmlUrl="http://rss.sina.com.cn/astro/fashion.xml" />
+		<subCatalog id="1503" text="星座热文总排行" title="星座热文总排行"
+			xmlUrl="http://rss.sina.com.cn/astro/hot.xml" />
+	</catalog>
+</root>

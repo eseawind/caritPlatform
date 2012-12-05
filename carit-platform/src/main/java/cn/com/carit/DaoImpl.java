@@ -63,6 +63,34 @@ public class DaoImpl {
 		return t;
 	}
 	
+	public boolean queryForBoolean(String sql, Object ...args) {
+		if (log.isDebugEnabled()) {
+			log.debug(sql);
+		}
+		try {
+			return jdbcTemplate.queryForObject(sql, args, Boolean.class);
+		} catch (Exception e) {
+			return Boolean.FALSE;
+		}
+	}
+	
+	public <T> T queryForObject(String sql, Object id, Class<T> requiredType){
+		int idType=Types.INTEGER;
+		T t = null;
+		if (id instanceof Long) {
+			idType=Types.BIGINT;
+		}
+		if (id instanceof String) {
+			idType=Types.VARCHAR;
+		}
+		try {
+			t = jdbcTemplate.queryForObject(sql, new Object[]{id}, new int[]{idType}, requiredType);
+		} catch (Exception e) {
+			log.warn("no record existed...");
+		}
+		return t;
+	}
+	
 	public <T> T queryForObject(String sql, List<Object> args, List<Integer> argTypes, RowMapper<T> rowMapper) {
 		return jdbcTemplate.queryForObject(sql, args.toArray(), CaritUtils.listToIntArray(argTypes), rowMapper);
 	}

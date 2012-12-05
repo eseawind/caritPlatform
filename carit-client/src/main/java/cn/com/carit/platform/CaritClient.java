@@ -286,8 +286,9 @@ public class CaritClient {
 		*/
 		/*Map<String, String> paramValues2=getInstance().buildParamValues("platform.bluetooth.contact.upload", "1.0");
 		paramValues2.put("email", "xiegc@carit.com.cn");
-		paramValues2.put("deviceId", "123456");
-		paramValues2.put("deviceName", "我的蓝牙");
+		paramValues2.put("deviceId", "69A61F9F");
+		paramValues2.put("bluetoothId", "123456");
+		paramValues2.put("bluetoothName", "我的蓝牙");
 		paramValues2.put("contacts", "[{\"callName\":\"张三\",\"callNum\":\"12345678\",\"callNameKey\":\"zs\",\"callType\":\"1\"}, {\"callName\":\"李四\",\"callNum\":\"87654321\",\"callNameKey\":\"ls\",\"callType\":\"1\"}]");
 		
 		// 不需要签名的参数放后面
@@ -295,8 +296,10 @@ public class CaritClient {
 		String resonse2=getHttpResponse(ClientUtils.buildRequestUrl(getInstance().serverUrl, paramValues2), HTTP_METHOD_POST);
 		System.out.println(resonse2);*/
 		
-		 Map<String, String> paramValues=getInstance().buildParamValues("platform.equipment.query", "1.0");
- 		paramValues.put("accountId", String.valueOf(21));
+		Map<String, String> paramValues=getInstance().buildParamValues("platform.bluetooth.connected.devices", "1.0");
+ 		paramValues.put("email", "yyy@yyy.com");
+// 		paramValues.put("deviceId", "69A61F9F");
+ 		paramValues.put("bluetoothId", "0:24:23:8d:74:d9");
  		// 不需要签名的参数放后面
  		paramValues.put(CaritClient.SYSTEM_PARAM_SIGN, ClientUtils.sign(paramValues, getInstance().getAppSecret()));
  		System.out.println(getHttpResponse(ClientUtils.buildRequestUrl(getInstance().serverUrl, paramValues), HTTP_METHOD_GET));

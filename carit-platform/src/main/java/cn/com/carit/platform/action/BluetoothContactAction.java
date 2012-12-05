@@ -18,45 +18,61 @@ public interface BluetoothContactAction<BluetoothContact> extends Action<Bluetoo
 	
 	
 	/**
-	 * 按帐号Id蓝牙设备Id删除记录
+	 * 按帐号Id+车机设备ID+蓝牙设备Id删除
 	 * @param accountId
 	 * @param deviceId
+	 * @param bluetoothId
 	 */
-	void delete(final int accountId, final String deviceId);
+	void delete(final int accountId, final String deviceId, final String bluetoothId);
 	
 	/**
-	 * 按设备和帐号分页查询
+	 * 按设备+帐号+蓝牙分页查询
 	 * @param deviceId
 	 * @param accountId
+	 * @param bluetoothId
 	 * @param callName
 	 * @param callNameKey
 	 * @param callNum
 	 * @param dgm
 	 * @return
 	 */
-	JsonPage<Map<String, Object>> queryByDeviceAndAccount(
+	JsonPage<Map<String, Object>> query(
 			final String deviceId,
 			final int accountId, 
+			final String bluetoothId,
 			final String callName,
 			final String callNameKey,
 			final String callNum, 
 			final DataGridModel dgm);
 	
 	/**
-	 * 按设备和帐号查询所有
+	 * 按设备+帐号+蓝牙查询
 	 * @param deviceId
 	 * @param accountId
+	 * @param bluetoothId
 	 * @return
 	 */
-	List<Map<String, Object>> queryAllByDeviceAndAccount(final String deviceId, final int accountId);
+	List<Map<String, Object>> queryAll(final String deviceId,
+			final int accountId, final String bluetoothId);
 	
 	/**
 	 * 上传记录
 	 * @param list
 	 * @param accountId
 	 * @param deviceId
-	 * @param deviceName
+	 * @param bluetoothName
+	 * @param bluetoothId
 	 */
-	void uploadContact(final List<BluetoothContact> list, final int accountId, final String deviceId, final String deviceName);
+	void uploadContact(final List<BluetoothContact> list, final int accountId,
+			final String deviceId, final String bluetoothName,
+			final String bluetoothId);
+	
+	/**
+	 * 查询蓝牙连接过的设备信息
+	 * @param accountId
+	 * @param bluetoothId
+	 * @return
+	 */
+	List<Map<String, Object>> queryConnectedDevices(final int accountId, final String bluetoothId);
 	
 }

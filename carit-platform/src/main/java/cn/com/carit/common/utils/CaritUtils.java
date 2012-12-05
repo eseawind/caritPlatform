@@ -2,10 +2,12 @@ package cn.com.carit.common.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+
+import cn.com.carit.common.RssCatalog;
+import cn.com.carit.platform.response.RssCatalogResponse;
 
 public class CaritUtils {
 	
@@ -53,24 +55,26 @@ public class CaritUtils {
 		return sdf.parse(dateStr);
 	}
 	
-	public static void main(String[] args) {
-		System.out.println(splitFieldWords("updateTime"));
-		Calendar calendar=Calendar.getInstance();// 当前时间
-		calendar.add(Calendar.DATE, -30);
-		List<String> dateList=new ArrayList<String>();
-		for (int i = 0; i < 30; i++) {
-			calendar.add(Calendar.DATE, +1);
-			System.out.println(dateToStr(calendar.getTime(), "yyyy-M-d"));
-			dateList.add(dateToStr(calendar.getTime(), "yyyy-M-d"));
+	public static Date gmtStrToDate(String dateStr) throws Exception{
+		SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
+		return sdf.parse(dateStr);
+	}
+	
+	public static List<RssCatalogResponse> rssCatalogsToResponse(List<RssCatalog> list){
+		List<RssCatalogResponse> result=new ArrayList<RssCatalogResponse>();
+		if (list!=null&&list.size()>0) {
+			for (RssCatalog rssCatalog : list) {
+				RssCatalogResponse temp=new RssCatalogResponse();
+				temp.setId(rssCatalog.getId());
+				temp.setTitle(rssCatalog.getTitle());
+				result.add(temp);
+			}
 		}
-		System.out.println(dateList.size());
-		System.out.println(dateList.contains("2012-6-20"));
-		System.out.println(dateList.contains("2012-5-22"));
-		System.out.println(dateList.indexOf("2012-5-23"));
-		Iterator<String> iterator = dateList.iterator();
-		while (iterator.hasNext()) {
-			System.out.println(iterator.next());
-			iterator.remove();
-		}
+		return result;
+	}
+	
+	
+	public static void main(String[] args) throws Exception {
+		System.out.println(gmtStrToDate("Thu, 29 Nov 2012 08:53:18 GMT"));
 	}
 }

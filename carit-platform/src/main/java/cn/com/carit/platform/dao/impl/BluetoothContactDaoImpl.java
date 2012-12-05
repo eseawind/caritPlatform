@@ -180,7 +180,7 @@ public class BluetoothContactDaoImpl extends DaoImpl implements BluetoothContact
 			argTypes.add(Types.VARCHAR);
 		}
 		if (StringUtils.hasText(t.getCallNameKey())) {
-			sql.append(" and call_name_key like CONCAT('%',?,'%')");
+			sql.append(" and call_name_key like CONCAT(?,'%')");
 			args.add(t.getCallNameKey());
 			argTypes.add(Types.VARCHAR);
 		}
@@ -204,7 +204,7 @@ public class BluetoothContactDaoImpl extends DaoImpl implements BluetoothContact
 
 	@Override
 	public List<Map<String, Object>> queryBluetoothByAccount(final int accountId) {
-		String sql = "select device_id deviceId, device_name deviceName from t_bluetooth where account_id=?";
+		String sql = "select bluetooth_id bluetoothId, bluetooth_name bluetoothName from t_bluetooth where account_id=?";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
@@ -212,36 +212,37 @@ public class BluetoothContactDaoImpl extends DaoImpl implements BluetoothContact
 	}
 
 	@Override
-	public void addReference(int accountId, String deviceId, String deviceName) {
-		String sql = "insert into t_bluetooth(account_id,device_id, device_name) values(?,?,?)";
+	public void addReference(int accountId, String deviceId, String bluetoothId, String bluetoothName) {
+		String sql = "insert into t_bluetooth(account_id,device_id, bluetooth_id, bluetooth_name) values(?,?,?,?)";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
-		jdbcTemplate.update(sql, accountId, deviceId, deviceName);
+		jdbcTemplate.update(sql, accountId, deviceId, bluetoothId, bluetoothName);
 	}
 	
 	@Override
-	public void delete(int accountId, String deviceId) {
-		String sql = "delete from t_bluetooth_contact where account_id=? and device_id=?";
+	public void delete(int accountId, String deviceId, String bluetoothId) {
+		String sql = "delete from t_bluetooth_contact where account_id=? and device_id=? and bluetooth_id=?";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
-		jdbcTemplate.update(sql, accountId, deviceId);
+		jdbcTemplate.update(sql, accountId, deviceId, bluetoothId);
 	}
 
 	@Override
-	public void deleteReference(int accountId, String deviceId) {
-		String sql = "delete from t_bluetooth where account_id=? and device_id=?";
+	public void deleteReference(int accountId, String deviceId, String bluetoothId) {
+		String sql = "delete from t_bluetooth where account_id=? and device_id=? and bluetooth_id=?";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
-		jdbcTemplate.update(sql, accountId, deviceId);
+		jdbcTemplate.update(sql, accountId, deviceId, bluetoothId);
 	}
 
 	@Override
-	public JsonPage<Map<String, Object>> queryByDeviceAndAccount(
+	public JsonPage<Map<String, Object>> query(
 			final String deviceId,
-			final int accountId, 
+			final int accountId,
+			final String bluetoothId,
 			final String callName,
 			final String callNameKey,
 			final String callNum, 
@@ -255,6 +256,13 @@ public class BluetoothContactDaoImpl extends DaoImpl implements BluetoothContact
 		args.add(accountId);
 		argTypes.add(Types.VARCHAR);
 		argTypes.add(Types.INTEGER);
+		
+		if (StringUtils.hasText(bluetoothId)) {
+			sql.append(" and bluetooth_id=?");
+			countSql.append(" and bluetooth_id=?");
+			args.add(bluetoothId);
+			argTypes.add(Types.VARCHAR);
+		}
 		
 		if (StringUtils.hasText(callName)) {
 			sql.append(" and call_name like CONCAT('%',?,'%')");
@@ -306,19 +314,19 @@ public class BluetoothContactDaoImpl extends DaoImpl implements BluetoothContact
 	}
 
 	@Override
-	public List<Map<String, Object>> queryAllByDeviceAndAccount(
-			String deviceId, int accountId) {
-		String sql="select call_name callName, call_num callNum, call_name_key callNameKey, call_type callType from t_bluetooth_contact";
+	public List<Map<String, Object>> queryAll(
+			String deviceId, int accountId, String bluetoothId) {
+		String sql="select call_name callName, call_num callNum, call_name_key callNameKey, call_type callType from t_bluetooth_contact where device_id=? and account_id=? and bluetooth_id=?";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
-		return jdbcTemplate.queryForList(sql);
+		return jdbcTemplate.queryForList(sql, deviceId, accountId, bluetoothId);
 	}
 
 	@Override
 	public int batchAdd(final List<BluetoothContact> list) {
-		String sql="insert into t_bluetooth_contact(device_id, account_id, call_name, call_num, call_name_key, call_type, status, create_time, update_time)"
-				+" values (?, ?, ?, ?, ?, ?, ?, now(), now())";
+		String sql="insert into t_bluetooth_contact(device_id, account_id, bluetooth_id, call_name, call_num, call_name_key, call_type, status, create_time, update_time)"
+				+" values (?, ?, ?, ?, ?, ?, ?, ?, now(), now())";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
@@ -330,6 +338,7 @@ public class BluetoothContactDaoImpl extends DaoImpl implements BluetoothContact
 				BluetoothContact contact=list.get(i);
 				ps.setString(index++, contact.getDeviceId());
 				ps.setInt(index++, contact.getAccountId());
+				ps.setString(index++, contact.getBluetoothId());
 				ps.setString(index++, contact.getCallName());
 				ps.setString(index++, contact.getCallNum());
 				ps.setString(index++, contact.getCallNameKey());
@@ -344,4 +353,14 @@ public class BluetoothContactDaoImpl extends DaoImpl implements BluetoothContact
 		}).length;
 	}
 
+	@Override
+	public List<Map<String, Object>> queryConnectedDevices(int accountId,
+			String bluetoothId) {
+		String sql="select device_id deviceId from t_bluetooth where account_id=? and bluetooth_id=?";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		return jdbcTemplate.queryForList(sql, accountId, bluetoothId);
+	}
+	
 }

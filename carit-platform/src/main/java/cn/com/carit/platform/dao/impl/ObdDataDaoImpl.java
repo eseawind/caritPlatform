@@ -10,6 +10,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -40,9 +41,6 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 			t.setDeviceId(rs.getString("device_id"));
 			t.setLocation(rs.getString("location"));
 			t.setCreateTime(rs.getTimestamp("create_time"));
-			for (int i = 0; i < t.getValues().length; i++) {
-				t.getValues()[i]=rs.getInt("value_"+(i+1));
-			}
 			t.setError(rs.getString("error"));
 			t.setAccountId(rs.getInt("account_id"));
 			return t;
@@ -52,45 +50,7 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 	@Override
 	public int add(final ObdData t) {
 		final String sql="insert into t_obd_data(date,device_id,account_id,location,create_time,error"
-				+",value_1"
-				+",value_2"
-				+",value_3"
-				+",value_4"
-				+",value_5"
-				+",value_6"
-				+",value_7"
-				+",value_8"
-				+",value_9"
-				+",value_10"
-				+",value_11"
-				+",value_12"
-				+",value_13"
-				+",value_14"
-				+",value_15"
-				+",value_16"
-				+",value_17"
-				+",value_18"
-				+",value_19"
 				+") values(?,?,?,?,now(),?"
-				+",?"
-				+",?"
-				+",?"
-				+",?"
-				+",?"
-				+",?"
-				+",?"
-				+",?"
-				+",?"
-				+",?"
-				+",?"
-				+",?"
-				+",?"
-				+",?"
-				+",?"
-				+",?"
-				+",?"
-				+",?"
-				+",?"
 				+")";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
@@ -108,9 +68,6 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 				ps.setInt(i++, t.getAccountId());
 				ps.setString(i++, t.getLocation());
 				ps.setString(i++, t.getError());
-				for (int j = 0; j < t.getValues().length; j++) {
-					ps.setInt(i++, t.getValues()[j]);
-				}
 				return ps;
 			}
 		}, gkHolder);
@@ -253,36 +210,6 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 	}
 
 	@Override
-	public int batchAdd(final List<ObdData> dataList) {
-		final String sql = "insert into t_obd_data (device_id,account_id, lat, lng, create_time) " 
-				+ "values (?, ?, ?, ?, ?)";
-		if (log.isDebugEnabled()) {
-			log.debug(String.format("\n%1$s\n", sql));
-		}
-		return jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
-			
-			@Override
-			public void setValues(PreparedStatement ps, int i) throws SQLException {
-				int index=1;
-				ObdData data=dataList.get(i);
-				ps.setTimestamp(index++, new Timestamp(data.getDate().getTime()));
-				ps.setString(index++, data.getDeviceId());
-				ps.setInt(index++, data.getAccountId());
-				ps.setString(index++, data.getLocation());
-				ps.setString(index++, data.getError());
-				for (int j = 0; j < data.getValues().length; j++) {
-					ps.setInt(index++, data.getValues()[j]);
-				}
-			}
-			
-			@Override
-			public int getBatchSize() {
-				return dataList.size();
-			}
-		}).length;
-	}
-
-	@Override
 	public ObdData queryNewestData(String deviceId, int accountId) {
 		String sql="select * from t_obd_data where device_id=? and account_id=? order by create_time desc limit 1";
 		if (log.isDebugEnabled()) {
@@ -306,18 +233,20 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 	}
 
 	@Override
-	public JsonPage<ObdData> query(SearchObdDataRequest request) {
+	public JsonPage<Map<String, Object>> query(SearchObdDataRequest request) {
 		DataGridModel dgm = new DataGridModel();
 		dgm.setSort(request.getSort());
 		dgm.setOrder(request.getOrder());
 		dgm.setPage(request.getPage());
 		dgm.setRows(request.getRows());
-		JsonPage<ObdData> jsonPage = new JsonPage<ObdData>(dgm.getPage(), dgm.getRows());
+		JsonPage<Map<String, Object>> jsonPage = new JsonPage<Map<String, Object>>(dgm.getPage(), dgm.getRows());
 		StringBuilder sql = new StringBuilder(
-				"select * from t_obd_data where 1=1");
-		StringBuilder countSql = new StringBuilder("select count(1) from t_obd_data where 1=1");
+				"select a.date, a.location, b.value from t_obd_data a left join t_obd_data_value b on a.id=b.data_id where b.index=?");
+		StringBuilder countSql = new StringBuilder("select count(1) from t_obd_data a left join t_obd_data_value b on a.id=b.data_id where b.index=?");
 		List<Object> args = new ArrayList<Object>();
 		List<Integer> argTypes = new ArrayList<Integer>();
+		args.add(request.getIndex());
+		argTypes.add(Types.INTEGER);
 		if (StringUtils.hasText(request.getDeviceId())) {
 			sql.append(" and device_id=?");
 			countSql.append(" and device_id=?");
@@ -331,20 +260,20 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 			argTypes.add(Types.INTEGER);
 		}
 		if (request.getStartTime()!=null) {
-			sql.append(" and date>=?");
-			countSql.append(" and date>=?");
+			sql.append(" and a.date>=?");
+			countSql.append(" and a.date>=?");
 			args.add(new Date(request.getStartTime()));
 			argTypes.add(Types.DATE);
 		}
 		if (request.getEndTime()!=null) {
-			sql.append(" and date<=?");
-			countSql.append(" and date<=?");
+			sql.append(" and a.date<=?");
+			countSql.append(" and a.date<=?");
 			args.add(new Date(request.getEndTime()));
 			argTypes.add(Types.DATE);
 		}
 		if (StringUtils.hasText(request.getLocation())) {
-			sql.append(" and location like CONCAT('%',?,'%')");
-			countSql.append(" and location like CONCAT('%',?,'%')");
+			sql.append(" and a.location like CONCAT('%',?,'%')");
+			countSql.append(" and a.location like CONCAT('%',?,'%')");
 			args.add(request.getLocation());
 			argTypes.add(Types.VARCHAR);
 		}
@@ -363,7 +292,7 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 					.append(" ").append(dgm.getOrder());
 
 		} else {
-			sql.append(" order by date desc");
+			sql.append(" order by a.date desc");
 		}
 		sql.append(" limit ?, ?");
 		args.add(jsonPage.getStartRow());
@@ -373,7 +302,7 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
-		jsonPage.setRows(query(sql.toString(), args, argTypes, rowMapper));
+		jsonPage.setRows(queryForList(sql.toString(), args, argTypes));
 		return jsonPage;
 	}
 
@@ -385,6 +314,37 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
 		return jdbcTemplate.query(sql, new Object[]{accountId}, rowMapper);
+	}
+
+	@Override
+	public void bathAddValue(final int dataId, final List<Integer> values) {
+		String sql = "insert into t_obd_data_value(data_id, `index`, `value`) values(?, ?, ?)";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+			
+			@Override
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
+				ps.setInt(1, dataId);
+				ps.setInt(2, (i+1));
+				ps.setInt(3, values.get(i));
+			}
+			
+			@Override
+			public int getBatchSize() {
+				return values.size();
+			}
+		});
+	}
+
+	@Override
+	public List<Integer> queryValues(int dataId) {
+		String sql = "select `value` from t_obd_data_value where data_id=? order by `index` asc";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		return jdbcTemplate.queryForList(sql, new Object[]{dataId}, new int []{Types.INTEGER}, Integer.class);
 	}
 
 }

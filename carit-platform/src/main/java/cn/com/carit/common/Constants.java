@@ -43,6 +43,8 @@ public class Constants {
 	public static final String FORGET_PASSWORD_MAIL_SUBJECT="FORGET_PASSWORD_MAIL_SUBJECT";
 	public static final String FORGET_PASSWORD_MAIL_CONTENT="FORGET_PASSWORD_MAIL_CONTENT";
 	
+	public static final String CATALOG_ID_IS_EMPTY="CATALOG_ID_IS_EMPTY";
+	
 	// 正则模式
 	public static final String REGEXP_EMAIL="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
 	public static final String REGEXP_PASSWORD="[\\w!@#$%^&**()]{6,30}";

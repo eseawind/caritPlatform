@@ -6,10 +6,10 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 
 public class SearchBluetoothContactRequest extends SearchByAccountRequest {
-	/** 蓝牙设备ID */
 	@NotEmpty
 	private String deviceId;
 	
+	private String bluetoothId;
 	private String callName;
 	@Pattern(regexp="\\d*")
 	private String callNum;
@@ -54,6 +54,14 @@ public class SearchBluetoothContactRequest extends SearchByAccountRequest {
 
 	public void setCallType(String callType) {
 		this.callType = callType;
+	}
+
+	public String getBluetoothId() {
+		return bluetoothId;
+	}
+
+	public void setBluetoothId(String bluetoothId) {
+		this.bluetoothId = bluetoothId;
 	}
 	
 }

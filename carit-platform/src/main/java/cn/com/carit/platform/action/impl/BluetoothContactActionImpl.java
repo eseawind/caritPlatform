@@ -68,39 +68,48 @@ public class BluetoothContactActionImpl implements BluetoothContactAction<Blueto
 
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
 	@Override
-	public void delete(int accountId, String deviceId) {
-		dao.delete(accountId, deviceId);
+	public void delete(int accountId, String deviceId, String bluetoothId) {
+		dao.delete(accountId, deviceId, bluetoothId);
 		// 删除关联
-		dao.deleteReference(accountId, deviceId);
+		dao.deleteReference(accountId, deviceId, bluetoothId);
 	}
 
 	@Override
-	public JsonPage<Map<String, Object>> queryByDeviceAndAccount(final String deviceId,
+	public JsonPage<Map<String, Object>> query(
+			final String deviceId,
 			final int accountId, 
+			final String bluetoothId,
 			final String callName,
 			final String callNameKey,
 			final String callNum, 
 			final DataGridModel dgm) {
-		return dao.queryByDeviceAndAccount(deviceId, accountId, callName, callNameKey, callNum, dgm);
+		return dao.query(deviceId, accountId, bluetoothId, callName,
+				callNameKey, callNum, dgm);
 	}
 
 	@Override
-	public List<Map<String, Object>> queryAllByDeviceAndAccount(
-			String deviceId, int accountId) {
-		return dao.queryAllByDeviceAndAccount(deviceId, accountId);
+	public List<Map<String, Object>> queryAll(
+			String deviceId, int accountId, String bluetoothId) {
+		return dao.queryAll(deviceId, accountId, bluetoothId);
 	}
 
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
 	@Override
 	public void uploadContact(List<BluetoothContact> list, int accountId,
-			String deviceId, String deviceName) {
+			String deviceId, String bluetoothName, String bluetoothId) {
 		// 删除旧数据
-		dao.delete(accountId, deviceId);
-		dao.deleteReference(accountId, deviceId);
+		dao.delete(accountId, deviceId, bluetoothId);
+		dao.deleteReference(accountId, deviceId, bluetoothId);
 		// 批量增加
 		dao.batchAdd(list);
 		// 增加关联
-		dao.addReference(accountId, deviceId, deviceName);
+		dao.addReference(accountId, deviceId, bluetoothId, bluetoothName);
+	}
+
+	@Override
+	public List<Map<String, Object>> queryConnectedDevices(int accountId,
+			String bluetoothId) {
+		return dao.queryConnectedDevices(accountId, bluetoothId);
 	}
 
 }

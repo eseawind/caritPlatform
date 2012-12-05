@@ -1,14 +1,13 @@
 package cn.com.carit.platform.action;
 
 import java.util.List;
+import java.util.Map;
 
 import cn.com.carit.Action;
 import cn.com.carit.common.utils.JsonPage;
 import cn.com.carit.platform.request.SearchObdDataRequest;
 
 public interface ObdDataAction<ObdData> extends Action<ObdData> {
-	
-	int batchAdd(final List<ObdData> dataList);
 	
 	/**
 	 * 按照设备Id查询最新记录
@@ -18,7 +17,7 @@ public interface ObdDataAction<ObdData> extends Action<ObdData> {
 	 */
 	ObdData queryNewestData(String deviceId, int accountId);
 	
-	JsonPage<ObdData> query(SearchObdDataRequest request);
+	JsonPage<Map<String, Object>> query(SearchObdDataRequest request);
 	
 	List<ObdData> queryCurrentDataByAccount(int accountId);
 }

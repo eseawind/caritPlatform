@@ -1,6 +1,7 @@
 package cn.com.carit.platform.action.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -25,11 +26,12 @@ public class ObdDataActionImpl implements ObdDataAction<ObdData> {
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
 	@Override
 	public int add(ObdData t) {
-		int rows = dao.add(t);
-		if (rows>0) {
+		int id = dao.add(t);
+		if (id>0) {
+			dao.bathAddValue(id, t.getValues());
 			dao.deleteDuplicateData();
 		}
-		return rows;
+		return id;
 	}
 
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
@@ -64,25 +66,15 @@ public class ObdDataActionImpl implements ObdDataAction<ObdData> {
 		return dao.queryAll();
 	}
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
-	@Override
-	public int batchAdd(final List<ObdData> locationList) {
-		int insertRows=0;
-		if (locationList!=null && locationList.size()>0) {
-			insertRows = dao.batchAdd(locationList);
-			// 删除重复数据
-			dao.deleteDuplicateData();
-		}
-		return insertRows;
-	}
-
 	@Override
 	public ObdData queryNewestData(String deviceId, int accountId) {
-		return dao.queryNewestData(deviceId, accountId);
+		ObdData data = dao.queryNewestData(deviceId, accountId);
+		data.setValues(dao.queryValues(data.getId()));
+		return data;
 	}
 
 	@Override
-	public JsonPage<ObdData> query(SearchObdDataRequest request) {
+	public JsonPage<Map<String, Object>> query(SearchObdDataRequest request) {
 		return dao.query(request);
 	}
 

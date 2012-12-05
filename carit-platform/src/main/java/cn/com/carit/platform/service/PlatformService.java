@@ -40,6 +40,7 @@ import cn.com.carit.platform.request.ObdDataUploadRequest;
 import cn.com.carit.platform.request.SearchLoactionRequest;
 import cn.com.carit.platform.request.SearchObdDataRequest;
 import cn.com.carit.platform.request.account.AccountRequest;
+import cn.com.carit.platform.request.account.v2.BluetoothConnectedDeviceRequest;
 import cn.com.carit.platform.request.account.v2.BluetoothContactRequest;
 import cn.com.carit.platform.request.account.v2.SearchBluetoothContactRequest;
 import cn.com.carit.platform.response.LogonResponse;
@@ -285,15 +286,19 @@ public class PlatformService {
 			ObdData t = new ObdData(new Date(request.getDate()),
 					request.getDeviceId(), request.getAccountId(),
 					request.getLocation(), request.getError());
-			int index=1;
 			Map<String, String> data=JsonUtil.jsonToMap(request.getData());
+			int [] dataArray = new int[data.size()];
 			for (Entry<String, String> e: data.entrySet()) {
-				logger.info("第 "+index+" 个数据:"+e.getKey()+":"+e.getValue());
 				if (e.getKey()!=null) {
-					t.getValues()[Integer.valueOf(e.getKey())-1]=Integer.valueOf(e.getValue());//传过来的key 1~16
+//					t.getValues().add(Integer.valueOf(e.getValue()));
+					dataArray[Integer.valueOf(e.getKey())-1]=Integer.valueOf(e.getValue());//传过来的key 1~16
 				}
-				index++;
 			}
+			List<Integer> values=new ArrayList<Integer>();
+			for (int i : dataArray) {
+				values.add(i);
+			}
+			t.setValues(values);
 			// 保存数据
 			obdDataAction.add(t);
 		} catch (Exception e) {
@@ -305,7 +310,7 @@ public class PlatformService {
 	
 	/**
 	 * <p>
-	 * <b>功能说明：</b>查询OBD数据
+	 * <b>功能说明：</b>查询OBD某个数据的历史值
 	 * </p>
 	 * @param request
 	 * <table border='1'>
@@ -316,6 +321,7 @@ public class PlatformService {
 	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>messageFormat</td><td>json/xml（可选，默认xml）</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>index</td><td>数值顺位</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>deviceId</td><td>设备ID</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>accountId</td><td>账号ID</td><td>是</td><td>否</td></tr>
 	 *  <tr><td>startTime</td><td>起始时间（long型时间截）</td><td>是</td><td>否</td></tr>
@@ -330,7 +336,7 @@ public class PlatformService {
 	 */
 	@ServiceMethod(method = "platform.obd.search",version = "1.0", needInSession=NeedInSessionType.NO, httpAction=HttpAction.GET)
 	public Object searchObdData(SearchObdDataRequest request){
-		PageResponse<ObdData> page=new PageResponse<ObdData>();
+		PageResponse<Map<String, Object>> page=new PageResponse<Map<String, Object>>();
 		BeanUtils.copyProperties(obdDataAction.query(request), page);
 		return page;
 	}
@@ -366,8 +372,12 @@ public class PlatformService {
 				res.setDate(data.getDate());
 				Map<Integer,Integer> map=new HashMap<Integer,Integer>();
 				if (data.getValues()!=null) {
-					for (int i = 0; i < data.getValues().length; i++) {
-						map.put(i+1, data.getValues()[i]);
+//					for (int i = 0; i < data.getValues().length; i++) {
+//						map.put(i+1, data.getValues()[i]);
+//					}
+					int index=1;
+					for (Integer value : data.getValues()) {
+						map.put(index++, value);
 					}
 				}
 				res.setData(map);
@@ -459,6 +469,37 @@ public class PlatformService {
 	
 	/**
 	 * <p>
+	 * <b>功能说明：</b>查询蓝牙设备连接过的车机设备
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>platform.bluetooth.connected.devices</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>email</td><td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>bluetoothId</td><td>@NotEmpty</td><td>是</td><td>是</td></tr>
+	 * </table>
+	 * @return [{"deviceId":"69A61F9F"}, {"deviceId":"69A61F9FF"}...]
+	 */
+	@ServiceMethod(method = "platform.bluetooth.connected.devices", httpAction=HttpAction.GET, needInSession=NeedInSessionType.NO)
+	public Object queryConnectedDevices(BluetoothConnectedDeviceRequest request){
+		//查询账号
+		Account account=CacheManager.getInstance().getAccount(request.getEmail());
+		if (account == null) {// 账号不存在
+			return new BusinessServiceErrorResponse(request
+					.getRopRequestContext().getMethod(),
+					Constants.NO_THIS_ACCOUNT, request.getRopRequestContext()
+							.getLocale(), request.getEmail());
+		}
+		return bluetoothContactAction.queryConnectedDevices(account.getId(), request.getBluetoothId());
+	}
+	
+	/**
+	 * <p>
 	 * <b>功能说明：</b>上传蓝牙通讯录
 	 * </p>
 	 * @param request
@@ -472,7 +513,8 @@ public class PlatformService {
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>email</td><td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}</td><td>是</td><td>是</td></tr>
 	 *	<tr><td>deviceId</td><td>@NotEmpty</td><td>是</td><td>是</td></tr>
-	 *	<tr><td>deviceName</td><td>@NotEmpty</td><td>是</td><td>是</td></tr>
+	 *	<tr><td>bluetoothId</td><td>@NotEmpty</td><td>是</td><td>是</td></tr>
+	 *	<tr><td>bluetoothName</td><td>@NotEmpty</td><td>是</td><td>是</td></tr>
 	 *  <tr><td>contacts</td><td>格式：[{"callName":"张三","callNum":"12345678","callNameKey":"zs","callType":"1"}, {"callName":"李四","callNum":"87654321","callNameKey":"ls","callType":"1"}]</td><td>是</td><td>是</td></tr>
 	 * </table>
 	 * @return
@@ -481,21 +523,32 @@ public class PlatformService {
 	public Object uploadBluetoothContact(BluetoothContactRequest request) throws Exception {
 		//查询账号
 		Account account=CacheManager.getInstance().getAccount(request.getEmail());
-		if (account==null) {// 账号不存在
-			return new BusinessServiceErrorResponse(request.getRopRequestContext().getMethod()
-					, Constants.NO_THIS_ACCOUNT
-					, request.getRopRequestContext().getLocale(), request.getEmail());
+		if (account == null) {// 账号不存在
+			return new BusinessServiceErrorResponse(request
+					.getRopRequestContext().getMethod(),
+					Constants.NO_THIS_ACCOUNT, request.getRopRequestContext()
+							.getLocale(), request.getEmail());
+		}
+		if (equipmentAction.checkBounding(account.getId(),
+				request.getDeviceId()) < 1) {
+			return new BusinessServiceErrorResponse(request
+					.getRopRequestContext().getMethod(),
+					Constants.EQUIPMENT_NOT_BINDING_WHIT_ACCOUNT, request
+							.getRopRequestContext().getLocale(),
+					request.getDeviceId(), request.getEmail());
 		}
 		List<BluetoothContact> list=new ArrayList<BluetoothContact>();
 		List<cn.com.carit.platform.request.account.v2.BluetoothContact> contacts=JsonUtil.MAPPER.readValue(request.getContacts(), new TypeReference<List<cn.com.carit.platform.request.account.v2.BluetoothContact>>() {});
 		// 构造 list
 		for (cn.com.carit.platform.request.account.v2.BluetoothContact temp : contacts) {
 			list.add(new BluetoothContact(request.getDeviceId(), account
-					.getId(), temp.getCallName(), temp.getCallNum(), temp
-					.getCallNameKey(), temp.getCallType()));
+					.getId(), request.getBluetoothId(), temp.getCallName(),
+					temp.getCallNum(), temp.getCallNameKey(), temp
+							.getCallType()));
 		}
 		bluetoothContactAction.uploadContact(list, account.getId(),
-				request.getDeviceId(), request.getDeviceName());
+				request.getDeviceId(), request.getBluetoothName(),
+				request.getBluetoothId());
 		return CommonRopResponse.SUCCESSFUL_RESPONSE;
 	}
 	
@@ -514,6 +567,7 @@ public class PlatformService {
 	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
 	 *  <tr><td>email</td><td>[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}</td><td>是</td><td>是</td></tr>
 	 *	<tr><td>deviceId</td><td>@NotEmpty</td><td>是</td><td>是</td></tr>
+	 *	<tr><td>bluetoothId</td><td>@NotEmpty</td><td>是</td><td>是</td></tr>
 	 *	<tr><td>callName</td><td>姓名</td><td>是</td><td>否</td></tr>
 	 *	<tr><td>callNameKey</td><td>姓名拼音</td><td>是</td><td>否</td></tr>
 	 *	<tr><td>callNum</td><td>电话号码（只能输入数字）</td><td>是</td><td>否</td></tr>
@@ -529,10 +583,19 @@ public class PlatformService {
 	public Object syncBluetoothContact(SearchBluetoothContactRequest request){
 		//查询账号
 		Account account=CacheManager.getInstance().getAccount(request.getEmail());
-		if (account==null) {// 账号不存在
-			return new BusinessServiceErrorResponse(request.getRopRequestContext().getMethod()
-					, Constants.NO_THIS_ACCOUNT
-					, request.getRopRequestContext().getLocale(), request.getEmail());
+		if (account == null) {// 账号不存在
+			return new BusinessServiceErrorResponse(request
+					.getRopRequestContext().getMethod(),
+					Constants.NO_THIS_ACCOUNT, request.getRopRequestContext()
+							.getLocale(), request.getEmail());
+		}
+		if (equipmentAction.checkBounding(account.getId(),
+				request.getDeviceId()) < 1) {
+			return new BusinessServiceErrorResponse(request
+					.getRopRequestContext().getMethod(),
+					Constants.EQUIPMENT_NOT_BINDING_WHIT_ACCOUNT, request
+							.getRopRequestContext().getLocale(),
+					request.getDeviceId(), request.getEmail());
 		}
 		DataGridModel dgm = new DataGridModel();
 		dgm.setSort(request.getSort());
@@ -541,10 +604,12 @@ public class PlatformService {
 		dgm.setRows(request.getRows());
 		
 		PageResponse<Map<String, Object>> pageResponse=new PageResponse<Map<String, Object>>();
-		JsonPage<Map<String, Object>> jsonPage=bluetoothContactAction.queryByDeviceAndAccount(
-				request.getDeviceId(), account.getId(), request.getCallName(),
+		JsonPage<Map<String, Object>> jsonPage = bluetoothContactAction.query(
+				request.getDeviceId(), account.getId(),
+				request.getBluetoothId(), request.getCallName(),
 				request.getCallNameKey(), request.getCallNum(), dgm);
 		BeanUtils.copyProperties(jsonPage, pageResponse);
 		return pageResponse;
 	}
+	
 }

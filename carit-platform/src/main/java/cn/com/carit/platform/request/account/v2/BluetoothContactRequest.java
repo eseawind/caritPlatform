@@ -14,12 +14,13 @@ import cn.com.carit.platform.request.account.AccountRequest;
  */
 public class BluetoothContactRequest extends AccountRequest {
 
-	/** 蓝牙设备ID */
+	/** 车机设备ID */
 	@NotEmpty
 	private String deviceId;
-	/** 蓝牙设备名称 */
 	@NotEmpty
-	private String deviceName;
+	private String bluetoothId;
+	@NotEmpty
+	private String bluetoothName;
 	
 	/** 通讯录列表 */
 	@NotEmpty
@@ -33,12 +34,20 @@ public class BluetoothContactRequest extends AccountRequest {
 		this.deviceId = deviceId;
 	}
 
-	public String getDeviceName() {
-		return deviceName;
+	public String getBluetoothId() {
+		return bluetoothId;
 	}
 
-	public void setDeviceName(String deviceName) {
-		this.deviceName = deviceName;
+	public void setBluetoothId(String bluetoothId) {
+		this.bluetoothId = bluetoothId;
+	}
+
+	public String getBluetoothName() {
+		return bluetoothName;
+	}
+
+	public void setBluetoothName(String bluetoothName) {
+		this.bluetoothName = bluetoothName;
 	}
 
 	public String getContacts() {

@@ -9,6 +9,7 @@ public class BluetoothContact extends BaseBean {
 	
 	private String deviceId;
 	private Integer accountId;
+	private String bluetoothId;
 	private String callName;
 	private String callNum;
 	private String callNameKey;
@@ -18,12 +19,13 @@ public class BluetoothContact extends BaseBean {
 		super();
 	}
 	
-	public BluetoothContact(String deviceId, Integer accountId,
+	public BluetoothContact(String deviceId, Integer accountId, String bluetoothId,
 			String callName, String callNum, String callNameKey, String callType) {
 		super();
 		this.status = Constants.STATUS_VALID;
 		this.deviceId = deviceId;
 		this.accountId = accountId;
+		this.bluetoothId=bluetoothId;
 		this.callName = callName;
 		this.callNum = callNum;
 		this.callNameKey = callNameKey;
@@ -67,9 +69,12 @@ public class BluetoothContact extends BaseBean {
 		this.callType = callType;
 	}
 
-	@Override
-	public int hashCode() {
-		return (this.callName+this.callNameKey+this.callNum+this.callType).hashCode();
+	public String getBluetoothId() {
+		return bluetoothId;
 	}
-	
+
+	public void setBluetoothId(String bluetoothId) {
+		this.bluetoothId = bluetoothId;
+	}
+
 }

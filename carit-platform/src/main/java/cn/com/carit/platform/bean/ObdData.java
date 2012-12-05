@@ -1,7 +1,8 @@
 package cn.com.carit.platform.bean;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * OBD 数据对象
@@ -18,6 +19,7 @@ public class ObdData {
 	private String location;
 	private String error;
 	private Date createTime;
+	private List<Integer> values=new ArrayList<Integer>();
 	
 	public ObdData() {
 	}
@@ -32,7 +34,6 @@ public class ObdData {
 	}
 
 
-	private int [] values=new int[19];
 	public int getId() {
 		return id;
 	}
@@ -63,12 +64,15 @@ public class ObdData {
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
-	public int[] getValues() {
+	
+	public List<Integer> getValues() {
 		return values;
 	}
-	public void setValues(int[] values) {
+
+	public void setValues(List<Integer> values) {
 		this.values = values;
 	}
+
 	public String getError() {
 		return error;
 	}
@@ -80,13 +84,6 @@ public class ObdData {
 	}
 	public void setAccountId(Integer accountId) {
 		this.accountId = accountId;
-	}
-	@Override
-	public String toString() {
-		return "ObdData [id=" + id + ", date=" + date + ", deviceId="
-				+ deviceId + ", accountId=" + accountId + ", location="
-				+ location + ", error=" + error + ", createTime=" + createTime
-				+ ", values=" + Arrays.toString(values) + "]";
 	}
 	
 }
