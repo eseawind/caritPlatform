@@ -8,7 +8,6 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,7 +139,6 @@ public class MD5Util {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println(Locale.SIMPLIFIED_CHINESE.toString());
 	}
 	
 }

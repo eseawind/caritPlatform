@@ -57,7 +57,8 @@ public class RegisterAccountInterceptor extends AbstractInterceptor {
 	public boolean isMatch(RopRequestContext ropRequestContext) {
 		return "account.register".equals(ropRequestContext.getMethod()) 
 				|| "account.check.email".equals(ropRequestContext.getMethod())
-				|| "account.check.nickname".equals(ropRequestContext.getMethod());
+				|| "account.check.nickname".equals(ropRequestContext.getMethod())
+				|| "partner.account.add".equals(ropRequestContext.getMethod());
 	}
 
 	@Override

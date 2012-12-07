@@ -24,7 +24,7 @@ import cn.com.carit.platform.dao.RssNewsDao;
 @Repository
 public class RssNewsDaoImpl extends DaoImpl implements RssNewsDao<RssNews> {
 
-	private final String select="select title, pub_date pubDate, description from t_rss_news";
+	private final String select="select id, title, pub_date pubDate, description from t_rss_news";
 	private final String insert="insert into t_rss_news(catalog_id, title, source_url, pub_date, description, img_src, content, status, create_time, update_time) values(?, ?, ?, ?, ?, ?, ?, ?, now(), now())";
 	
 	@Override
@@ -90,12 +90,12 @@ public class RssNewsDaoImpl extends DaoImpl implements RssNewsDao<RssNews> {
 	
 
 	@Override
-	public String readContent(int id) {
-		String sql="select content from t_rss_news where id=?";
+	public Map<String, Object> readNews(int id) {
+		String sql="select img_src imgSrc, content from t_rss_news where id=?";
 		if (log.isDebugEnabled()) {
 			log.debug(sql);
 		}
-		return queryForObject(sql, id, String.class);
+		return jdbcTemplate.queryForMap(sql, id);
 	}
 
 	@Override

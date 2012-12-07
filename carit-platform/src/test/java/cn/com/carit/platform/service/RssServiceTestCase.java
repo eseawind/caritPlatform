@@ -1,6 +1,7 @@
 package cn.com.carit.platform.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.testng.annotations.Test;
 
@@ -48,11 +49,11 @@ public class RssServiceTestCase {
 	@Test
 	public void testQueryById(){
 		RopTestCaseClient.getRopClient().buildClientRequest().get(new RopRequest() {
-			private final int id=1710;
+			private final int id=66;
 			@Override
 			public RopRequestContext getRopRequestContext() {
-				return null;
+				return this.getRopRequestContext();
 			}
-		}, String.class, "rss.view.news", "1.0");
+		}, Map.class, "rss.view.news", "1.0");
 	}
 }

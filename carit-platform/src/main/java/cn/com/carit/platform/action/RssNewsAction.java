@@ -39,7 +39,7 @@ public interface RssNewsAction<RssNews> {
 	 * @param id
 	 * @return
 	 */
-	String readContent(final int id);
+	Map<String, Object> readNews(final int id);
 	
 	/**
 	 * 分页的样例查询

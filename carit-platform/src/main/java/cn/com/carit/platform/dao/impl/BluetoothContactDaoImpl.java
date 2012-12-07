@@ -272,8 +272,8 @@ public class BluetoothContactDaoImpl extends DaoImpl implements BluetoothContact
 		}
 		
 		if (StringUtils.hasText(callNameKey)) {
-			sql.append(" and call_name_key like CONCAT('%',?,'%')");
-			countSql.append(" and call_name like CONCAT('%',?,'%')");
+			sql.append(" and call_name_key like CONCAT(?,'%')");
+			countSql.append(" and call_name like CONCAT(?,'%')");
 			args.add(callNameKey);
 			argTypes.add(Types.VARCHAR);
 		}

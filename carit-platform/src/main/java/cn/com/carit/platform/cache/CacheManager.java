@@ -3,6 +3,7 @@ package cn.com.carit.platform.cache;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import org.springframework.web.context.WebApplicationContext;
 import cn.com.carit.platform.action.AccountAction;
 import cn.com.carit.platform.action.AppSecretAction;
 import cn.com.carit.platform.action.ApplicationAction;
+import cn.com.carit.platform.action.RegionAction;
 import cn.com.carit.platform.bean.AppSecret;
 import cn.com.carit.platform.bean.account.Account;
 import cn.com.carit.platform.bean.market.Application;
@@ -24,6 +26,7 @@ public class CacheManager {
 	private final AccountAction<Account> accountAction;
 	private final AppSecretAction<AppSecret> appSecretAction;
 	private final ApplicationAction<Application> applicationAction;
+	private final RegionAction regionAction;
 	
 	/**账号缓存，以邮箱地址为key*/
 	private final Map<String, Account> accountCache;
@@ -34,6 +37,8 @@ public class CacheManager {
 	private final Map<String, String> appKeySecretCache;
 	
 	private final Map<Integer, Application> applicationCache;
+	
+	private final List<Map<String, Object>> provinces;
 	
 	private static class CacheHolder {
 		private static final CacheManager INSTANCE = new CacheManager();
@@ -47,12 +52,14 @@ public class CacheManager {
 		accountAction =  (AccountAction<Account>) ctx.getBean("accountActionImpl");
 		appSecretAction = (AppSecretAction<AppSecret>) ctx.getBean("appSecretActionImpl");
 		applicationAction = (ApplicationAction<Application>) ctx.getBean("applicationActionImpl");
+		regionAction = (RegionAction) ctx.getBean("regionActionImpl");
 		
-		accountCache = new HashMap<String, Account>();
-		nickNameCache = new HashMap<String, String>();
+		accountCache = new ConcurrentHashMap<String, Account>();
+		nickNameCache = new ConcurrentHashMap<String, String>();
 		
 		appKeySecretCache = new HashMap<String, String>();
-		applicationCache = new HashMap<Integer, Application>();
+		applicationCache = new ConcurrentHashMap<Integer, Application>();
+		provinces = regionAction.provinces();
 		
 		refreshAccounts();
 		refreshAppKeySecretCache();
@@ -182,4 +189,9 @@ public class CacheManager {
 		}
 		return false;
 	}
+
+	public List<Map<String, Object>> getProvinces() {
+		return provinces;
+	}
+	
 }

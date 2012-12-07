@@ -47,8 +47,8 @@ public class RssNewsActionImpl implements RssNewsAction<RssNews> {
 	}
 	
 	@Override
-	public String readContent(int id) {
-		return dao.readContent(id);
+	public Map<String, Object> readNews(int id) {
+		return dao.readNews(id);
 	}
 
 	@Override

@@ -21,6 +21,17 @@ public interface AccountAction<Account> extends Action<Account> {
 	void register(String email, String password, String nickName, String deviceId);
 	
 	/**
+	 * 合作方添加客户账号
+	 * @param email
+	 * @param password
+	 * @param nickName
+	 * @param deviceId
+	 * @param partnerId
+	 */
+	void partnerAdd(final String email, final String password,
+			final String nickName, final String deviceId, final int partnerId);
+	
+	/**
 	 * 按邮箱or昵称检测是否存在
 	 * @param email
 	 * @param nickName

@@ -82,6 +82,34 @@ public class AccountDaoImpl extends DaoImpl implements AccountDao<Account> {
 	}
 
 	@Override
+	public int partnerAdd(final String email, final String password, final String nickName,
+			final int partnerId) {
+		final String sql = "insert into t_account_info (email, password, nick_name, partner_id"
+				+ ", update_time, create_time) values (?, ?, ?, ?, now(), now())";
+		
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		KeyHolder gkHolder = new GeneratedKeyHolder();
+		jdbcTemplate.update(new PreparedStatementCreator() {
+			
+			@Override
+			public PreparedStatement createPreparedStatement(Connection con)
+					throws SQLException {
+				PreparedStatement ps = con.prepareStatement(sql,
+						Statement.RETURN_GENERATED_KEYS);
+				int index=1;
+				ps.setString(index++, email);
+				ps.setString(index++, password);
+				ps.setString(index++, nickName);
+				ps.setInt(index++, partnerId);
+				return ps;
+			}
+		}, gkHolder);
+		return gkHolder.getKey().intValue();
+	}
+
+	@Override
 	public int add(Account t) {
 		String sql = "insert into t_account_info (email, password, nick_name, gender"
 				+ ", birthday, photo, balance, real_name, id_card"

@@ -313,7 +313,12 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
-		return jdbcTemplate.query(sql, new Object[]{accountId}, rowMapper);
+		try {
+			return jdbcTemplate.query(sql, new Object[]{accountId}, rowMapper);
+		} catch (Exception e) {
+			log.warn(e.getMessage(), e);
+		}
+		return null;
 	}
 
 	@Override

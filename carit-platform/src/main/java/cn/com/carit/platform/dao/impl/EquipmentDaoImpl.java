@@ -221,5 +221,13 @@ public class EquipmentDaoImpl extends DaoImpl implements EquipmentDao<Equipment>
 		jdbcTemplate.update(sql, accountId, deviceId);
 	}
 
-	
+	@Override
+	public void addPartnerReference(int partnerId, String deviceId) {
+		String sql = "insert into t_partner_equipment(partner_id,device_id) values(?,?)";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		jdbcTemplate.update(sql, partnerId, deviceId);
+	}
+
 }

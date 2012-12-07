@@ -69,7 +69,9 @@ public class ObdDataActionImpl implements ObdDataAction<ObdData> {
 	@Override
 	public ObdData queryNewestData(String deviceId, int accountId) {
 		ObdData data = dao.queryNewestData(deviceId, accountId);
-		data.setValues(dao.queryValues(data.getId()));
+		if(data!=null){
+			data.setValues(dao.queryValues(data.getId()));
+		}
 		return data;
 	}
 

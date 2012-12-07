@@ -9,67 +9,21 @@ import cn.com.carit.platform.bean.BaseBean;
  * Auto generated Code
  */
 public class Account extends BaseBean {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 4504537661413613532L;
-	/**
-	 * email
-	 */
 	private String email;
-	/**
-	 * password 密码不会返回给前端
-	 */
 	private String password;
-	/**
-	 * nickName
-	 */
 	private String nickName;
-	/**
-	 * gender
-	 */
 	private Byte gender;
-	/**
-	 * birthday
-	 */
 	private Date birthday;
-	/**
-	 * photo
-	 */
 	private String photo;
-	/**缩略头像*/
 	private String thumbPhoto;
-	/**
-	 * balance
-	 */
 	private Double balance;
-	/**
-	 * realName
-	 */
 	private String realName;
-	/**
-	 * idCard
-	 */
 	private String idCard;
-	/**
-	 * officePhone
-	 */
 	private String officePhone;
-	/**
-	 * mobile
-	 */
 	private String mobile;
-	/**
-	 * address
-	 */
 	private String address;
-	/**
-	 * lastLoginIp
-	 */
 	private String lastLoginIp;
-	/**
-	 * lastLoginTime
-	 */
 	private Date lastLoginTime;
 	
 	public Account() {

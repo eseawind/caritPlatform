@@ -94,6 +94,21 @@ public class AccountActionImpl implements AccountAction<Account> {
 	}
 
 	@Override
+	public void partnerAdd(String email, String password, String nickName,
+			String deviceId, int partnerId) {
+		int id=dao.partnerAdd(email, password, nickName, partnerId);
+		// 保存设备
+		Equipment t=new Equipment();
+		t.setAccountId(id);
+		t.setDeviceId(deviceId);
+		equipmentDao.add(t);
+		// 保存设备账号关联关系
+		equipmentDao.addReference(id, deviceId);
+		// 保存设备合作方关联
+		equipmentDao.addPartnerReference(partnerId, deviceId);
+	}
+
+	@Override
 	public int checkAccount(String email, String nickName) {
 		return dao.checkAccount(email, nickName);
 	}

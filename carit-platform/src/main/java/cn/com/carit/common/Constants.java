@@ -45,6 +45,11 @@ public class Constants {
 	
 	public static final String CATALOG_ID_IS_EMPTY="CATALOG_ID_IS_EMPTY";
 	
+	public static final String PARTNER_NAME_REGISTERED="PARTNER_NAME_REGISTERED";
+	
+	public static final String PARTNER_NOT_EXIST="PARTNER_NOT_EXIST";
+	
+	
 	// 正则模式
 	public static final String REGEXP_EMAIL="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
 	public static final String REGEXP_PASSWORD="[\\w!@#$%^&**()]{6,30}";
