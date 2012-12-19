@@ -75,5 +75,10 @@ public class EquipmentActionImpl implements EquipmentAction<Equipment> {
 	public int queryAccountCountByDeviceId(String deviceId) {
 		return dao.queryAccountCountByDeviceId(deviceId);
 	}
+
+	@Override
+	public Equipment queryByDeviceId(String deviceId) {
+		return dao.queryByDeviceId(deviceId);
+	}
 	
 }

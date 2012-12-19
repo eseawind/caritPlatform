@@ -7,7 +7,7 @@ CREATE TABLE `t_region` (
   PRIMARY KEY  (`id`),
   KEY `idx_t_region_region_id` (`regin_id`) ,
   KEY `idx_t_region_parent_id` (`parent_id`)
-);
+)ENGINE=MyISAM;
 
 --
 -- 转存表中的数据 `t_region`

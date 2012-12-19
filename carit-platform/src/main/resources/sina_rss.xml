@@ -186,12 +186,12 @@
 		<subCatalog id="610" text="欧美明星" title="欧美明星"
 			xmlUrl="http://rss.sina.com.cn/ent/star/outer.xml" />
 	</catalog>
+	<!--
 	<catalog id="7" title="读书频道" text="读书频道">
 		<subCatalog id="701" text="读书要闻汇总" title="读书要闻汇总"
 			xmlUrl="http://rss.sina.com.cn/book/info.xml" />
 		<subCatalog id="702" text="最新连载" title="最新连载"
 			xmlUrl="http://rss.sina.com.cn/book/new_book.xml" />
-		<!--
 		<subCatalog id="703" text="图书总排行" title="图书总排行"
 			xmlUrl="http://rss.sina.com.cn/book/total_rank.xml" />
 		<subCatalog id="704" text="小说排行榜" title="小说排行榜"
@@ -206,8 +206,8 @@
 			xmlUrl="http://rss.sina.com.cn/book/finance_rank.xml" />
 		<subCatalog id="709" text="读书军事排行榜" title="读书军事排行榜"
 			xmlUrl="http://rss.sina.com.cn/book/military_rank.xml" />
-		-->
 	</catalog>
+	-->
 	<catalog id="8" title="女性频道" text="女性频道">
 		<subCatalog id="801" text="女性要闻汇总" title="女性要闻汇总"
 			xmlUrl="http://rss.sina.com.cn/news/allnews/eladies.xml" />

@@ -20,4 +20,10 @@ public interface ObdDataAction<ObdData> extends Action<ObdData> {
 	JsonPage<Map<String, Object>> query(SearchObdDataRequest request);
 	
 	List<ObdData> queryCurrentDataByAccount(int accountId);
+	
+	/**
+	 * 日常清理
+	 * @param keepCount 每人每机保留记录数
+	 */
+	void dailyClear(final int keepCount);
 }

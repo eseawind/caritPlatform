@@ -7,6 +7,8 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 
 import cn.com.carit.session.CaritPlatformSession;
 import cn.com.carit.session.CaritSessionManager;
@@ -14,16 +16,18 @@ import cn.com.carit.session.CaritSessionManager;
 import com.rop.session.Session;
 
 /**
- * <b>功能描述：</b>Session管理job。激活状态的session超过半小时内没有连接过的设置为掉线;掉线状态的session超过半小时没连接删除
+ * <b>功能描述：</b>Session管理Job，每10分钟执行一次。激活状态的session超过半小时内没有连接过的设置为掉线;掉线状态的session超过半小时没连接删除
  * @author <a href="mailto:xiegengcai@gmail.com">Gengcai Xie</a>
  * 2012-8-16
  */
+@Service
 public class SessionManagerJob {
 	private final Logger logger=LoggerFactory.getLogger(getClass());
 	
 	@Resource
 	private CaritSessionManager sessionManager;
 	
+	@Scheduled(cron="0 0/10 * * * ?")
 	public void manager(){
 		// 获取到所有session
 		Map<String, Session> sessionCache=sessionManager.getSessionCache();

@@ -14,4 +14,4 @@ CREATE TABLE `t_rss_news` (
   UNIQUE KEY `idx_t_rss_news_source_url` (`source_url`),
   KEY `idx_t_rss_news_catalog_id` (`catalog_id`),
   KEY `idx_t_rss_news_pub_date` (`pub_date`) USING BTREE
-);
+)ENGINE=MyISAM;

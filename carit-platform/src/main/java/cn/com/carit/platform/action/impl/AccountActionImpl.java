@@ -1,6 +1,7 @@
 package cn.com.carit.platform.action.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -82,7 +83,7 @@ public class AccountActionImpl implements AccountAction<Account> {
 			String deviceId) {
 		int id=dao.register(email, password, nickName);
 		// 设备还不存在
-		Equipment e=equipmentDao.queryById(deviceId);
+		Equipment e=equipmentDao.queryByDeviceId(deviceId);
 		if (e==null) {
 			Equipment t=new Equipment();
 			t.setAccountId(id);
@@ -91,21 +92,6 @@ public class AccountActionImpl implements AccountAction<Account> {
 		}
 		// 插入关联关系
 		equipmentDao.addReference(id, deviceId);
-	}
-
-	@Override
-	public void partnerAdd(String email, String password, String nickName,
-			String deviceId, int partnerId) {
-		int id=dao.partnerAdd(email, password, nickName, partnerId);
-		// 保存设备
-		Equipment t=new Equipment();
-		t.setAccountId(id);
-		t.setDeviceId(deviceId);
-		equipmentDao.add(t);
-		// 保存设备账号关联关系
-		equipmentDao.addReference(id, deviceId);
-		// 保存设备合作方关联
-		equipmentDao.addPartnerReference(partnerId, deviceId);
 	}
 
 	@Override
@@ -151,6 +137,12 @@ public class AccountActionImpl implements AccountAction<Account> {
 			String subject, String content) {
 		dao.updatePwd(email, newPassword);
 		mailSenderService.sendHtmlMail(email, subject, content);
+	}
+
+	@Override
+	public JsonPage<Map<String, Object>> queryByPartner(int partnerId,
+			String email, String nickname, DataGridModel dgm) {
+		return dao.queryByPartner(partnerId, email, nickname, dgm);
 	}
 	
 }

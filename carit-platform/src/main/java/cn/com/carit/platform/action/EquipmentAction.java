@@ -28,4 +28,6 @@ public interface EquipmentAction<Equipment> extends Action<Equipment> {
 	 * @return
 	 */
 	int queryAccountCountByDeviceId(final String deviceId);
+	
+	Equipment queryByDeviceId(final String deviceId);
 }

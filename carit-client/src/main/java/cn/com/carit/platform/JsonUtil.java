@@ -37,7 +37,7 @@ public class JsonUtil {
 		return "[]";
 	}
 	
-	public static <T> Object jsonToObject(String json, Class<T> clazz) throws Exception{
+	public static <T> T jsonToObject(String json, Class<T> clazz) throws Exception{
 		return MAPPER.readValue(json, clazz);
 	}
 	

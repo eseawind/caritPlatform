@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.ParameterizedPreparedStatementSetter;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -208,7 +209,33 @@ public class RssNewsDaoImpl extends DaoImpl implements RssNewsDao<RssNews> {
 	@Override
 	public boolean existed(String sourceUrl) {
 		String sql="select 1 from t_rss_news where source_url=?";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
 		return checkExisted(sql, sourceUrl)>0;
+	}
+
+	@Override
+	public void batchDelete(final List<Integer> catalogIds, final int keepCount) {
+		String sql = "delete from t_rss_news where catalog_id=? and id not in (select id from (select id from t_rss_news where catalog_id=? order by pub_date desc limit ?) t)";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+			
+			@Override
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
+				int index=1;
+				ps.setInt(index++, catalogIds.get(i));
+				ps.setInt(index++, catalogIds.get(i));
+				ps.setInt(index++, keepCount);
+			}
+			
+			@Override
+			public int getBatchSize() {
+				return catalogIds.size();
+			}
+		});
 	}
 
 }

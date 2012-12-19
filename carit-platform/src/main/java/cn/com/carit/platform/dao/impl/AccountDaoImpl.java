@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -81,33 +82,6 @@ public class AccountDaoImpl extends DaoImpl implements AccountDao<Account> {
 		return gkHolder.getKey().intValue();
 	}
 
-	@Override
-	public int partnerAdd(final String email, final String password, final String nickName,
-			final int partnerId) {
-		final String sql = "insert into t_account_info (email, password, nick_name, partner_id"
-				+ ", update_time, create_time) values (?, ?, ?, ?, now(), now())";
-		
-		if (log.isDebugEnabled()) {
-			log.debug(String.format("\n%1$s\n", sql));
-		}
-		KeyHolder gkHolder = new GeneratedKeyHolder();
-		jdbcTemplate.update(new PreparedStatementCreator() {
-			
-			@Override
-			public PreparedStatement createPreparedStatement(Connection con)
-					throws SQLException {
-				PreparedStatement ps = con.prepareStatement(sql,
-						Statement.RETURN_GENERATED_KEYS);
-				int index=1;
-				ps.setString(index++, email);
-				ps.setString(index++, password);
-				ps.setString(index++, nickName);
-				ps.setInt(index++, partnerId);
-				return ps;
-			}
-		}, gkHolder);
-		return gkHolder.getKey().intValue();
-	}
 
 	@Override
 	public int add(Account t) {
@@ -441,5 +415,54 @@ public class AccountDaoImpl extends DaoImpl implements AccountDao<Account> {
 		}
 		return jdbcTemplate.update(sql, photoPath, thumbPhotoPath, id);
 	}
-	
+
+	@Override
+	public JsonPage<Map<String, Object>> queryByPartner(int partnerId,
+			String email, String nickname, DataGridModel dgm) {
+		StringBuilder sql=new StringBuilder("select a.id, a.email, a.nick_name nickname, a.address, a.mobile, a.office_phone officePhone, c.device_id deviceId from t_account_info a inner join t_account_equipment b on a.id=b.account_id inner join t_partner_equipment c on b.device_id=c.device_id and c.partner_id=?");
+		StringBuilder countSql=new StringBuilder("select count(1) from t_account_info a inner join t_account_equipment b on a.id=b.account_id inner join t_partner_equipment c on b.device_id=c.device_id and c.partner_id=?");
+		List<Object> args = new ArrayList<Object>();
+		List<Integer> argTypes = new ArrayList<Integer>();
+		args.add(partnerId);
+		argTypes.add(Types.INTEGER);
+		if (StringUtils.hasText(email)) {
+			sql.append(" and a.email=?");
+			countSql.append(" and a.email=?");
+			args.add(email);
+			argTypes.add(Types.VARCHAR);
+		}
+		if (StringUtils.hasText(nickname)) {
+			sql.append(" and a.nick_name like CONCAT('%',?,'%')");
+			countSql.append(" and a.nick_name like CONCAT('%',?,'%')");
+			args.add(nickname);
+			argTypes.add(Types.VARCHAR);
+		}
+		JsonPage<Map<String, Object>> jsonPage = new JsonPage<Map<String, Object>>(dgm.getPage(), dgm.getRows());
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", countSql));
+		}
+		int totalRow = queryForInt(countSql.toString(), args, argTypes);
+		// 更新
+		jsonPage.setTotal(totalRow);
+		// 排序
+		if (StringUtils.hasText(dgm.getOrder())
+				&& StringUtils.hasText(dgm.getSort())) {
+			sql.append(" order by ")
+					.append(CaritUtils.splitFieldWords(dgm.getSort()))
+					.append(" ").append(dgm.getOrder());
+
+		} else {
+			sql.append(" order by a.create_time desc");
+		}
+		sql.append(" limit ?, ?");
+		args.add(jsonPage.getStartRow());
+		args.add(jsonPage.getPageSize());
+		argTypes.add(Types.INTEGER);
+		argTypes.add(Types.INTEGER);
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		jsonPage.setRows(queryForList(sql.toString(), args, argTypes));
+		return jsonPage;
+	}
 }

@@ -1,6 +1,10 @@
 package cn.com.carit.platform.dao;
 
+import java.util.Map;
+
 import cn.com.carit.Dao;
+import cn.com.carit.common.utils.DataGridModel;
+import cn.com.carit.common.utils.JsonPage;
 
 public interface AccountDao<Account> extends Dao<Account> {
 
@@ -12,16 +16,6 @@ public interface AccountDao<Account> extends Dao<Account> {
 	 * @return
 	 */
 	int register(final String email, final String password, final String nickName);
-	
-	/**
-	 * 合作方添加客户账号
-	 * @param email
-	 * @param password
-	 * @param nickName
-	 * @param partnerId
-	 * @return
-	 */
-	int partnerAdd(final String email, final String password, final String nickName, final int partnerId);
 	
 	/**
 	 * 按邮箱or昵称检测是否存在
@@ -55,4 +49,6 @@ public interface AccountDao<Account> extends Dao<Account> {
 	 * @param thumbPhotoPath
 	 */
 	int uploadPhoto(int id, String photoPath, String thumbPhotoPath);
+	
+	JsonPage<Map<String, Object>> queryByPartner(int partnerId, String email, String nickname, DataGridModel dgm);
 }

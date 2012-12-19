@@ -25,4 +25,12 @@ public interface PartnerAction<Partner> extends Action<Partner> {
 	 */
 	boolean checkName(String name);
 	
+	void bindingAccount(int partnerId, String deviceId);
+	
+	/**
+	 * 查询绑定的4s店
+	 * @param deviceId
+	 * @return
+	 */
+	Partner queryBoundingPartner(final String deviceId);
 }

@@ -22,6 +22,7 @@ public class PartnerUpdatePwdRequest extends AbstractRopRequest {
 	@NotEmpty
     @Pattern(regexp = Constants.REGEXP_PASSWORD)
 	private String oldPassword;
+	@IgnoreSign
 	@NotEmpty
     @Pattern(regexp = Constants.REGEXP_PASSWORD)
 	private String password;

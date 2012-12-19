@@ -85,7 +85,7 @@ public class EquipmentDaoImpl extends DaoImpl implements EquipmentDao<Equipment>
 
 	
 	@Override
-	public Equipment queryById(String id) {
+	public Equipment queryByDeviceId(String id) {
 		String sql = "select * from t_equipment where device_id=?";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
@@ -203,6 +203,7 @@ public class EquipmentDaoImpl extends DaoImpl implements EquipmentDao<Equipment>
 		return jdbcTemplate.queryForInt(sql, new Object []{accountId, deviceId}, new int []{Types.INTEGER, Types.VARCHAR});
 	}
 
+	
 	@Override
 	public int queryAccountCountByDeviceId(String deviceId) {
 		String sql="select count(1) from t_account_equipment a, t_equipment b where a.device_id=b.device_id and a.device_id=?";

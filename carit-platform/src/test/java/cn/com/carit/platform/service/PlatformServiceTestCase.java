@@ -45,8 +45,8 @@ public class PlatformServiceTestCase {
 	@Test
 	public void testSearchLocation(){
 		SearchLoactionRequest request=new SearchLoactionRequest();
-		request.setDeviceId("C9CA9F49");
-		request.setAccountId(112);
+		request.setDeviceId("4697DA4F");
+		request.setAccountId(21);
 		request.setType(1);
 		Calendar today=Calendar.getInstance();
 		// 清除时分秒
@@ -140,4 +140,5 @@ public class PlatformServiceTestCase {
 		request.setEmail("xiegc@carit.com.cn");
 		RopTestCaseClient.getRopClient().buildClientRequest().get(request, List.class, "platform.bluetooth.connected.devices", "1.0");
 	}
+	
 }

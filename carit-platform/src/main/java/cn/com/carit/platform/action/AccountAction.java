@@ -1,6 +1,10 @@
 package cn.com.carit.platform.action;
 
+import java.util.Map;
+
 import cn.com.carit.Action;
+import cn.com.carit.common.utils.DataGridModel;
+import cn.com.carit.common.utils.JsonPage;
 
 public interface AccountAction<Account> extends Action<Account> {
 	/**
@@ -19,17 +23,6 @@ public interface AccountAction<Account> extends Action<Account> {
 	 * @param deviceId
 	 */
 	void register(String email, String password, String nickName, String deviceId);
-	
-	/**
-	 * 合作方添加客户账号
-	 * @param email
-	 * @param password
-	 * @param nickName
-	 * @param deviceId
-	 * @param partnerId
-	 */
-	void partnerAdd(final String email, final String password,
-			final String nickName, final String deviceId, final int partnerId);
 	
 	/**
 	 * 按邮箱or昵称检测是否存在
@@ -72,4 +65,6 @@ public interface AccountAction<Account> extends Action<Account> {
 	 * @param content
 	 */
 	void getBackPassword(String email, String newPassword, String subject, String content);
+	
+	JsonPage<Map<String, Object>> queryByPartner(int partnerId, String email, String nickname, DataGridModel dgm);
 }

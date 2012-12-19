@@ -17,4 +17,11 @@ public interface PartnerDao<Partner> extends Dao<Partner> {
 	 * @return
 	 */
 	boolean checkName(String name);
+	
+	/**
+	 * 查询绑定的4s店
+	 * @param deviceId
+	 * @return
+	 */
+	Partner queryBoundingPartner(final String deviceId);
 }

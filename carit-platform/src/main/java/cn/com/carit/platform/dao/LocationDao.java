@@ -3,11 +3,11 @@ package cn.com.carit.platform.dao;
 import java.util.List;
 import java.util.Map;
 
-import cn.com.carit.Dao;
 import cn.com.carit.common.utils.JsonPage;
+import cn.com.carit.platform.bean.Location;
 import cn.com.carit.platform.request.SearchLoactionRequest;
 
-public interface LocationDao<Location> extends Dao<Location> {
+public interface LocationDao {
 
 	int batchAdd(final List<Location> locationList);
 	
@@ -27,5 +27,5 @@ public interface LocationDao<Location> extends Dao<Location> {
 	/**
 	 * 删除同一设备同一上传时间的重复数据（保留最后上传的）
 	 */
-	void deleteDuplicateData();
+	void deleteDuplicateData(int accountId);
 }

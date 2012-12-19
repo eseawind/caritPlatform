@@ -79,4 +79,11 @@ public interface RssNewsAction<RssNews> {
 	 * @return
 	 */
 	List<Map<String, Object>> queryByCatalogId(final int catalogId, final int limit);
+	
+	/**
+	 * 按分类批量删除数据
+	 * @param catalogIds 分类Id类别
+	 * @param keepCount 没个分类保留的数据上限
+	 */
+	void batchDelete(final List<Integer> catalogIds, final int keepCount);
 }

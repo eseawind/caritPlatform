@@ -37,6 +37,7 @@ public class Constants {
 	public static final String DEVICE_ID_IS_EMPTY="DEVICE_ID_IS_EMPTY";
 	public static final String MESSAGE_ACCOUNT_ID_NOT_MATCH="MESSAGE_ACCOUNT_ID_NOT_MATCH";
 	public static final String NO_THIS_ACCOUNT="NO_THIS_ACCOUNT";
+	public static final String NO_THIS_EQUIPMENT="NO_THIS_EQUIPMENT";
 	public static final String EQUIPMENT_BINDING_ACCOUNT_TO_UPPER_LIMIT="EQUIPMENT_BINDING_ACCOUNT_TO_UPPER_LIMIT";
 	public static final String EQUIPMENT_NOT_BINDING_WHIT_ACCOUNT="EQUIPMENT_NOT_BINDING_WHIT_ACCOUNT";
 	
@@ -48,6 +49,9 @@ public class Constants {
 	public static final String PARTNER_NAME_REGISTERED="PARTNER_NAME_REGISTERED";
 	
 	public static final String PARTNER_NOT_EXIST="PARTNER_NOT_EXIST";
+	
+	public static final String EQUIPMENT_HAS_BOUND_WITH_OTHER_PARTNER="EQUIPMENT_HAS_BOUND_WITH_OTHER_PARTNER";
+	
 	
 	
 	// 正则模式

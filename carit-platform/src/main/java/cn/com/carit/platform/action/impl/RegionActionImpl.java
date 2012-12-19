@@ -4,13 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import cn.com.carit.platform.action.RegionAction;
 import cn.com.carit.platform.dao.RegionDao;
 @Service
-@Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
 public class RegionActionImpl implements RegionAction {
 
 	private RegionDao dao;

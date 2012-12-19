@@ -41,7 +41,7 @@ public interface EquipmentDao<Equipment> extends Dao<Equipment> {
 	 * @param id
 	 * @return
 	 */
-	Equipment queryById(final String id);
+	Equipment queryByDeviceId(final String id);
 	
 	void addPartnerReference(final int partnerId, final String deviceId);
 	

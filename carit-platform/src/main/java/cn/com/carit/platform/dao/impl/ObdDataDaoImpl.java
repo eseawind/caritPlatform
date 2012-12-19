@@ -352,4 +352,47 @@ public class ObdDataDaoImpl extends DaoImpl implements ObdDataDao<ObdData> {
 		return jdbcTemplate.queryForList(sql, new Object[]{dataId}, new int []{Types.INTEGER}, Integer.class);
 	}
 
+	@Override
+	public void dailyClear(final List<Map<String, Object>> args, final int keepCount) {
+		String sql="delete from t_obd_data where account_id=? and  device_id=? and id not in (select id from (select id from t_obd_data where account_id=? and  device_id=? order by date desc limit ?) t)";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+			
+			@Override
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
+				int index=1;
+				ps.setInt(index++, (Integer)args.get(i).get("account_id"));
+				ps.setString(index++, args.get(i).get("device_id").toString());
+				ps.setInt(index++, (Integer)args.get(i).get("account_id"));
+				ps.setString(index++, args.get(i).get("device_id").toString());
+				ps.setInt(index++, keepCount);
+			}
+			
+			@Override
+			public int getBatchSize() {
+				return args.size();
+			}
+		});
+	}
+
+	@Override
+	public void deleteInvalidValue() {
+		String sql="delete from t_obd_data_value where data_id not in (select id from t_obd_data)";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		jdbcTemplate.update(sql);
+	}
+
+	@Override
+	public List<Map<String, Object>> queryAccountDevice() {
+		String sql="select account_id, device_id from t_obd_data group by device_id, account_id";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		return jdbcTemplate.queryForList(sql);
+	}
+
 }

@@ -34,4 +34,10 @@ public interface ObdDataDao<ObdData> extends Dao<ObdData> {
 	JsonPage<Map<String, Object>> query(SearchObdDataRequest request);
 	
 	List<ObdData> queryCurrentDataByAccount(int accountId);
+	
+	void dailyClear(final List<Map<String, Object>> args, final int keepCount);
+	
+	void deleteInvalidValue();
+	
+	List<Map<String, Object>> queryAccountDevice();
 }

@@ -85,4 +85,10 @@ public class ObdDataActionImpl implements ObdDataAction<ObdData> {
 		return dao.queryCurrentDataByAccount(accountId);
 	}
 
+	@Override
+	public void dailyClear(int keepCount) {
+		dao.dailyClear(dao.queryAccountDevice(), keepCount);
+		dao.deleteInvalidValue();
+	}
+
 }

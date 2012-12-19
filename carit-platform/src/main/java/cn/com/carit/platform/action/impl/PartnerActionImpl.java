@@ -8,11 +8,14 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonPage;
 import cn.com.carit.platform.action.PartnerAction;
+import cn.com.carit.platform.bean.Equipment;
 import cn.com.carit.platform.bean.Partner;
+import cn.com.carit.platform.dao.EquipmentDao;
 import cn.com.carit.platform.dao.PartnerDao;
 
 @Service
@@ -21,6 +24,9 @@ public class PartnerActionImpl implements PartnerAction<Partner> {
 	
 	@Resource
 	private PartnerDao<Partner> dao;
+	
+	@Resource
+	private EquipmentDao<Equipment> equipmentDao;
 
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
 	@Override
@@ -75,6 +81,19 @@ public class PartnerActionImpl implements PartnerAction<Partner> {
 	@Override
 	public Partner queryByName(String name) {
 		return dao.queryByName(name);
+	}
+
+	@Override
+	public void bindingAccount(int partnerId, String deviceId) {
+		equipmentDao.addPartnerReference(partnerId, deviceId);
+	}
+
+	@Override
+	public Partner queryBoundingPartner(String deviceId) {
+		if (StringUtils.hasText(deviceId)) {
+			return dao.queryBoundingPartner(deviceId);
+		}
+		return null;
 	}
 
 }

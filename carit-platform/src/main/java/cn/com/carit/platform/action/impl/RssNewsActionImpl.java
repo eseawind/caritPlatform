@@ -82,4 +82,9 @@ public class RssNewsActionImpl implements RssNewsAction<RssNews> {
 		return dao.queryByExemple(t, limit);
 	}
 
+	@Override
+	public void batchDelete(List<Integer> catalogIds, int keepCount) {
+		dao.batchDelete(catalogIds, keepCount);
+	}
+	
 }

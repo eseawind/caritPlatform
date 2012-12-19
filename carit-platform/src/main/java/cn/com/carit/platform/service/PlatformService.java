@@ -66,7 +66,7 @@ import com.rop.response.CommonRopResponse;
 public class PlatformService {
 
 	@Resource
-	private LocationAction<Location> locationAction;
+	private LocationAction locationAction;
 	
 	@Resource
 	private ObdDataAction<ObdData> obdDataAction;

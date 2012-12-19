@@ -4,14 +4,19 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import cn.com.carit.platform.request.account.v3.RegisterAccountRequest;
+import org.hibernate.validator.constraints.NotEmpty;
 
-public class PartnerAddAccountRequest extends RegisterAccountRequest {
+import com.rop.AbstractRopRequest;
+
+public class BindingDeviceRequest extends AbstractRopRequest {
 
 	@NotNull
-	@Min(value=0)
+	@Min(value=1)
 	@Max(value=Integer.MAX_VALUE)
 	private Integer partnerId;
+	
+	@NotEmpty
+	private String deviceId;
 
 	public Integer getPartnerId() {
 		return partnerId;
@@ -19,6 +24,14 @@ public class PartnerAddAccountRequest extends RegisterAccountRequest {
 
 	public void setPartnerId(Integer partnerId) {
 		this.partnerId = partnerId;
+	}
+
+	public String getDeviceId() {
+		return deviceId;
+	}
+
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
 	}
 	
 }

@@ -3,6 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:rop="http://www.bookegou.com/schema/rop"
+       xmlns:task="http://www.springframework.org/schema/task"
        xmlns:tx="http://www.springframework.org/schema/tx"
 	   xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
@@ -10,6 +11,8 @@
        	http://www.bookegou.com/schema/rop http://www.bookegou.com/schema/rop/rop-1.0.xsd
 	    http://www.springframework.org/schema/context
 	    http://www.springframework.org/schema/context/spring-context-3.1.xsd
+	    http://www.springframework.org/schema/task   
+        http://www.springframework.org/schema/task/spring-task-3.0.xsd
 	    http://www.springframework.org/schema/tx 
 		http://www.springframework.org/schema/tx/spring-tx-3.0.xsd 
 		http://www.springframework.org/schema/aop 
@@ -99,6 +102,10 @@
 	<!-- 声明使用注解式事务 -->
 	<tx:annotation-driven transaction-manager="transactionManager" />
 
+	<!--  定时器开关  开始-->  
+    <task:annotation-driven/>  
+    <!--  定时器开关  结束-->
+
 	<!-- ROP框架配置 -->
     <!-- 启动Rop框架 upload-file-max-size 单位为K 1M=1024K-->
     <rop:annotation-driven
@@ -159,69 +166,4 @@
     <!--自定义method,appKey等这些系统级参数的参数名-->
     <rop:sysparams format-param-name="messageFormat"/>
     
-    <bean name="quartzJob" class="org.springframework.scheduling.quartz.JobDetailBean">
-		<property name="jobClass" value="cn.com.carit.platform.job.RefreshCacheJob" />
-		<!-- 接受一个Map,其中包含了需要设置给jobClass的各种属性 -->
-		<property name="jobDataAsMap">
-			<map></map>
-		</property>
-	</bean>
-	
-	<bean id="sessionManagerJob" class="cn.com.carit.platform.job.SessionManagerJob"/>
-	
-	<bean id="tenMinuteJobTask"
-		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<!-- 调用的类 -->
-		<property name="targetObject">
-			<ref bean="sessionManagerJob" />
-		</property>
-		<!-- 调用类中的方法 -->
-		<property name="targetMethod">
-			<value>manager</value>
-		</property>
-	</bean>
-	
-	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-		<property name="jobDetail" ref="quartzJob" />
-		<!-- 延迟5秒启动，每30分钟执行一次 -->
-		<property name="cronExpression" value="5 0/30 * * * ?" />
-	</bean>
-	
-	<bean id="sessionManagerJobCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-		<property name="jobDetail" ref="tenMinuteJobTask" />
-		<!-- 延迟5秒启动，每10分钟执行一次 -->
-		<property name="cronExpression" value="5 0/10 * * * ?" />
-	</bean>
-	
-	<bean id="sinaSpiderJob" class="cn.com.carit.platform.job.SinaSpiderJob"/>
-	
-	<bean id="sinaSpiderJobTask"
-		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<!-- 调用的类 -->
-		<property name="targetObject">
-			<ref bean="sinaSpiderJob" />
-		</property>
-		<!-- 调用类中的方法 -->
-		<property name="targetMethod">
-			<value>spider</value>
-		</property>
-	</bean>
-	
-	<bean id="sinaSpiderJobCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-		<property name="jobDetail" ref="sinaSpiderJobTask" />
-		<!-- 延迟30秒启动，每3小时执行一次 -->
-		<property name="cronExpression" value="30 0 0/3 * * ?" />
-	</bean>
-	
-	<bean id="SpringJobSchedulerFactoryBean"
-		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-		<property name="triggers">
-			<list>
-				<ref bean="cronTrigger" />
-				<ref bean="sessionManagerJobCronTrigger"/>
-				<ref bean="sinaSpiderJobCronTrigger"/>
-			</list>
-		</property>
-	</bean>
-	
 </beans>

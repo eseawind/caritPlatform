@@ -1,23 +1,27 @@
 package cn.com.carit.platform.job;
 
-import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 
 import cn.com.carit.platform.cache.CacheManager;
 
 /**
- * 缓存更新Job
+ * <p>
+ * <b>功能说明：</b>缓存更新Job，每50分钟执行
+ * </p>
  * @author <a href="mailto:xiegengcai@gmail.com">Gengcai Xie</a>
- * 2012-8-16
+ * @date 2012-12-12
  */
-public class RefreshCacheJob extends QuartzJobBean  {
+@Service
+public class RefreshCacheJob   {
 
 	private final Logger logger=LoggerFactory.getLogger(getClass());
-	@Override
-	protected void executeInternal(JobExecutionContext arg0)
+	
+	@Scheduled(cron="0 0/50 * * * ?")
+	public void work()
 			throws JobExecutionException {
 		logger.info("refresh cache start...");
 		CacheManager.getInstance().refreshCache();

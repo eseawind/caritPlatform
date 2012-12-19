@@ -64,9 +64,6 @@ public class DaoImpl {
 	}
 	
 	public boolean queryForBoolean(String sql, Object ...args) {
-		if (log.isDebugEnabled()) {
-			log.debug(sql);
-		}
 		try {
 			return jdbcTemplate.queryForObject(sql, args, Boolean.class);
 		} catch (Exception e) {

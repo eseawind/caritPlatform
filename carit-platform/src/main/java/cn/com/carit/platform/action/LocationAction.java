@@ -3,11 +3,11 @@ package cn.com.carit.platform.action;
 import java.util.List;
 import java.util.Map;
 
-import cn.com.carit.Action;
 import cn.com.carit.common.utils.JsonPage;
+import cn.com.carit.platform.bean.Location;
 import cn.com.carit.platform.request.SearchLoactionRequest;
 
-public interface LocationAction<Location> extends Action<Location> {
+public interface LocationAction {
 
 	int batchAdd(final List<Location> locationList);
 	

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonPage;
 import cn.com.carit.platform.action.LocationAction;
 import cn.com.carit.platform.bean.Location;
@@ -18,48 +17,10 @@ import cn.com.carit.platform.request.SearchLoactionRequest;
 
 @Service
 @Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
-public class LocationActionImpl implements LocationAction<Location> {
+public class LocationActionImpl implements LocationAction {
 	
 	@Resource
-	private LocationDao<Location> dao;
-
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
-	@Override
-	public int add(Location t) {
-		return dao.add(t);
-	}
-
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
-	@Override
-	public int update(Location t) {
-		return dao.update(t);
-	}
-
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
-	@Override
-	public int delete(int id) {
-		return dao.delete(id);
-	}
-
-	@Override
-	public Location queryById(int id) {
-		return dao.queryById(id);
-	}
-
-	@Override
-	public JsonPage<Location> queryByExemple(Location t, DataGridModel dgm) {
-		return dao.queryByExemple(t, dgm);
-	}
-
-	@Override
-	public List<Location> queryByExemple(Location t) {
-		return dao.queryByExemple(t);
-	}
-
-	@Override
-	public List<Location> queryAll() {
-		return dao.queryAll();
-	}
+	private LocationDao dao;
 
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
 	@Override
@@ -68,7 +29,7 @@ public class LocationActionImpl implements LocationAction<Location> {
 		if (locationList!=null && locationList.size()>0) {
 			insertRows = dao.batchAdd(locationList);
 			// 删除重复数据
-			dao.deleteDuplicateData();
+			dao.deleteDuplicateData(locationList.get(0).getAccountId());
 		}
 		return insertRows;
 	}

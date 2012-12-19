@@ -32,6 +32,7 @@ public class PartnerDaoImpl extends DaoImpl implements PartnerDao<Partner> {
 			t.setAddr(rs.getString("addr"));
 			t.setContactPerson(rs.getString("contact_person"));
 			t.setEmail(rs.getString("email"));
+			t.setPhone(rs.getString("phone"));
 			t.setStatus(rs.getInt("status"));
 			t.setLastLoginIp(rs.getString("last_login_ip"));
 			t.setLastLoginTime(rs.getTimestamp("last_login_time"));
@@ -43,7 +44,7 @@ public class PartnerDaoImpl extends DaoImpl implements PartnerDao<Partner> {
 	
 	@Override
 	public int add(Partner t) {
-		String sql="insert into t_partner(firm_name, password, city, addr, contact_person, email, status, create_time, update_time) values(?, ?, ?, ?, ?, ?, now(), now())";
+		String sql="insert into t_partner(firm_name, password, city, addr, contact_person, phone, email, status, create_time, update_time) values(?, ?, ?, ?, ?, ?, ?, ?, now(), now())";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
@@ -53,6 +54,7 @@ public class PartnerDaoImpl extends DaoImpl implements PartnerDao<Partner> {
 				, t.getCity()
 				, t.getAddr()
 				, t.getContactPerson()
+				, t.getPhone()
 				, t.getEmail()
 				, Constants.STATUS_VALID
 			);
@@ -60,7 +62,7 @@ public class PartnerDaoImpl extends DaoImpl implements PartnerDao<Partner> {
 
 	@Override
 	public int update(Partner t) {
-		StringBuilder sql = new StringBuilder("update t_partner set update_time=now");
+		StringBuilder sql = new StringBuilder("update t_partner set update_time=now()");
 		List<Object> args = new ArrayList<Object>();
 		if (StringUtils.hasText(t.getCity())) {
 			sql.append(", city=?");
@@ -77,6 +79,10 @@ public class PartnerDaoImpl extends DaoImpl implements PartnerDao<Partner> {
 		if (StringUtils.hasText(t.getContactPerson())) {
 			sql.append(", contact_person=?");
 			args.add(t.getContactPerson());
+		}
+		if (StringUtils.hasText(t.getPhone())) {
+			sql.append(", phone=?");
+			args.add(t.getPhone());
 		}
 		if (StringUtils.hasText(t.getEmail())) {
 			sql.append(", email=?");
@@ -98,6 +104,8 @@ public class PartnerDaoImpl extends DaoImpl implements PartnerDao<Partner> {
 			sql.append(", last_login_time=?");
 			args.add(t.getLastLoginTime());
 		}
+		sql.append(" where id=?");
+		args.add(t.getId());
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
@@ -189,26 +197,37 @@ public class PartnerDaoImpl extends DaoImpl implements PartnerDao<Partner> {
 		if (StringUtils.hasText(t.getCity())) {
 			sql.append(" and city like CONCAT(?,'%')");
 			args.add(t.getCity());
+			argTypes.add(Types.VARCHAR);
 		}
 		if (StringUtils.hasText(t.getAddr())) {
 			sql.append(" and addr like CONCAT(?,'%')");
 			args.add(t.getAddr());
+			argTypes.add(Types.VARCHAR);
 		}
 		if (StringUtils.hasText(t.getContactPerson())) {
 			sql.append(" and contact_person like CONCAT(?,'%')");
 			args.add(t.getContactPerson());
+			argTypes.add(Types.VARCHAR);
+		}
+		if (StringUtils.hasText(t.getPhone())) {
+			sql.append(" and phone like CONCAT(?, '%')");
+			args.add(t.getPhone());
+			argTypes.add(Types.VARCHAR);
 		}
 		if (StringUtils.hasText(t.getEmail())) {
 			sql.append(" and email like CONCAT(?,'%')");
 			args.add(t.getEmail());
+			argTypes.add(Types.VARCHAR);
 		}
 		if (StringUtils.hasText(t.getFirmName())) {
 			sql.append(" and firm_name like CONCAT(?,'%')");
 			args.add(t.getFirmName());
+			argTypes.add(Types.VARCHAR);
 		}
 		if (t.getStatus()!=null) {
 			sql.append(" and status=?");
 			args.add(t.getStatus());
+			argTypes.add(Types.INTEGER);
 		}
 		return sql.toString();
 	}
@@ -230,6 +249,15 @@ public class PartnerDaoImpl extends DaoImpl implements PartnerDao<Partner> {
 			log.debug(String.format("\n%1$s\n", sql));
 		}
 		return checkExisted(sql, name)>0;
+	}
+
+	@Override
+	public Partner queryBoundingPartner(String deviceId) {
+		String sql="select b.* from t_partner_equipment a, t_partner b where a.device_id=? LIMIT 1";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		return query(sql, deviceId, rowMapper);
 	}
 
 }
