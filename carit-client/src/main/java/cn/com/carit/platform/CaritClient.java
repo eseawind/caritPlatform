@@ -12,7 +12,9 @@ import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import cn.com.carit.platform.response.ErrorResponse;
 import cn.com.carit.platform.response.LogonResponse;
+import cn.com.carit.platform.response.SessionResponse;
 
 /**
  * <p>
@@ -164,7 +166,7 @@ public class CaritClient {
 			// 获取响应
 			String resonse=getHttpResponse(ClientUtils.buildRequestUrl(getInstance().serverUrl, paramValues), "POST");
 			try{
-				LogonResponse response=(LogonResponse) JsonUtil.jsonToObject(resonse, LogonResponse.class);
+				LogonResponse response=JsonUtil.jsonToObject(resonse, LogonResponse.class);
 				// 给客户端实例设置sessionId
 				getInstance().setSessionId(response.getSessionId());
 				// 开启一个延时5分钟每间隔5分钟执行一次的定时器模拟长链接
@@ -262,7 +264,7 @@ public class CaritClient {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		/*
+		
 		// 登录
 		Map<String, String> paramValues=getInstance().buildParamValues("account.logon", "2.0");
 		paramValues.put("email", "xiegc@carit.com.cn");
@@ -283,7 +285,7 @@ public class CaritClient {
 				e.printStackTrace();
 			}
 		}
-		*/
+		
 		/*Map<String, String> paramValues2=getInstance().buildParamValues("platform.bluetooth.contact.upload", "1.0");
 		paramValues2.put("email", "xiegc@carit.com.cn");
 		paramValues2.put("deviceId", "69A61F9F");
@@ -296,12 +298,12 @@ public class CaritClient {
 		String resonse2=getHttpResponse(ClientUtils.buildRequestUrl(getInstance().serverUrl, paramValues2), HTTP_METHOD_POST);
 		System.out.println(resonse2);*/
 		
-		Map<String, String> paramValues=getInstance().buildParamValues("platform.bluetooth.connected.devices", "1.0");
+		/*Map<String, String> paramValues=getInstance().buildParamValues("platform.bluetooth.connected.devices", "1.0");
  		paramValues.put("email", "yyy@yyy.com");
 // 		paramValues.put("deviceId", "69A61F9F");
  		paramValues.put("bluetoothId", "0:24:23:8d:74:d9");
  		// 不需要签名的参数放后面
  		paramValues.put(CaritClient.SYSTEM_PARAM_SIGN, ClientUtils.sign(paramValues, getInstance().getAppSecret()));
- 		System.out.println(getHttpResponse(ClientUtils.buildRequestUrl(getInstance().serverUrl, paramValues), HTTP_METHOD_GET));
+ 		System.out.println(getHttpResponse(ClientUtils.buildRequestUrl(getInstance().serverUrl, paramValues), HTTP_METHOD_GET));*/
 	}
 }
