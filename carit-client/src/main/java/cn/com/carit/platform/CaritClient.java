@@ -298,12 +298,5 @@ public class CaritClient {
 		String resonse2=getHttpResponse(ClientUtils.buildRequestUrl(getInstance().serverUrl, paramValues2), HTTP_METHOD_POST);
 		System.out.println(resonse2);*/
 		
-		/*Map<String, String> paramValues=getInstance().buildParamValues("platform.bluetooth.connected.devices", "1.0");
- 		paramValues.put("email", "yyy@yyy.com");
-// 		paramValues.put("deviceId", "69A61F9F");
- 		paramValues.put("bluetoothId", "0:24:23:8d:74:d9");
- 		// 不需要签名的参数放后面
- 		paramValues.put(CaritClient.SYSTEM_PARAM_SIGN, ClientUtils.sign(paramValues, getInstance().getAppSecret()));
- 		System.out.println(getHttpResponse(ClientUtils.buildRequestUrl(getInstance().serverUrl, paramValues), HTTP_METHOD_GET));*/
 	}
 }

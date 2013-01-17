@@ -1,28 +1,40 @@
 package cn.com.carit.platform.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
 import cn.com.carit.common.Constants;
+import cn.com.carit.common.utils.AttachmentUtil;
 import cn.com.carit.common.utils.DataGridModel;
+import cn.com.carit.common.utils.JsonUtil;
 import cn.com.carit.platform.action.AppCatalogAction;
 import cn.com.carit.platform.action.AppCommentAction;
 import cn.com.carit.platform.action.AppDownloadLogAction;
 import cn.com.carit.platform.action.AppVersionAction;
 import cn.com.carit.platform.action.ApplicationAction;
+import cn.com.carit.platform.bean.account.Account;
 import cn.com.carit.platform.bean.market.AppCatalog;
 import cn.com.carit.platform.bean.market.AppComment;
 import cn.com.carit.platform.bean.market.AppDownloadLog;
 import cn.com.carit.platform.bean.market.AppVersion;
 import cn.com.carit.platform.bean.market.Application;
+import cn.com.carit.platform.cache.CacheManager;
+import cn.com.carit.platform.request.market.BatchCheckAppUpdatedRequest;
+import cn.com.carit.platform.request.market.CheckAppUpdated;
+import cn.com.carit.platform.request.market.CheckAppUpdatedRequest;
+import cn.com.carit.platform.request.market.DownloadAppRequest;
 import cn.com.carit.platform.request.market.DownloadedReferencedRequest;
 import cn.com.carit.platform.request.market.FullTextSearchRequest;
 import cn.com.carit.platform.request.market.SearchAppDeveloperRequest;
 import cn.com.carit.platform.request.market.SearchApplicationRequest;
 import cn.com.carit.platform.request.market.TopRequest;
 import cn.com.carit.platform.request.market.ViewApplicationRequest;
+import cn.com.carit.platform.response.DownloadResponse;
 import cn.com.carit.platform.response.PageResponse;
 import cn.com.carit.platform.response.market.AppCatalogResponse;
 import cn.com.carit.platform.response.market.AppDeveloperResponse;
@@ -34,6 +46,7 @@ import com.rop.annotation.HttpAction;
 import com.rop.annotation.NeedInSessionType;
 import com.rop.annotation.ServiceMethod;
 import com.rop.annotation.ServiceMethodBean;
+import com.rop.response.BusinessServiceErrorResponse;
 
 /**
  * <p>
@@ -42,7 +55,7 @@ import com.rop.annotation.ServiceMethodBean;
  * @author <a href="mailto:xiegengcai@gmail.com">Gengcai Xie</a>
  * 2012-9-21
  */
-@ServiceMethodBean(version = "1.0")
+@ServiceMethodBean(version = "1.0", httpAction=HttpAction.GET, needInSession=NeedInSessionType.NO)
 public class AndroidMarketService {
 	
 	private final static String LANGUAGE_PARAM_NAME="language";
@@ -75,7 +88,7 @@ public class AndroidMarketService {
 	 * </table>
 	 * @return
 	 */
-	@ServiceMethod(method = "market.all.application.catalog",version = "1.0", httpAction=HttpAction.GET, needInSession=NeedInSessionType.NO)
+	@ServiceMethod(method = "market.all.application.catalog")
 	public Object allApplicationCatalog(RopRequest request){
 		String language=request.getRopRequestContext().getParamValue(LANGUAGE_PARAM_NAME);
 		if (!StringUtils.hasText(language)) {
@@ -115,7 +128,7 @@ public class AndroidMarketService {
 	 * </table>
 	 * @return
 	 */
-	@ServiceMethod(method = "market.query.application",version = "1.0", httpAction=HttpAction.GET, needInSession=NeedInSessionType.NO)
+	@ServiceMethod(method = "market.query.application")
 	public Object queryApplication(SearchApplicationRequest request){
 		PageResponse<ApplicationResponse> page=new PageResponse<ApplicationResponse>();
 		BeanUtils.copyProperties(applicationAction.queryByExemple(request), page);
@@ -140,7 +153,7 @@ public class AndroidMarketService {
 	 * </table>
 	 * @return
 	 */
-	@ServiceMethod(method = "market.query.top.application",version = "1.0", httpAction=HttpAction.GET, needInSession=NeedInSessionType.NO)
+	@ServiceMethod(method = "market.query.top.application")
 	public Object queryTopApps(TopRequest request){
 		return applicationAction.queryTopApps(request.getLanguage(), request.getLimit());
 	}
@@ -190,7 +203,7 @@ public class AndroidMarketService {
 	 * </table>
 	 * @return
 	 */
-	@ServiceMethod(method = "market.view.application",version = "1.0", httpAction=HttpAction.GET, needInSession=NeedInSessionType.NO)
+	@ServiceMethod(method = "market.view.application")
 	public Object viewApplication(ViewApplicationRequest request){
 		return applicationAction.queryAppById(request);
 	}
@@ -217,7 +230,7 @@ public class AndroidMarketService {
 	 * </table>
 	 * @return
 	 */
-	@ServiceMethod(method = "market.query.application.versions",version = "1.0", httpAction=HttpAction.GET, needInSession=NeedInSessionType.NO)
+	@ServiceMethod(method = "market.query.application.versions")
 	public Object queryAppVersions(DownloadedReferencedRequest request){
 		PageResponse<AppVersionResponse> page=new PageResponse<AppVersionResponse>();
 		BeanUtils.copyProperties(appVersionAction.queryAppVersions(request), page);
@@ -245,7 +258,7 @@ public class AndroidMarketService {
 	 * </table>
 	 * @return
 	 */
-	@ServiceMethod(method = "market.query.application.comments",version = "1.0", httpAction=HttpAction.GET, needInSession=NeedInSessionType.NO)
+	@ServiceMethod(method = "market.query.application.comments")
 	public Object queryAppComments(DownloadedReferencedRequest request){
 		DataGridModel dgm = new DataGridModel();
 		dgm.setSort(request.getSort());
@@ -275,7 +288,7 @@ public class AndroidMarketService {
 	 * </table>
 	 * @return
 	 */
-	@ServiceMethod(method = "market.application.hot.free",version = "1.0",httpAction=HttpAction.GET, needInSession=NeedInSessionType.NO)
+	@ServiceMethod(method = "market.application.hot.free")
 	public Object queryHotFreeApplication(TopRequest request){
 		return applicationAction.queryHotFree(request);
 	}
@@ -298,7 +311,7 @@ public class AndroidMarketService {
 	 * </table>
 	 * @return
 	 */
-	@ServiceMethod(method = "market.application.hot.new.free",version = "1.0",httpAction=HttpAction.GET, needInSession=NeedInSessionType.NO)
+	@ServiceMethod(method = "market.application.hot.new.free")
 	public Object queryHotNewFreeApplication(TopRequest request){
 		return applicationAction.queryHotNewFree(request);
 	}
@@ -320,7 +333,7 @@ public class AndroidMarketService {
 	 * </table>
 	 * @return
 	 */
-	@ServiceMethod(method = "market.application.stat.grade",version = "1.0",httpAction=HttpAction.GET, needInSession=NeedInSessionType.NO)
+	@ServiceMethod(method = "market.application.stat.grade")
 	public Object statApplicationCommentGrade(RopRequest request){
 		return appCommentAction.statCommentGrade(Integer.valueOf(request.getRopRequestContext().getParamValue("appId")));
 	}
@@ -342,7 +355,7 @@ public class AndroidMarketService {
 	 * </table>
 	 * @return
 	 */
-	@ServiceMethod(method = "market.application.avg.grade",version = "1.0",httpAction=HttpAction.GET, needInSession=NeedInSessionType.NO)
+	@ServiceMethod(method = "market.application.avg.grade")
 	public Object queryApplicationAvgGrade(RopRequest request){
 		return appCommentAction.statComment(Integer.valueOf(request.getRopRequestContext().getParamValue("appId")));
 	}
@@ -364,7 +377,7 @@ public class AndroidMarketService {
 	 * </table>
 	 * @return
 	 */
-	@ServiceMethod(method = "market.application.download.trend.one.month",version = "1.0",httpAction=HttpAction.GET, needInSession=NeedInSessionType.NO)
+	@ServiceMethod(method = "market.application.download.trend.one.month")
 	public Object applicationOneMonthDownTrend(RopRequest request){
 		return appDownloadLogAction.appOneMonthDownTrend(Integer.valueOf(request.getRopRequestContext().getParamValue("appId")));
 	}
@@ -391,7 +404,7 @@ public class AndroidMarketService {
 	 * </table>
 	 * @return
 	 */
-	@ServiceMethod(method = "market.application.downloaded.referenced",version = "1.0",httpAction=HttpAction.GET, needInSession=NeedInSessionType.NO)
+	@ServiceMethod(method = "market.application.downloaded.referenced")
 	public Object queryDownloadedReferencedApps(DownloadedReferencedRequest request){
 		PageResponse<ApplicationResponse> page=new PageResponse<ApplicationResponse>();
 		BeanUtils.copyProperties(applicationAction.queryDownloadedReferencedApps(request), page);
@@ -417,11 +430,145 @@ public class AndroidMarketService {
 	 * </table>
 	 * @return
 	 */
-	@ServiceMethod(method = "market.developer.query",version = "1.0",httpAction=HttpAction.GET, needInSession=NeedInSessionType.NO)
+	@ServiceMethod(method = "market.developer.query",version = "1.0")
 	public Object queryDeveloper(SearchAppDeveloperRequest request){
 		PageResponse<AppDeveloperResponse> page=new PageResponse<AppDeveloperResponse>();
 		BeanUtils.copyProperties(applicationAction.queryAppDeveloper(request), page);
 		return page;
 	}
 	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>检测应用是否已经更新 market.application.update.check
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>market.application.update.check</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>packageName</td><td>应用包名，如：com.tencent.mm</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>version</td><td>本地版本号</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>language</td><td>语言(cn/en)</td><td>是</td><td>否（默认cn）</td></tr>
+	 * </table>
+	 * @return 当前版本号
+	 */
+	@ServiceMethod(method = "market.application.update.check",version = "1.0")
+	public Object appUpdatedCheck(CheckAppUpdatedRequest request) {
+		return applicationAction.appUpdated(request.getLanguage(),
+				request.getPackageName(), request.getVersion());
+	}
+	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>批量检测应用是否已经更新
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>market.application.batch.update.check</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>apps</td><td>应用包名数组，如：["besttone.restaurant","com.tencent.mm"]</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>versions</td><td>应用包名数组，如：["3.5.0.1","3.8"]</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>language</td><td>语言(cn/en)</td><td>是</td><td>否（默认cn）</td></tr>
+	 * </table>
+	 * @return [{"id":216,"name":"号百餐馆","icon":"icons/7679e0cd5e3516f743dd91f99d14cdb2.png","version":"3.5.0.4","size":"886.57K"},{"id":66,"name":"腾讯微信","icon":"icons/WeChat_2754888329849341.png","version":"4.0","size":"10.31M"}]
+	 */
+	@ServiceMethod(method = "market.application.batch.update.check",version = "1.0")
+	public Object appUpdatedBatchCheck(BatchCheckAppUpdatedRequest request){
+		List<String> apps = null;
+		List<String> versions = null;
+		try {
+			apps = JsonUtil.jsonToList(request.getApps());
+		} catch (Exception e) {
+			return new BusinessServiceErrorResponse(request
+					.getRopRequestContext().getMethod(),
+					Constants.APPS_ARRAY_FORMAT_ERROR, request
+							.getRopRequestContext().getLocale());
+		}
+		try {
+			versions = JsonUtil.jsonToList(request.getVersions());
+		} catch (Exception e) {
+			return new BusinessServiceErrorResponse(request
+					.getRopRequestContext().getMethod(),
+					Constants.VERSIONS_ARRAY_FORMAT_ERROR, request
+							.getRopRequestContext().getLocale());
+		}
+		if (apps.size() != versions.size()) {
+			return new BusinessServiceErrorResponse(request
+					.getRopRequestContext().getMethod(),
+					Constants.APPS_ARRAY_VERSIONS_ARRAY_LEN_NOT_MATCH, request
+							.getRopRequestContext().getLocale(), apps.size(),
+					versions.size());
+		}
+
+		List<CheckAppUpdated> batchList = new ArrayList<CheckAppUpdated>();
+		for (int i = 0; i < apps.size(); i++) {
+			batchList.add(new CheckAppUpdated(apps.get(i), versions.get(i)));
+		}
+		return applicationAction.appUpdatedBatchCheck(request.getLanguage(),
+				batchList);
+	}
+	
+	/**
+	 * <p>
+	 * <b>功能说明：</b>下载应用
+	 * </p>
+	 * @param request
+	 * <table border='1'>
+	 * 	<tr><th>参数</th><th>规则/值</th><th>是否需要签名</th><th>是否必须</th></tr>
+	 *  <tr><td>appKey</td><td>申请时的appKey</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>method</td><td>market.application.down</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>v</td><td>1.0</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>locale</td><td>zh_CN/en</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>messageFormat</td><td>json/xml</td><td>是</td><td>否</td></tr>
+	 *  <tr><td>sign</td><td>所有需要签名的参数按签名规则生成sign</td><td>否</td><td>是</td></tr>
+	 *  <tr><td>packageName</td><td>应用包名</td><td>是</td><td>是</td></tr>
+	 *  <tr><td>email</td><td>下载账号邮箱</td><td>是</td><td>否</td></tr>
+	 * </table>
+	 * @return 
+	 */
+	@ServiceMethod(method = "market.application.down",version = "1.0")
+	public Object downApp(DownloadAppRequest request){
+		Application application = applicationAction.queryByPackageName(request.getPackageName());
+		if (application==null) {//应用不存在
+			return new BusinessServiceErrorResponse(request
+					.getRopRequestContext().getMethod(),
+					Constants.APP_NOT_EXIST, request
+							.getRopRequestContext().getLocale(), request.getPackageName());
+		}
+		// 更新下载次数
+		application.setDownCount(application.getDownCount()+1);
+		applicationAction.update(application);
+		
+		String email=request.getEmail();
+		// 保存下载记录
+		AppDownloadLog log=new AppDownloadLog();
+		log.setAppId(application.getId());
+		log.setVersion(application.getVersion());
+		
+		if (StringUtils.hasText(email)) {
+			// 查询缓存
+			Account t = CacheManager.getInstance().getAccount(email);
+			if (t == null) {
+				return new BusinessServiceErrorResponse(request
+						.getRopRequestContext().getMethod(),
+						Constants.NO_THIS_ACCOUNT, request
+								.getRopRequestContext().getLocale(), email);
+			}
+			log.setAccountId(t.getId());
+		} else { // 匿名下载
+			log.setAccountId(0);
+		}
+		appDownloadLogAction.add(log);
+		// 返回响应
+		return new DownloadResponse(AttachmentUtil.getInstance().getHost()+"/"+application.getAppFilePath());
+	}
 }

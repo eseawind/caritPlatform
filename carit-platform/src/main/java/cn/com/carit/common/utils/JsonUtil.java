@@ -1,6 +1,7 @@
 package cn.com.carit.common.utils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -9,6 +10,8 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+
+import cn.com.carit.platform.request.market.CheckAppUpdated;
 
 public class JsonUtil {
 
@@ -47,6 +50,13 @@ public class JsonUtil {
 		});
 	}
 	
+	public static <T> String listToJson(List<T> list) throws Exception{
+		if (list!=null && list.size()>0) {
+			return MAPPER.writeValueAsString(list);
+		}
+		return "[]";
+	}
+	
 	/**
 	 * @param args
 	 * @throws IOException 
@@ -66,6 +76,12 @@ public class JsonUtil {
 			System.out.println(str);
 		}
 		System.out.println(arrayToStr(array));
+		
+		List<CheckAppUpdated> list = new ArrayList<CheckAppUpdated>();
+		list.add(new CheckAppUpdated("besttone.restaurant", "3.5.0.1"));
+		list.add(new CheckAppUpdated("com.tencent.mm", "3.8"));
+		
+		System.out.println(listToJson(list));
 	}
 
 }

@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,7 @@ import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonPage;
 import cn.com.carit.platform.bean.market.Application;
 import cn.com.carit.platform.dao.ApplicationDao;
+import cn.com.carit.platform.request.market.CheckAppUpdated;
 import cn.com.carit.platform.request.market.DownloadedReferencedRequest;
 import cn.com.carit.platform.request.market.SearchAppDeveloperRequest;
 import cn.com.carit.platform.request.market.SearchApplicationRequest;
@@ -835,13 +837,62 @@ public class ApplicationDaoImpl extends DaoImpl implements ApplicationDao<Applic
 		StringBuilder sql = new StringBuilder("select id, main_pic mainPic from ")
 		.append(viewName)
 		.append(" where (status&4)<>0");
-		if (log.isDebugEnabled()) {
-			log.debug(String.format("\n%1$s\n", sql));
-		}
 		// 排序
 		sql.append(" order by down_count, update_time desc");
 		sql.append(" limit ?");
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
 		return jdbcTemplate.queryForList(sql.toString(), limit);
+	}
+
+	@Override
+	public Map<String, Object> appUpdated(String language, String packageName, String version) {
+		String viewName=DEFAULT_VIEW;
+		if (!Constants.DEAFULD_LANGUAGE.equalsIgnoreCase(language)) {
+			viewName="v_application_en";
+		}
+		String sql = "select id, app_name name, icon, version, size from "+viewName+" where package_name=? and version<>? limit 1";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		try {
+			return jdbcTemplate.queryForMap(sql, packageName ,version);
+		} catch (Exception e) {
+			log.warn(e.getMessage(), e);
+			return Collections.emptyMap();
+		}
+	}
+
+	@Override
+	public List<Map<String, Object>> appUpdatedBatchCheck(String language,
+			List<CheckAppUpdated> batchList) {
+		String viewName=DEFAULT_VIEW;
+		if (!Constants.DEAFULD_LANGUAGE.equalsIgnoreCase(language)) {
+			viewName="v_application_en";
+		}
+		String baseSql = "select id, app_name name, icon, version, size from "+viewName+" where package_name=? and version<>?";
+		StringBuilder sql = new StringBuilder();
+		List<Object> args = new ArrayList<Object>();
+		List<Integer> argTypes = new ArrayList<Integer>();
+		for (CheckAppUpdated app : batchList) {
+			sql.append(baseSql).append(" union ");
+			args.add(app.getPackageName());
+			argTypes.add(Types.VARCHAR);
+			args.add(app.getVersion());
+			argTypes.add(Types.VARCHAR);
+		}
+		sql.delete(sql.lastIndexOf(" union"), sql.length());
+		return queryForList(sql.toString(), args, argTypes);
+	}
+
+	@Override
+	public Application queryByPackageName(String packageName) {
+		String sql="select * from t_application where package_name=? limit 1";
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		return query(sql, packageName, rowMapper);
 	}
 	
 }

@@ -175,7 +175,7 @@ public class LocationDaoImpl extends DaoImpl implements LocationDao {
 
 	@Override
 	public void deleteDuplicateData(int accountId) {
-		String sql="delete from a using "+getTable(accountId)+" a,t_upload_location b where a.id<b.id and a.create_time=b.create_time";
+		String sql="delete from a using "+getTable(accountId)+" a,"+getTable(accountId)+" b where a.id<b.id and a.create_time=b.create_time";
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("\n%1$s\n", sql));
 		}

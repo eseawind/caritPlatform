@@ -6,6 +6,7 @@ import java.util.Map;
 import cn.com.carit.Dao;
 import cn.com.carit.common.utils.DataGridModel;
 import cn.com.carit.common.utils.JsonPage;
+import cn.com.carit.platform.request.market.CheckAppUpdated;
 import cn.com.carit.platform.request.market.DownloadedReferencedRequest;
 import cn.com.carit.platform.request.market.SearchAppDeveloperRequest;
 import cn.com.carit.platform.request.market.SearchApplicationRequest;
@@ -78,4 +79,23 @@ public interface ApplicationDao<Application> extends Dao<Application>{
 	 * @return
 	 */
 	List<Map<String, Object>> queryTopApps(final String language, final int limit);
+
+	/**
+	 * 检查应用是否已更新，更新了返回更新后的{"id":1,"name":"name","icon":"icon","version":"v","size":"5M"}，否则返回ollections.emptyMap();
+	 * @param language
+	 * @param packageName
+	 * @param version
+	 * @return
+	 */
+	Map<String, Object> appUpdated(final String language, final String packageName, final String version);
+	
+	/**
+	 * 批量检查应用是否已更新，更新了返回更新后的[{"id":1,"name":"name","icon":"icon","version":"v","size":"5M"},{"id":2,"name":"name","icon":"icon","version":"v","size":"5M"}...]，否则返回ollections.emptyList();
+	 * @param language
+	 * @param batchList
+	 * @return
+	 */
+	List<Map<String, Object>> appUpdatedBatchCheck(final String language, final List<CheckAppUpdated> batchList);
+	
+	Application queryByPackageName(final String packageName);
 }

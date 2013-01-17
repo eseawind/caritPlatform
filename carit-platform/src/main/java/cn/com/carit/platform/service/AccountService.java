@@ -696,22 +696,28 @@ public class AccountService {
 	public Object addEquipment(AddEquipmentRequest request){
 		//查询账号
 		Account account=CacheManager.getInstance().getAccount(request.getEmail());
+		// 如果设备不存在
+		if (equipmentAction.queryByDeviceId(request.getDeviceId()) == null) {
+			Equipment t=new Equipment();
+			t.setAccountId(account.getId());
+			t.setDeviceId(request.getDeviceId());
+			equipmentAction.add(t);
+			return CommonRopResponse.SUCCESSFUL_RESPONSE;
+		}
+		// 设备已经存在，判断其它限制条件
 		int count=equipmentAction.queryAccountCountByDeviceId(request.getDeviceId());
 		// 已经绑定过
 		if (equipmentAction.checkBounding(account.getId(), request.getDeviceId())>0) {
 			return CommonRopResponse.SUCCESSFUL_RESPONSE;
 		}
-		// 没绑定过，而且设备绑定的账号数达到上限
+		// 没绑定过，但设备绑定的账号数达到上限
 		if (count>=Equipment.MAX_BOUND_ACCOUNT_COUNT) {
 			return new BusinessServiceErrorResponse(request.getRopRequestContext().getMethod()
 					, Constants.EQUIPMENT_BINDING_ACCOUNT_TO_UPPER_LIMIT
 					, request.getRopRequestContext().getLocale()
 					, Equipment.MAX_BOUND_ACCOUNT_COUNT);
 		}
-		Equipment t=new Equipment();
-		t.setAccountId(account.getId());
-		t.setDeviceId(request.getDeviceId());
-		equipmentAction.add(t);
+		// 没绑定过，且设备绑定的账号数未达到上限
 		return CommonRopResponse.SUCCESSFUL_RESPONSE;
 	}
 	

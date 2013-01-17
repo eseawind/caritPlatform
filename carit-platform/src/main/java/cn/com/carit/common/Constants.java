@@ -52,7 +52,13 @@ public class Constants {
 	
 	public static final String EQUIPMENT_HAS_BOUND_WITH_OTHER_PARTNER="EQUIPMENT_HAS_BOUND_WITH_OTHER_PARTNER";
 	
+	public static final String APPS_ARRAY_FORMAT_ERROR="APPS_ARRAY_FORMAT_ERROR";
 	
+	public static final String VERSIONS_ARRAY_FORMAT_ERROR="VERSIONS_ARRAY_FORMAT_ERROR";
+	
+	public static final String APPS_ARRAY_VERSIONS_ARRAY_LEN_NOT_MATCH="APPS_ARRAY_VERSIONS_ARRAY_LEN_NOT_MATCH";
+	
+	public static final String APP_NOT_EXIST="APP_NOT_EXIST";
 	
 	// 正则模式
 	public static final String REGEXP_EMAIL="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
