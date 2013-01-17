@@ -5,9 +5,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.com.carit.common.utils.JsonPage;
@@ -17,13 +15,13 @@ import cn.com.carit.platform.dao.LocationDao;
 import cn.com.carit.platform.request.SearchLoactionRequest;
 
 @Service
-@Transactional(propagation=Propagation.REQUIRED,readOnly=true)
+@Transactional(readOnly=true)
 public class LocationActionImpl implements LocationAction {
 	
 	@Resource
 	private LocationDao dao;
 
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false, rollbackFor=BadSqlGrammarException.class)
+	@Transactional(readOnly=false)
 	@Override
 	public int batchAdd(final List<Location> locationList) {
 		int insertRows=0;

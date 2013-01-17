@@ -6,7 +6,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
@@ -21,7 +20,7 @@ import cn.com.carit.platform.dao.AccountDao;
 import cn.com.carit.platform.dao.EquipmentDao;
 
 @Service
-@Transactional(propagation=Propagation.REQUIRED,readOnly=true)
+@Transactional(readOnly=true)
 public class AccountActionImpl implements AccountAction<Account> {
 	
 	@Resource
@@ -33,19 +32,19 @@ public class AccountActionImpl implements AccountAction<Account> {
 	@Resource
 	private JavaMailSenderService mailSenderService;
 	
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public int add(Account t) {
 		return dao.add(t);
 	}
 
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public int update(Account t) {
 		return dao.update(t);
 	}
 
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public int delete(int id) {
 		return dao.delete(id);
@@ -71,13 +70,13 @@ public class AccountActionImpl implements AccountAction<Account> {
 		return dao.queryAll();
 	}
 
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public void register(String email, String password, String nickName) {
 		dao.register(email, password, nickName);
 	}
 
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public void register(String email, String password, String nickName,
 			String deviceId) {
@@ -104,19 +103,19 @@ public class AccountActionImpl implements AccountAction<Account> {
 		return dao.queryByEmail(email);
 	}
 
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public int updatePwd(String email, String password) {
 		return dao.updatePwd(email, password);
 	}
 	
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public void logon(int id, String ip) {
 		dao.logon(id, ip);
 	}
 	
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public int uploadPhoto(Account t, String photoPath, String thumbPhotoPath) {
 		if (StringUtils.hasText(photoPath)&&StringUtils.hasText(thumbPhotoPath)) {
@@ -131,7 +130,7 @@ public class AccountActionImpl implements AccountAction<Account> {
 		return 0;
 	}
 	
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public void getBackPassword(String email, String newPassword,
 			String subject, String content) {

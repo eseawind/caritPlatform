@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.com.carit.common.Constants;
-@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+@Transactional(readOnly=false)
 @Service
 public class JavaMailSenderService {
 	private static Logger logger = LoggerFactory.getLogger(JavaMailSenderService.class);

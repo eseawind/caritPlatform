@@ -5,7 +5,6 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.com.carit.common.utils.DataGridModel;
@@ -16,26 +15,26 @@ import cn.com.carit.platform.dao.EquipmentDao;
 import cn.com.carit.platform.response.EquipmentResponse;
 
 @Service
-@Transactional(propagation=Propagation.REQUIRED,readOnly=true)
+@Transactional(readOnly=true)
 public class EquipmentActionImpl implements EquipmentAction<Equipment> {
 	
 	@Resource
 	private EquipmentDao<Equipment> dao;
 
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public int add(Equipment t) {
 		dao.addReference(t.getAccountId(), t.getDeviceId());
 		return dao.add(t);
 	}
 
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public int update(Equipment t) {
 		return dao.update(t);
 	}
 
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public int delete(int id) {
 		return dao.delete(id);

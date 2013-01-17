@@ -6,7 +6,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.com.carit.common.utils.DataGridModel;
@@ -16,26 +15,26 @@ import cn.com.carit.platform.bean.BluetoothContact;
 import cn.com.carit.platform.dao.BluetoothContactDao;
 
 @Service
-@Transactional(propagation=Propagation.REQUIRED,readOnly=true)
+@Transactional(readOnly=true)
 public class BluetoothContactActionImpl implements BluetoothContactAction<BluetoothContact> {
 	
 	@Resource
 	private BluetoothContactDao<BluetoothContact> dao;
 
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public int add(BluetoothContact t) {
 		// TODO
 		return 0;
 	}
 
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public int update(BluetoothContact t) {
 		return dao.update(t);
 	}
 
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public int delete(int id) {
 		return dao.delete(id);
@@ -66,7 +65,7 @@ public class BluetoothContactActionImpl implements BluetoothContactAction<Blueto
 		return dao.queryBluetoothByAccount(accountId);
 	}
 
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public void delete(int accountId, String deviceId, String bluetoothId) {
 		dao.delete(accountId, deviceId, bluetoothId);
@@ -93,7 +92,7 @@ public class BluetoothContactActionImpl implements BluetoothContactAction<Blueto
 		return dao.queryAll(deviceId, accountId, bluetoothId);
 	}
 
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public void uploadContact(List<BluetoothContact> list, int accountId,
 			String deviceId, String bluetoothName, String bluetoothId) {

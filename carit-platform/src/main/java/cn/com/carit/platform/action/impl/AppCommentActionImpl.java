@@ -6,7 +6,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.com.carit.common.utils.DataGridModel;
@@ -19,7 +18,7 @@ import cn.com.carit.platform.dao.ApplicationDao;
 import cn.com.carit.platform.response.market.AppCommentResponse;
 
 @Service
-@Transactional(propagation=Propagation.REQUIRED,readOnly=true)
+@Transactional(readOnly=true)
 public class AppCommentActionImpl implements AppCommentAction<AppComment> {
 	
 	@Resource
@@ -27,7 +26,7 @@ public class AppCommentActionImpl implements AppCommentAction<AppComment> {
 	@Resource
 	private ApplicationDao<Application> appDao;
 
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public int add(AppComment t) {
 		int row=dao.add(t);
@@ -39,7 +38,7 @@ public class AppCommentActionImpl implements AppCommentAction<AppComment> {
 		return row;
 	}
 
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public int update(AppComment t) {
 		int row=dao.update(t);
@@ -51,7 +50,7 @@ public class AppCommentActionImpl implements AppCommentAction<AppComment> {
 		return row;
 	}
 
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public int delete(int id) {
 		return dao.delete(id);

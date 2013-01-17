@@ -10,7 +10,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.com.carit.common.Constants;
@@ -23,25 +22,25 @@ import cn.com.carit.platform.dao.AppDownloadLogDao;
 import cn.com.carit.platform.response.market.AppDownStat;
 
 @Service
-@Transactional(propagation=Propagation.REQUIRED,readOnly=true)
+@Transactional(readOnly=true)
 public class AppDownloadLogActionImpl implements AppDownloadLogAction<AppDownloadLog> {
 	
 	@Resource
 	private AppDownloadLogDao<AppDownloadLog> dao;
 
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public int add(AppDownloadLog t) {
 		return dao.add(t);
 	}
 
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public int update(AppDownloadLog t) {
 		return dao.update(t);
 	}
 
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public int delete(int id) {
 		return dao.delete(id);

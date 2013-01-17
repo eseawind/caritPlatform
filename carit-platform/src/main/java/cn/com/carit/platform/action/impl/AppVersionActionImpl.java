@@ -5,7 +5,6 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.com.carit.common.utils.DataGridModel;
@@ -17,7 +16,7 @@ import cn.com.carit.platform.request.market.DownloadedReferencedRequest;
 import cn.com.carit.platform.response.market.AppVersionResponse;
 
 @Service
-@Transactional(propagation=Propagation.REQUIRED,readOnly=true)
+@Transactional(readOnly=true)
 public class AppVersionActionImpl implements AppVersionAction<AppVersion> {
 
 	@Resource
@@ -28,19 +27,19 @@ public class AppVersionActionImpl implements AppVersionAction<AppVersion> {
 		return dao.queryAll();
 	}
 
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public int add(AppVersion t) {
 		return dao.add(t);
 	}
 
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public int update(AppVersion t) {
 		return dao.update(t);
 	}
 
-	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+	@Transactional(readOnly=false)
 	@Override
 	public int delete(int id) {
 		return dao.delete(id);
