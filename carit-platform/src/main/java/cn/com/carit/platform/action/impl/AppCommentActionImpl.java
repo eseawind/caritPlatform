@@ -19,7 +19,7 @@ import cn.com.carit.platform.dao.ApplicationDao;
 import cn.com.carit.platform.response.market.AppCommentResponse;
 
 @Service
-@Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
+@Transactional(propagation=Propagation.REQUIRED,readOnly=true)
 public class AppCommentActionImpl implements AppCommentAction<AppComment> {
 	
 	@Resource
@@ -27,7 +27,7 @@ public class AppCommentActionImpl implements AppCommentAction<AppComment> {
 	@Resource
 	private ApplicationDao<Application> appDao;
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int add(AppComment t) {
 		int row=dao.add(t);
@@ -39,7 +39,7 @@ public class AppCommentActionImpl implements AppCommentAction<AppComment> {
 		return row;
 	}
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int update(AppComment t) {
 		int row=dao.update(t);
@@ -51,7 +51,7 @@ public class AppCommentActionImpl implements AppCommentAction<AppComment> {
 		return row;
 	}
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int delete(int id) {
 		return dao.delete(id);

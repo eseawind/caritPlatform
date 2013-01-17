@@ -17,13 +17,13 @@ import cn.com.carit.platform.dao.ObdDataDao;
 import cn.com.carit.platform.request.SearchObdDataRequest;
 
 @Service
-@Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
+@Transactional(propagation=Propagation.REQUIRED,readOnly=true)
 public class ObdDataActionImpl implements ObdDataAction<ObdData> {
 	
 	@Resource
 	private ObdDataDao<ObdData> dao;
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int add(ObdData t) {
 		int id = dao.add(t);
@@ -34,13 +34,13 @@ public class ObdDataActionImpl implements ObdDataAction<ObdData> {
 		return id;
 	}
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int update(ObdData t) {
 		return dao.update(t);
 	}
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int delete(int id) {
 		return dao.delete(id);

@@ -16,26 +16,26 @@ import cn.com.carit.platform.bean.BluetoothContact;
 import cn.com.carit.platform.dao.BluetoothContactDao;
 
 @Service
-@Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
+@Transactional(propagation=Propagation.REQUIRED,readOnly=true)
 public class BluetoothContactActionImpl implements BluetoothContactAction<BluetoothContact> {
 	
 	@Resource
 	private BluetoothContactDao<BluetoothContact> dao;
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int add(BluetoothContact t) {
 		// TODO
 		return 0;
 	}
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int update(BluetoothContact t) {
 		return dao.update(t);
 	}
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int delete(int id) {
 		return dao.delete(id);
@@ -66,7 +66,7 @@ public class BluetoothContactActionImpl implements BluetoothContactAction<Blueto
 		return dao.queryBluetoothByAccount(accountId);
 	}
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public void delete(int accountId, String deviceId, String bluetoothId) {
 		dao.delete(accountId, deviceId, bluetoothId);
@@ -93,7 +93,7 @@ public class BluetoothContactActionImpl implements BluetoothContactAction<Blueto
 		return dao.queryAll(deviceId, accountId, bluetoothId);
 	}
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public void uploadContact(List<BluetoothContact> list, int accountId,
 			String deviceId, String bluetoothName, String bluetoothId) {

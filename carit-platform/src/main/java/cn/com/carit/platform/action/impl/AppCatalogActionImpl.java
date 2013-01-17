@@ -16,7 +16,7 @@ import cn.com.carit.platform.dao.AppCatalogDao;
 import cn.com.carit.platform.response.market.AppCatalogResponse;
 
 @Service
-@Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
+@Transactional(propagation=Propagation.REQUIRED,readOnly=true)
 public class AppCatalogActionImpl implements AppCatalogAction<AppCatalog> {
 
 	@Resource
@@ -27,19 +27,19 @@ public class AppCatalogActionImpl implements AppCatalogAction<AppCatalog> {
 		return dao.queryAll();
 	}
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int add(AppCatalog t) {
 		return dao.add(t);
 	}
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int update(AppCatalog t) {
 		return dao.update(t);
 	}
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int delete(int id) {
 		return dao.delete(id);

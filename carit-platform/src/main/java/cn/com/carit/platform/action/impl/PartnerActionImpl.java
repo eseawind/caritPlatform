@@ -19,7 +19,7 @@ import cn.com.carit.platform.dao.EquipmentDao;
 import cn.com.carit.platform.dao.PartnerDao;
 
 @Service
-@Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
+@Transactional(propagation=Propagation.REQUIRED,readOnly=true)
 public class PartnerActionImpl implements PartnerAction<Partner> {
 	
 	@Resource
@@ -28,19 +28,19 @@ public class PartnerActionImpl implements PartnerAction<Partner> {
 	@Resource
 	private EquipmentDao<Equipment> equipmentDao;
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int add(Partner t) {
 		return dao.add(t);
 	}
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int update(Partner t) {
 		return dao.update(t);
 	}
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int delete(int id) {
 		return dao.delete(id);

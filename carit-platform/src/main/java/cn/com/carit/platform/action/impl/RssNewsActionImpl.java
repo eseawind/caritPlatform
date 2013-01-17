@@ -16,25 +16,25 @@ import cn.com.carit.platform.bean.RssNews;
 import cn.com.carit.platform.dao.RssNewsDao;
 
 @Service
-@Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
+@Transactional(propagation=Propagation.REQUIRED,readOnly=true)
 public class RssNewsActionImpl implements RssNewsAction<RssNews> {
 	
 	@Resource
 	private RssNewsDao<RssNews> dao;
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int add(RssNews t) {
 		return dao.add(t);
 	}
 	
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public void bathAdd(List<RssNews> list) {
 		dao.bathAdd(list);
 	}
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int delete(int id) {
 		return dao.delete(id);

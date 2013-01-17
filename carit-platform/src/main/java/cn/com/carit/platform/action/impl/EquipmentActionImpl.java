@@ -16,26 +16,26 @@ import cn.com.carit.platform.dao.EquipmentDao;
 import cn.com.carit.platform.response.EquipmentResponse;
 
 @Service
-@Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
+@Transactional(propagation=Propagation.REQUIRED,readOnly=true)
 public class EquipmentActionImpl implements EquipmentAction<Equipment> {
 	
 	@Resource
 	private EquipmentDao<Equipment> dao;
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int add(Equipment t) {
 		dao.addReference(t.getAccountId(), t.getDeviceId());
 		return dao.add(t);
 	}
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int update(Equipment t) {
 		return dao.update(t);
 	}
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int delete(int id) {
 		return dao.delete(id);

@@ -31,7 +31,7 @@ import cn.com.carit.platform.response.market.AppDeveloperResponse;
 import cn.com.carit.platform.response.market.ApplicationResponse;
 
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 public class ApplicationActionImpl implements ApplicationAction<Application> {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -43,19 +43,19 @@ public class ApplicationActionImpl implements ApplicationAction<Application> {
 		return dao.queryAll();
 	}
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = false)
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
 	@Override
 	public int add(Application t) {
 		return dao.add(t);
 	}
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = false)
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
 	@Override
 	public int update(Application t) {
 		return dao.update(t);
 	}
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = false)
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
 	@Override
 	public int delete(int id) {
 		return dao.delete(id);

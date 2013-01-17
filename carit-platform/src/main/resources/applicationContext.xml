@@ -102,7 +102,7 @@
 	</bean>
 
 	<!-- 声明使用注解式事务 -->
-	<tx:annotation-driven transaction-manager="transactionManager" />
+	<tx:annotation-driven transaction-manager="transactionManager"/>
 
 	<!--  定时器开关  开始-->  
     <task:annotation-driven/>  

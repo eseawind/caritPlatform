@@ -17,7 +17,7 @@ import cn.com.carit.platform.request.market.DownloadedReferencedRequest;
 import cn.com.carit.platform.response.market.AppVersionResponse;
 
 @Service
-@Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
+@Transactional(propagation=Propagation.REQUIRED,readOnly=true)
 public class AppVersionActionImpl implements AppVersionAction<AppVersion> {
 
 	@Resource
@@ -28,19 +28,19 @@ public class AppVersionActionImpl implements AppVersionAction<AppVersion> {
 		return dao.queryAll();
 	}
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int add(AppVersion t) {
 		return dao.add(t);
 	}
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int update(AppVersion t) {
 		return dao.update(t);
 	}
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int delete(int id) {
 		return dao.delete(id);

@@ -15,25 +15,25 @@ import cn.com.carit.platform.bean.account.SystemMessage;
 import cn.com.carit.platform.dao.SystemMessageDao;
 
 @Service
-@Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
+@Transactional(propagation=Propagation.REQUIRED,readOnly=true)
 public class SystemMessageActionImpl implements SystemMessageAction<SystemMessage> {
 	
 	@Resource
 	private SystemMessageDao<SystemMessage> dao;
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int add(SystemMessage t) {
 		return dao.add(t);
 	}
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int update(SystemMessage t) {
 		return dao.update(t);
 	}
 
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public int delete(int id) {
 		return dao.delete(id);
@@ -59,7 +59,7 @@ public class SystemMessageActionImpl implements SystemMessageAction<SystemMessag
 		return dao.queryAll();
 	}
 	
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=false)
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	@Override
 	public void readSystemMessage(int id) {
 		SystemMessage t=new SystemMessage();
