@@ -176,4 +176,15 @@ public class AndroidMarketServiceTestCase {
 					}
 				}, DownloadResponse.class, "market.application.down", "1.0");
 	}
+	
+	@Test
+	public void testQueryBoxApps(){
+		TopRequest request=new TopRequest();
+		request.setLimit(10);
+		RopTestCaseClient
+				.getRopClient()
+				.buildClientRequest()
+				.get(request, List.class,
+						"market.query.box.application", "1.0");
+	}
 }

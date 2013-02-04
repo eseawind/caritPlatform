@@ -75,12 +75,6 @@ public interface ApplicationDao<Application> extends Dao<Application>{
 	JsonPage<AppDeveloperResponse> queryAppDeveloper(SearchAppDeveloperRequest request);
 	
 	/**
-	 * 查询置顶应用
-	 * @return
-	 */
-	List<Map<String, Object>> queryTopApps(final String language, final int limit);
-
-	/**
 	 * 检查应用是否已更新，更新了返回更新后的{"id":1,"name":"name","icon":"icon","version":"v","size":"5M"}，否则返回ollections.emptyMap();
 	 * @param language
 	 * @param packageName
@@ -98,4 +92,8 @@ public interface ApplicationDao<Application> extends Dao<Application>{
 	List<Map<String, Object>> appUpdatedBatchCheck(final String language, final List<CheckAppUpdated> batchList);
 	
 	Application queryByPackageName(final String packageName);
+	
+	List<Map<String, Object>> queryByStatus(final String language, final int status, final int limit);
+	
+	List<Map<String, Object>> queryByStatus(final String fetchFields, final String language, final int status, final int limit);
 }

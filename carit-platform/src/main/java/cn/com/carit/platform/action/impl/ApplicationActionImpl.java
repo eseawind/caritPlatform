@@ -139,8 +139,9 @@ public class ApplicationActionImpl implements ApplicationAction<Application> {
 	}
 
 	@Override
-	public List<Map<String, Object>> queryTopApps(String language, int limit) {
-		return dao.queryTopApps(language, limit);
+	public List<Map<String, Object>> queryByStatus(String language, int status,
+			int limit) {
+		return dao.queryByStatus(language, status, limit);
 	}
 
 	@Override
@@ -163,6 +164,15 @@ public class ApplicationActionImpl implements ApplicationAction<Application> {
 			return dao.queryByPackageName(packageName);
 		}
 		return null;
+	}
+
+	@Override
+	public List<Map<String, Object>> queryByStatus(String fetchFields,
+			String language, int status, int limit) {
+		if (StringUtils.hasText(fetchFields)) {
+			return dao.queryByStatus(fetchFields, language, status, limit);
+		}
+		return Collections.emptyList();
 	}
 
 }

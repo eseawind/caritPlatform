@@ -82,9 +82,7 @@
 		<property name="testOnReturn" value="false" />
 
 		<!-- 配置监控统计拦截的filters -->
-		<!-- 
 		<property name="filters" value="wall" />
-		 -->
 
 	</bean>
 

@@ -6,6 +6,10 @@ import cn.com.carit.platform.bean.BaseBean;
 
 public class Application extends BaseBean {
 
+	
+	public static int STATUS_TOP=4;
+	
+	public static int STATUS_BOX=8;
 	/**
 	 * 
 	 */

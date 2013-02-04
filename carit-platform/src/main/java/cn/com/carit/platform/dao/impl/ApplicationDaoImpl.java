@@ -829,24 +829,6 @@ public class ApplicationDaoImpl extends DaoImpl implements ApplicationDao<Applic
 	}
 
 	@Override
-	public List<Map<String, Object>> queryTopApps(String language, int limit) {
-		String viewName=DEFAULT_VIEW;
-		if (!Constants.DEAFULD_LANGUAGE.equalsIgnoreCase(language)) {
-			viewName="v_application_en";
-		}
-		StringBuilder sql = new StringBuilder("select id, main_pic mainPic from ")
-		.append(viewName)
-		.append(" where (status&4)<>0");
-		// 排序
-		sql.append(" order by down_count, update_time desc");
-		sql.append(" limit ?");
-		if (log.isDebugEnabled()) {
-			log.debug(String.format("\n%1$s\n", sql));
-		}
-		return jdbcTemplate.queryForList(sql.toString(), limit);
-	}
-
-	@Override
 	public Map<String, Object> appUpdated(String language, String packageName, String version) {
 		String viewName=DEFAULT_VIEW;
 		if (!Constants.DEAFULD_LANGUAGE.equalsIgnoreCase(language)) {
@@ -894,5 +876,44 @@ public class ApplicationDaoImpl extends DaoImpl implements ApplicationDao<Applic
 		}
 		return query(sql, packageName, rowMapper);
 	}
+
+	@Override
+	public List<Map<String, Object>> queryByStatus(String language, int status,
+			int limit) {
+		String viewName=DEFAULT_VIEW;
+		if (!Constants.DEAFULD_LANGUAGE.equalsIgnoreCase(language)) {
+			viewName="v_application_en";
+		}
+		StringBuilder sql = new StringBuilder("select id, main_pic mainPic from ")
+		.append(viewName)
+		.append(" where (status&?)<>0");
+		// 排序
+		sql.append(" order by down_count, update_time desc");
+		sql.append(" limit ?");
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		return jdbcTemplate.queryForList(sql.toString(), status, limit);
+	}
+
+	@Override
+	public List<Map<String, Object>> queryByStatus(String fetchFields, String language,
+			int status, int limit) {
+		String viewName=DEFAULT_VIEW;
+		if (!Constants.DEAFULD_LANGUAGE.equalsIgnoreCase(language)) {
+			viewName="v_application_en";
+		}
+		StringBuilder sql = new StringBuilder("select " + fetchFields + " from ")
+		.append(viewName)
+		.append(" where (status&?)<>0");
+		// 排序
+		sql.append(" order by down_count, update_time desc");
+		sql.append(" limit ?");
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("\n%1$s\n", sql));
+		}
+		return jdbcTemplate.queryForList(sql.toString(), status, limit);
+	}
+	
 	
 }

@@ -12,9 +12,7 @@ import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import cn.com.carit.platform.response.ErrorResponse;
 import cn.com.carit.platform.response.LogonResponse;
-import cn.com.carit.platform.response.SessionResponse;
 
 /**
  * <p>
@@ -264,7 +262,7 @@ public class CaritClient {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		
+		/*
 		// 登录
 		Map<String, String> paramValues=getInstance().buildParamValues("account.logon", "2.0");
 		paramValues.put("email", "xiegc@carit.com.cn");
@@ -285,18 +283,15 @@ public class CaritClient {
 				e.printStackTrace();
 			}
 		}
+		*/
+		Map<String, String> paramValues = getInstance().buildParamValues(
+				"market.application.batch.update.check", "1.0");
 		
-		/*Map<String, String> paramValues2=getInstance().buildParamValues("platform.bluetooth.contact.upload", "1.0");
-		paramValues2.put("email", "xiegc@carit.com.cn");
-		paramValues2.put("deviceId", "69A61F9F");
-		paramValues2.put("bluetoothId", "123456");
-		paramValues2.put("bluetoothName", "我的蓝牙");
-		paramValues2.put("contacts", "[{\"callName\":\"张三\",\"callNum\":\"12345678\",\"callNameKey\":\"zs\",\"callType\":\"1\"}, {\"callName\":\"李四\",\"callNum\":\"87654321\",\"callNameKey\":\"ls\",\"callType\":\"1\"}]");
-		
+		paramValues.put("versions", "[\"2.3.0.116\",\"4.317\",\"1.1.0\",\"1.0\",\"1.0\",\"1.0\",\"3.2.6\",\"3.4.7\",\"1.0\",\"2.5.169\",\"3.5.2\",\"1.1.0\",\"1.0.\",\"1.9.3\",\"1.0\"]");
+		paramValues.put("apps", "[\"com.tencent.padbrowser\",\"com.fsck.k9\",\"com.carit.caritservicesframework\",\"com.android.carit.animationtest\",\"co.android.caritinfo\",\"com.demo\",\"com.dragon.android.pandaspace\",\"com.android.vending\",\"com.example.ttstest\",\"com.nd.assistance\",\"com.hiapk.marketpho\",\"com.carit.market\",\"com.android.carit\",\"com.tencent.android.pad\",\"com.carit.gabgirl\"]");
 		// 不需要签名的参数放后面
-		paramValues2.put(CaritClient.SYSTEM_PARAM_SIGN, ClientUtils.sign(paramValues2, ClientHolder.INSTANCE.appSecret));
-		String resonse2=getHttpResponse(ClientUtils.buildRequestUrl(getInstance().serverUrl, paramValues2), HTTP_METHOD_POST);
-		System.out.println(resonse2);*/
+		paramValues.put(CaritClient.SYSTEM_PARAM_SIGN, ClientUtils.sign(paramValues, ClientHolder.INSTANCE.appSecret));
+		System.out.println(getInstance().getHttpResponse(paramValues));
 		
 	}
 }

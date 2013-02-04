@@ -84,12 +84,11 @@ public interface ApplicationAction<Application> extends Action<Application> {
 			SearchAppDeveloperRequest request);
 
 	/**
-	 * 查询置顶应用
+	 * 按状态查询应用
 	 * 
 	 * @return
 	 */
-	List<Map<String, Object>> queryTopApps(final String language,
-			final int limit);
+	List<Map<String, Object>> queryByStatus(final String language, final int status, final int limit);
 	/**
 	 * 检查应用是否已更新，更新了返回更新后的name、icon、version、size，否则返回ollections.emptyMap();
 	 * @param language
@@ -102,4 +101,7 @@ public interface ApplicationAction<Application> extends Action<Application> {
 	List<Map<String, Object>> appUpdatedBatchCheck(final String language, final List<CheckAppUpdated> batchList);
 	
 	Application queryByPackageName(final String packageName);
+	
+	List<Map<String, Object>> queryByStatus(final String fetchFields, final String language, final int status, final int limit);
+	
 }
