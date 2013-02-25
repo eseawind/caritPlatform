@@ -285,10 +285,9 @@ public class CaritClient {
 		}
 		*/
 		Map<String, String> paramValues = getInstance().buildParamValues(
-				"market.application.batch.update.check", "1.0");
+				"account.getback.password", "1.0");
 		
-		paramValues.put("versions", "[\"2.3.0.116\",\"4.317\",\"1.1.0\",\"1.0\",\"1.0\",\"1.0\",\"3.2.6\",\"3.4.7\",\"1.0\",\"2.5.169\",\"3.5.2\",\"1.1.0\",\"1.0.\",\"1.9.3\",\"1.0\"]");
-		paramValues.put("apps", "[\"com.tencent.padbrowser\",\"com.fsck.k9\",\"com.carit.caritservicesframework\",\"com.android.carit.animationtest\",\"co.android.caritinfo\",\"com.demo\",\"com.dragon.android.pandaspace\",\"com.android.vending\",\"com.example.ttstest\",\"com.nd.assistance\",\"com.hiapk.marketpho\",\"com.carit.market\",\"com.android.carit\",\"com.tencent.android.pad\",\"com.carit.gabgirl\"]");
+		paramValues.put("email", "xiegc@carit.com.cn");
 		// 不需要签名的参数放后面
 		paramValues.put(CaritClient.SYSTEM_PARAM_SIGN, ClientUtils.sign(paramValues, ClientHolder.INSTANCE.appSecret));
 		System.out.println(getInstance().getHttpResponse(paramValues));
